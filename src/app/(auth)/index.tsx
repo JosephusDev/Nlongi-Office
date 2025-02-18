@@ -61,11 +61,6 @@ export default function Auth() {
 				const jsonUser = JSON.parse(jsonValue ?? '')
 				console.log(jsonUser)
 				onSubmit(jsonUser)
-				showToast({
-					title: 'Longi',
-					message: 'Autenticação bem-sucedida!',
-					type: 'success',
-				})
 			}
 		}
 	}

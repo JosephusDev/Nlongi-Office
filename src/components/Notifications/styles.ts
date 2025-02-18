@@ -26,22 +26,4 @@ export const s = StyleSheet.create({
 		textAlign: 'justify',
 		color: colors.gray[500],
 	},
-	icon: {
-		width: 30,
-		height: 30,
-		borderRadius: 20,
-		borderColor: colors.red.base,
-		borderWidth: 2,
-		justifyContent: 'center',
-		alignItems: 'center',
-		marginTop: -10,
-	},
-	header: {
-		flex: 1,
-		flexDirection: 'row',
-		justifyContent: 'flex-start',
-		alignItems: 'center',
-		gap: 5,
-		marginBottom: 5,
-	},
 })

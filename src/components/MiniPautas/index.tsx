@@ -1,15 +1,13 @@
 import { ScrollView, Text, View } from 'react-native'
-import { Picker } from '@react-native-picker/picker'
 import { s } from './styles'
 import Button from '../Button'
 import Select from '../Select'
-import { disciplinas, trimestres } from '@/mocks'
+import { trimestres } from '@/mocks'
 import { useEffect, useState } from 'react'
 import { ITurma } from '@/types'
 import { getDisciplinas } from '@/models/Disciplina'
 import { useSQLiteContext } from 'expo-sqlite'
 import { showToast } from '../customToast'
-import { useNavigation } from 'expo-router'
 import { getTurmas } from '@/models/Turma'
 export default function MiniPautas() {
 	const db = useSQLiteContext()
@@ -42,16 +40,10 @@ export default function MiniPautas() {
 		}
 	}
 
-	const navigation = useNavigation()
-
 	useEffect(() => {
-		const unsubscribe = navigation.addListener('focus', () => {
-			carregarDisciplinas()
-			carregarTurmas()
-		})
-
-		return unsubscribe
-	}, [navigation])
+		carregarDisciplinas()
+		carregarTurmas()
+	}, [])
 	return (
 		<ScrollView style={s.container}>
 			<View style={s.card}>

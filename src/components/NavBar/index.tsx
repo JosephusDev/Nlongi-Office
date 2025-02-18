@@ -33,7 +33,6 @@ export default function NavBar() {
 						icon='bell'
 						title='Notificações'
 						onPress={() => setOption('notifications')}
-						badge={3}
 					/>
 				</View>
 				<Pressable style={s.back} onPress={signOut}>

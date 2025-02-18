@@ -173,7 +173,7 @@ export default function Turmas() {
 				)}
 				<MyModal title='Adicionar Turma' visible={isOpen} onClose={() => setIsOpen(false)}>
 					<View style={{ flex: 0, width: '100%' }}>
-						<Text style={s.labelModal}>Nome da turma</Text>
+						<Text style={s.labelModal}>Nome</Text>
 						<View style={[s.inputContainer, errors.nome && { borderColor: colors.red.base }]}>
 							<Controller
 								control={control}
