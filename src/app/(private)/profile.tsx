@@ -163,7 +163,7 @@ export default function Profile() {
 						<View style={s.containerOption}>
 							<View style={s.right}>
 								<View style={s.containerIcon}>
-									<Feather name='user' size={18} color={colors.red.base} />
+									<Feather name='user' size={18} />
 								</View>
 								<Text style={s.description}>Editar Perfil</Text>
 							</View>
@@ -175,7 +175,7 @@ export default function Profile() {
 						<View style={s.containerOption}>
 							<View style={s.right}>
 								<View style={s.containerIcon}>
-									<Feather name='lock' size={18} color={colors.red.base} />
+									<Feather name='lock' size={18} />
 								</View>
 								<Text style={s.description}>Login com Biometria</Text>
 							</View>

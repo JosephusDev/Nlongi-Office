@@ -112,8 +112,6 @@ export const s = StyleSheet.create({
 	},
 	containerIcon: {
 		backgroundColor: '#FFFFFF',
-		borderColor: colors.gray[300],
-		borderWidth: 1,
 		padding: 10,
 		borderRadius: 50,
 		justifyContent: 'center',

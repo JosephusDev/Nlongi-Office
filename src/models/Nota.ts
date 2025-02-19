@@ -1,5 +1,5 @@
 import { SQLiteDatabase } from 'expo-sqlite'
-import { INota } from '@/types'
+import { IAlunoNotas, INota } from '@/types'
 
 export const createNota = async (db: SQLiteDatabase, data: Omit<INota, 'turma_id'>) => {
 	const { valor, periodo, tipo, aluno_id, disciplina_id } = data
@@ -77,6 +77,32 @@ export const getNotas = async (db: SQLiteDatabase) => {
 		LEFT JOIN disciplina d ON n.disciplina_id = d.id
 		ORDER BY a.nome, d.nome, n.periodo;`,
 		)
+		return result
+	} catch (error) {
+		console.error('Erro ao obter notas:', error)
+		throw error // Propaga o erro para ser tratado no chamador
+	}
+}
+
+export const getMiniPauta = async (db: SQLiteDatabase, periodo_id: string, disciplina_id: number, turma_id: number) => {
+	try {
+		const result = await db.getAllAsync<IAlunoNotas>(
+			`SELECT  
+				a.id,
+				a.nome AS NOME,
+				COALESCE(MAX(CASE WHEN n.tipo = '1' THEN n.valor END), 0) AS MAC,
+				COALESCE(MAX(CASE WHEN n.tipo = '2' THEN n.valor END), 0) AS PP,
+				COALESCE(MAX(CASE WHEN n.tipo = '3' THEN n.valor END), 0) AS PT
+			FROM aluno a
+			LEFT JOIN nota n ON n.aluno_id = a.id
+			JOIN disciplina d ON n.disciplina_id = d.id
+			WHERE d.id = ${disciplina_id}
+			AND a.turma_id = ${turma_id}
+			AND n.periodo = '${periodo_id}'
+			GROUP BY a.id, a.nome
+			ORDER BY a.nome;`,
+		)
+		console.log('Mini pauta: ' + JSON.stringify(result))
 		return result
 	} catch (error) {
 		console.error('Erro ao obter notas:', error)

@@ -1,6 +1,6 @@
 import { Feather } from '@expo/vector-icons'
 
-export interface AuthContextData {
+export type AuthContextData = {
 	user: User | null
 	isAuthenticated: boolean
 	isLoading: boolean
@@ -9,7 +9,7 @@ export interface AuthContextData {
 	signOut: () => Promise<void>
 }
 
-export interface User {
+export type User = {
 	id?: number
 	nome?: string
 	genero?: string
@@ -18,30 +18,30 @@ export interface User {
 	senha: string
 }
 
-export interface ITurma {
-	id?: number
+export type ITurma = {
+	id: number
 	nome: string
 }
 
-export interface Notification {
+export type Notification = {
 	icon: keyof typeof Feather.glyphMap
 	title: string
 	description: string
 }
 
-export interface ISelect {
+export type ISelect = {
 	id?: number | string
 	nome: string
 }
 
-export interface IAluno {
-	id?: number
+export type IAluno = {
+	id: number
 	nome: string
 	turma_id?: number
 	turma?: string
 }
 
-export interface INota {
+export type INota = {
 	valor: number
 	periodo: string | null
 	tipo: string | null
@@ -51,4 +51,13 @@ export interface INota {
 	turma_id: number
 	aluno_id: number
 	disciplina_id: number | null
+}
+
+export type IAlunoNotas = {
+	id: number
+	NOME: string
+	MAC: number
+	PP: number
+	PT: number
+	MT?: number
 }

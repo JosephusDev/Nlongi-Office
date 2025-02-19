@@ -33,7 +33,6 @@ export const getUser = async (db: SQLiteDatabase, data: Pick<User, 'usuario' | '
 		if (result.length > 0) {
 			return result // Retorna o usuário encontrado
 		} else {
-			console.error('Usuário não encontrado ou credenciais incorretas')
 			return null
 		}
 	} catch (error) {

@@ -15,10 +15,15 @@ export const s = StyleSheet.create({
 		width: '100%',
 		marginTop: 20,
 	},
+	btnPrint: {
+		borderRadius: 8,
+		height: 40,
+	},
 	label: {
 		fontSize: 14,
 		fontFamily: fontFamily.bold,
 		marginVertical: 10,
+		width: '100%',
 	},
 	input: {
 		fontSize: 15,
@@ -29,6 +34,21 @@ export const s = StyleSheet.create({
 	option: {
 		fontSize: 15,
 		fontFamily: fontFamily.regular,
+		color: colors.gray[500],
+	},
+	searchButton: {
+		flex: 1,
+		flexDirection: 'row',
+		alignItems: 'center',
+		gap: 5,
+		borderColor: '#F2F2F2',
+		borderWidth: 2,
+		padding: 10,
+		borderRadius: 8,
+	},
+	searchLabel: {
+		fontFamily: fontFamily.bold,
+		fontSize: 15,
 		color: colors.gray[500],
 	},
 })

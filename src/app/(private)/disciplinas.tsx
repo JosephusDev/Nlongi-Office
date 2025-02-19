@@ -17,10 +17,11 @@ import { TurmaSchema } from '@/schema'
 import Button from '@/components/Button'
 import { useSQLiteContext } from 'expo-sqlite'
 import { showToast } from '@/components/customToast'
+import TableFlatList from '@/components/TableFlatList'
 
 export default function Disciplinas() {
 	const db = useSQLiteContext()
-	const [disciplinas, setDisciplinas] = useState<ITurma[] | null>(null)
+	const [disciplinas, setDisciplinas] = useState<ITurma[]>([])
 	const [isOpen, setIsOpen] = useState(false)
 	const [selected, setSelected] = useState<ITurma | null>(null)
 	const [search, setSearch] = useState('')
@@ -34,7 +35,7 @@ export default function Disciplinas() {
 		resolver: yupResolver(TurmaSchema),
 	})
 
-	const onSubmit = async (data: ITurma) => {
+	const onSubmit = async (data: Pick<ITurma, 'nome'>) => {
 		if (selected?.id) {
 			const result = await update(db, selected.id, data)
 			if (result) {
@@ -132,6 +133,9 @@ export default function Disciplinas() {
 		setIsOpen(true)
 	}
 
+	// Definição das colunas e seus tamanhos
+	const columns = [{ key: 'Disciplina', label: 'Disciplina', width: 150 }]
+
 	return (
 		<DrawerSceneWrapper>
 			<View style={s.container}>
@@ -144,34 +148,16 @@ export default function Disciplinas() {
 				{disciplinasFiltradas?.length === 0 ? (
 					<EmptyList title='Nenhuma disciplina encontrada.' />
 				) : (
-					<View style={s.flatList}>
-						<FlatList
-							data={disciplinasFiltradas}
-							keyExtractor={disciplina => disciplina.nome}
-							renderItem={({ item: disciplina }) => {
-								return (
-									<View key={disciplina.id} style={s.item}>
-										<View style={s.left}>
-											<View style={s.avatar}>
-												<Feather name='file-text' size={18} color={colors.gray[400]} />
-											</View>
-											<Text ellipsizeMode='tail' numberOfLines={1} style={s.name}>
-												{disciplina.nome}
-											</Text>
-										</View>
-										<View style={s.right}>
-											<TouchableOpacity onPress={() => handleOpenModal(disciplina)} style={s.avatar}>
-												<IconEdit size={20} color={colors.gray[400]} />
-											</TouchableOpacity>
-											<TouchableOpacity onPress={() => onDelete(disciplina.id ?? 0)} style={s.avatar}>
-												<IconTrash size={20} color={colors.red.base} />
-											</TouchableOpacity>
-										</View>
-									</View>
-								)
-							}}
-						/>
-					</View>
+					<TableFlatList
+						columns={columns} // Colunas da tabela
+						data={disciplinasFiltradas?.map(disciplina => ({
+							id: disciplina.id,
+							Disciplina: disciplinasFiltradas.find(_disciplina => disciplina.id === _disciplina.id)?.nome,
+						}))}
+						showActions={true}
+						onEdit={id => handleOpenModal(disciplinas?.find(disciplina => disciplina.id === id))}
+						onDelete={onDelete}
+					/>
 				)}
 				<MyModal title='Adicionar Disciplina' visible={isOpen} onClose={() => setIsOpen(false)}>
 					<View style={{ flex: 0, width: '100%' }}>

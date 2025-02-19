@@ -1,12 +1,10 @@
 import Header from '@/components/Header'
 import ToolBar from '@/components/ToolBar'
 import { s } from '@/styles/app/turmas'
-import { Alert, FlatList, Text, TextInput, ToastAndroid, TouchableOpacity, View } from 'react-native'
-import { Feather } from '@expo/vector-icons'
+import { Alert, Text, TextInput, ToastAndroid, View } from 'react-native'
 import { colors } from '@/styles/colors'
 import { useEffect, useState } from 'react'
 import { ITurma } from '@/types'
-import { IconEdit, IconTrash } from '@tabler/icons-react-native'
 import EmptyList from '@/components/EmptyList'
 import { DrawerSceneWrapper } from '@/components/DrawerSceneWrapper'
 import { create, getTurmas, deleteTurma, update } from '@/models/Turma'
@@ -17,10 +15,11 @@ import { TurmaSchema } from '@/schema'
 import Button from '@/components/Button'
 import { useSQLiteContext } from 'expo-sqlite'
 import { showToast } from '@/components/customToast'
+import TableFlatList from '@/components/TableFlatList'
 
 export default function Turmas() {
 	const db = useSQLiteContext()
-	const [turmas, setTurmas] = useState<ITurma[] | undefined>(undefined)
+	const [turmas, setTurmas] = useState<ITurma[]>([])
 	const [isOpen, setIsOpen] = useState(false)
 	const [selected, setSelected] = useState<ITurma | null>(null)
 	const [search, setSearch] = useState('')
@@ -34,7 +33,7 @@ export default function Turmas() {
 		resolver: yupResolver(TurmaSchema),
 	})
 
-	const onSubmit = async (data: ITurma) => {
+	const onSubmit = async (data: Pick<ITurma, 'nome'>) => {
 		if (selected?.id) {
 			const result = await update(db, selected.id, data)
 			if (result) {
@@ -130,6 +129,9 @@ export default function Turmas() {
 		setIsOpen(true)
 	}
 
+	// Definição das colunas e seus tamanhos
+	const columns = [{ key: 'Turma', label: 'Turma', width: 130 }]
+
 	return (
 		<DrawerSceneWrapper>
 			<View style={s.container}>
@@ -142,34 +144,16 @@ export default function Turmas() {
 				{turmasFiltradas?.length === 0 ? (
 					<EmptyList title='Nenhuma turma encontrada.' />
 				) : (
-					<View style={s.flatList}>
-						<FlatList
-							data={turmasFiltradas}
-							keyExtractor={turma => turma.nome}
-							renderItem={({ item: turma }) => {
-								return (
-									<View key={turma.id} style={s.item}>
-										<View style={s.left}>
-											<View style={s.avatar}>
-												<Feather name='file-text' size={18} color={colors.gray[400]} />
-											</View>
-											<Text ellipsizeMode='tail' numberOfLines={1} style={s.name}>
-												{turma.nome}
-											</Text>
-										</View>
-										<View style={s.right}>
-											<TouchableOpacity onPress={() => handleOpenModal(turma)} style={s.avatar}>
-												<IconEdit size={20} color={colors.gray[400]} />
-											</TouchableOpacity>
-											<TouchableOpacity onPress={() => onDelete(turma.id ?? 0)} style={s.avatar}>
-												<IconTrash size={20} color={colors.red.base} />
-											</TouchableOpacity>
-										</View>
-									</View>
-								)
-							}}
-						/>
-					</View>
+					<TableFlatList
+						columns={columns} // Colunas da tabela
+						data={turmasFiltradas?.map(turma => ({
+							id: turma.id,
+							Turma: turmasFiltradas.find(_turma => turma.id === _turma.id)?.nome,
+						}))}
+						showActions={true}
+						onEdit={id => handleOpenModal(turmas?.find(turma => turma.id === id))}
+						onDelete={onDelete}
+					/>
 				)}
 				<MyModal title='Adicionar Turma' visible={isOpen} onClose={() => setIsOpen(false)}>
 					<View style={{ flex: 0, width: '100%' }}>

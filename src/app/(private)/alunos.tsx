@@ -1,5 +1,5 @@
 import { s } from '@/styles/app/alunos'
-import { Alert, FlatList, Text, TextInput, ToastAndroid, TouchableOpacity, View } from 'react-native'
+import { Alert, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import { DrawerSceneWrapper } from '@/components/DrawerSceneWrapper'
 import { IconEdit, IconTrash } from '@tabler/icons-react-native'
 import { Feather } from '@expo/vector-icons'
@@ -21,10 +21,11 @@ import Button from '@/components/Button'
 import { useSQLiteContext } from 'expo-sqlite'
 import { showToast } from '@/components/customToast'
 import { useNavigation } from 'expo-router'
+import TableFlatList from '@/components/TableFlatList' // Importando o componente de tabela
 
 export default function Alunos() {
 	const db = useSQLiteContext()
-	const [alunos, setAlunos] = useState<IAluno[] | null>(null)
+	const [alunos, setAlunos] = useState<IAluno[]>([])
 	const [turmas, setTurmas] = useState<ITurma[] | null>(null)
 	const [isOpen, setIsOpen] = useState(false)
 	const [selected, setSelected] = useState<IAluno | null>(null)
@@ -41,7 +42,7 @@ export default function Alunos() {
 		resolver: yupResolver(AlunoSchema),
 	})
 
-	const onSubmit = async (data: IAluno) => {
+	const onSubmit = async (data: Pick<IAluno, 'nome'>) => {
 		if (selected?.id) {
 			const result = await update(db, selected.id, data)
 			if (result) {
@@ -75,9 +76,7 @@ export default function Alunos() {
 		}
 		setIsOpen(false)
 		carregarAlunos()
-		// limpa os campos do formulario
 		reset()
-		// remove a seleção da turma
 		setSelected(null)
 	}
 
@@ -131,7 +130,6 @@ export default function Alunos() {
 	const carregarAlunos = async () => {
 		const result = await getAlunos(db)
 		if (result) {
-			console.log(result)
 			setAlunos(result)
 		} else {
 			showToast({
@@ -171,6 +169,12 @@ export default function Alunos() {
 		setIsOpen(true)
 	}
 
+	// Definição das colunas e seus tamanhos
+	const columns = [
+		{ key: 'Nome', label: 'Nome', width: 150 },
+		{ key: 'Turma', label: 'Turma', width: 150 },
+	]
+
 	return (
 		<DrawerSceneWrapper>
 			<View style={s.container}>
@@ -187,34 +191,17 @@ export default function Alunos() {
 				{alunosFiltrados?.length === 0 ? (
 					<EmptyList title='Nenhum aluno encontrado.' />
 				) : (
-					<View style={s.flatList}>
-						<FlatList
-							data={alunosFiltrados}
-							keyExtractor={aluno => aluno.nome}
-							renderItem={({ item: aluno }) => {
-								return (
-									<View key={aluno.id} style={s.item}>
-										<View style={s.left}>
-											<View style={s.avatar}>
-												<Feather name='user' size={18} color={colors.gray[500]} />
-											</View>
-											<Text ellipsizeMode='tail' numberOfLines={1} style={s.name}>
-												{formatName(aluno.nome)}
-											</Text>
-										</View>
-										<View style={s.right}>
-											<TouchableOpacity style={s.avatar} onPress={() => handleOpenModal(aluno)}>
-												<IconEdit size={20} color={colors.gray[500]} />
-											</TouchableOpacity>
-											<TouchableOpacity style={s.avatar} onPress={() => onDelete(aluno.id ?? 0)}>
-												<IconTrash size={20} color={colors.red.base} />
-											</TouchableOpacity>
-										</View>
-									</View>
-								)
-							}}
-						/>
-					</View>
+					<TableFlatList
+						columns={columns} // Colunas da tabela
+						data={alunosFiltrados?.map(aluno => ({
+							id: aluno.id,
+							Nome: formatName(aluno.nome),
+							Turma: turmas?.find(turma => turma.id === aluno.turma_id)?.nome || 'N/A',
+						}))}
+						showActions={true}
+						onEdit={id => handleOpenModal(alunos?.find(aluno => aluno.id === id))}
+						onDelete={onDelete}
+					/>
 				)}
 				<MyModal title='Adicionar Aluno' visible={isOpen} onClose={() => setIsOpen(false)}>
 					<View style={{ flex: 0, width: '100%' }}>
