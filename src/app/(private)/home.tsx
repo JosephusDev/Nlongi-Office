@@ -13,9 +13,11 @@ import {
 	createDisciplinaTable,
 	createNotaTable,
 } from '@/services/database'
+import { SkeletonAvatar, SkeletonNavbar } from '@/components/skeleton'
 
 export default function Home() {
 	const db = useSQLiteContext()
+	const [isLoading, setIsLoading] = useState(true) // Estado para controlar o carregamento
 
 	const createTables = async () => {
 		await createUsuarioTable(db)
@@ -27,34 +29,43 @@ export default function Home() {
 	}
 
 	useEffect(() => {
-		createTables()
-	})
+		const loadData = async () => {
+			await createTables()
+			setTimeout(() => {
+				setIsLoading(false)
+			}, 2000)
+		}
+		loadData()
+	}, [])
 
 	const { user } = useAuth()
-	const [imageUri, setImageUri] = useState<string | null>(user?.image ?? null)
+	const imageUri: string | null = user?.image ?? null
 
 	return (
 		<DrawerSceneWrapper>
 			<View style={s.container}>
-				<View style={s.header}>
-					<Image
-						style={s.avatar}
-						source={
-							imageUri
-								? { uri: imageUri }
-								: user?.genero === 'M'
-									? require('@/assets/images/icon.png')
-									: require('@/assets/images/professora.png')
-						}
-					/>
-
-					<View style={s.user}>
-						<Text style={s.hi}>Olá,</Text>
-						<Text style={s.username}>{user?.nome}</Text>
+				{isLoading ? (
+					<SkeletonAvatar />
+				) : (
+					<View style={s.header}>
+						<Image
+							style={s.avatar}
+							source={
+								imageUri
+									? { uri: imageUri }
+									: user?.genero === 'M'
+										? require('@/assets/images/icon.png')
+										: require('@/assets/images/professora.png')
+							}
+						/>
+						<View style={s.user}>
+							<Text style={s.hi}>Olá,</Text>
+							<Text style={s.username}>{user?.nome}</Text>
+						</View>
+						<DrawerToggleButton />
 					</View>
-					<DrawerToggleButton />
-				</View>
-				<NavBar />
+				)}
+				{isLoading ? <SkeletonNavbar /> : <NavBar />}
 			</View>
 		</DrawerSceneWrapper>
 	)
