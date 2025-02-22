@@ -23,8 +23,8 @@ export async function checkBiometricAvailability() {
 // Função para calcular a média (MT)
 export const calculateAverage = (data: IAlunoNotas[]): IAlunoNotas[] => {
 	return data.map(item => {
-		const average = (item.MAC + item.PP + item.PT) / 3
-		const result = { ...item, MT: parseFloat(average.toFixed(2)) }
+		const average = (item.mac + item.pp + item.pt) / 3
+		const result = { ...item, mt: parseFloat(average.toFixed(2)) }
 		return result
 	})
 }

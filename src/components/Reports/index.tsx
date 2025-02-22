@@ -1,7 +1,7 @@
 import BarChartComponent from '@/components/BarChart'
 import BarChartSeries from '@/components/BarChartSeries'
 import PieChartComponent from '@/components/PieChart'
-import { Pressable, ScrollView, Text, ToastAndroid, View } from 'react-native'
+import { ScrollView, Text, ToastAndroid, View } from 'react-native'
 import { s } from './styles'
 import Select from '../Select'
 import { trimestres } from '@/mocks'
@@ -10,9 +10,8 @@ import { ITurma } from '@/types'
 import { useSQLiteContext } from 'expo-sqlite'
 import { getDisciplinas } from '@/models/Disciplina'
 import MyModal from '../MyModal'
-import { IconSearch } from '@tabler/icons-react-native'
-import { colors } from '@/styles/colors'
 import Button from '../Button'
+import FilterButton from '../FilterButton'
 export default function ReportsComponent() {
 	const db = useSQLiteContext()
 	const [disciplinas, setDisciplinas] = useState<ITurma[]>([])
@@ -39,11 +38,13 @@ export default function ReportsComponent() {
 		carregarDisciplinas()
 	}, [])
 	return (
-		<ScrollView style={s.container}>
-			<Pressable style={s.searchButton} onPress={() => setVisible(true)}>
-				<IconSearch color={colors.gray[500]} size={20} />
-				<Text style={s.searchLabel}>Clique para filtrar</Text>
-			</Pressable>
+		<View style={s.container}>
+			<FilterButton onPress={() => setVisible(true)} />
+			<ScrollView style={s.scrollView} showsVerticalScrollIndicator={false}>
+				<BarChartSeries />
+				<BarChartComponent />
+				<PieChartComponent />
+			</ScrollView>
 			<MyModal title='Filtro de pesquisa' visible={visible} onClose={() => setVisible(false)}>
 				<Text style={s.label}>Selecione o Trimestre</Text>
 				<Select data={trimestres} />
@@ -52,9 +53,6 @@ export default function ReportsComponent() {
 
 				<Button title='Filtrar' icon='search' style={s.btnPrint} onClick={handleFilter} />
 			</MyModal>
-			<BarChartSeries />
-			<BarChartComponent />
-			<PieChartComponent />
-		</ScrollView>
+		</View>
 	)
 }

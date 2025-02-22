@@ -55,9 +55,16 @@ export type INota = {
 
 export type IAlunoNotas = {
 	id: number
-	NOME: string
-	MAC: number
-	PP: number
-	PT: number
-	MT?: number
+	nome: string
+	disciplina?: string
+	disciplina_id?: number
+	periodo?: string
+	trimestre?: string
+	mac: number
+	pp: number
+	pt: number
+	mac_id?: number
+	pp_id?: number
+	pt_id?: number
+	mt?: number
 }

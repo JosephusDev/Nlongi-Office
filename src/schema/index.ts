@@ -34,3 +34,5 @@ export const AlunoSchema = yup
 		turma_id: yup.number().required('A Turma é obrigatória'),
 	})
 	.required()
+
+export const EmailSchema = yup.object({ email: yup.string().email('E-mail inválido').required('E-mail é obrigatório') })

@@ -4,13 +4,14 @@ import { s } from './styles'
 
 type HeaderProps = {
 	title: string
+	showButton?: boolean
 }
 
-export default function Header({ title }: HeaderProps) {
+export default function Header({ title, showButton = true }: HeaderProps) {
 	return (
 		<View style={s.header}>
 			<Text style={s.title}>{title}</Text>
-			<DrawerToggleButton />
+			{showButton && <DrawerToggleButton />}
 		</View>
 	)
 }

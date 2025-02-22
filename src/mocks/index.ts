@@ -99,7 +99,7 @@ export const disciplinas = [
 export const trimestres = [
 	{
 		id: 0,
-		nome: 'Selecione o periodo',
+		nome: 'Selecione o trimestre',
 	},
 	{
 		id: 1,
@@ -112,6 +112,10 @@ export const trimestres = [
 	{
 		id: 3,
 		nome: '3º Trimestre',
+	},
+	{
+		id: 4,
+		nome: 'Todos',
 	},
 ]
 

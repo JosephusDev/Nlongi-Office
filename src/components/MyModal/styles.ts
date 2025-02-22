@@ -6,7 +6,7 @@ export const s = StyleSheet.create({
 		flex: 1,
 		justifyContent: 'center',
 		alignItems: 'center',
-		backgroundColor: 'rgba(0,0,0,0.40)',
+		backgroundColor: 'rgba(0,0,0,0.50)',
 		shadowColor: '#000',
 		shadowOffset: { width: 0, height: 2 },
 		shadowOpacity: 0.1,
@@ -16,8 +16,8 @@ export const s = StyleSheet.create({
 	modalView: {
 		width: '100%',
 		backgroundColor: '#EDEDED',
-		borderTopLeftRadius: 20, // Bordas arredondadas apenas na parte superior
-		borderTopRightRadius: 20,
+		borderTopLeftRadius: 15, // Bordas arredondadas apenas na parte superior
+		borderTopRightRadius: 15,
 		padding: 25,
 		alignItems: 'center',
 		position: 'absolute',
@@ -32,7 +32,7 @@ export const s = StyleSheet.create({
 		textAlign: 'center',
 		fontFamily: fontFamily.bold,
 		fontSize: 18,
-		marginBottom: 20,
+		marginVertical: 20,
 		color: colors.gray[500],
 	},
 	modalSubtitle: {

@@ -1,4 +1,4 @@
-import { Pressable, SafeAreaView, ScrollView, Text, View } from 'react-native'
+import { SafeAreaView, ScrollView, Text, View } from 'react-native'
 import { s } from './styles'
 import Button from '../Button'
 import Select from '../Select'
@@ -7,17 +7,18 @@ import { useEffect, useState } from 'react'
 import { IAlunoNotas, ITurma } from '@/types'
 import { getDisciplinas } from '@/models/Disciplina'
 import { useSQLiteContext } from 'expo-sqlite'
-import { showToast } from '../customToast'
 import { getTurmas } from '@/models/Turma'
 import TableFlatList from '../TableFlatList'
 import MyModal from '../MyModal'
-import { IconSearch } from '@tabler/icons-react-native'
-import { colors } from '@/styles/colors'
 import EmptyList from '../EmptyList'
 import { getMiniPauta } from '@/models/Nota'
 import { calculateAverage } from '@/utils/functions'
+import { useToast } from '@/context/ToastContext'
+import FilterButton from '../FilterButton'
+
 export default function MiniPautas() {
 	const db = useSQLiteContext()
+	const { showToast } = useToast()
 	const [disciplinas, setDisciplinas] = useState<ITurma[]>([])
 	const [turmas, setTurmas] = useState<ITurma[]>([])
 	const [notas, setNotas] = useState<IAlunoNotas[]>([])
@@ -29,11 +30,11 @@ export default function MiniPautas() {
 	const [selectedTrimestre, setSelectedTrimestre] = useState('')
 
 	const columns = [
-		{ key: 'NOME', label: 'NOME', width: 200 },
-		{ key: 'MAC', label: 'MAC', width: 100 },
-		{ key: 'PP', label: 'PP', width: 100 },
-		{ key: 'PT', label: 'PT', width: 100 },
-		{ key: 'MT', label: 'MT', width: 100 },
+		{ key: 'nome', label: 'NOME', width: 200 },
+		{ key: 'mac', label: 'MAC', width: 100 },
+		{ key: 'pp', label: 'PP', width: 100 },
+		{ key: 'pt', label: 'PT', width: 100 },
+		{ key: 'mt', label: 'MT', width: 100 },
 	]
 
 	const carregarTurmas = async () => {
@@ -64,8 +65,8 @@ export default function MiniPautas() {
 
 	const handleFilter = async () => {
 		const result = await getMiniPauta(db, selectedTrimestre, selectedDisciplina, selectedTurma)
-
 		setNotas(calculateAverage(result))
+		setVisible(false)
 		if (result.length === 0) {
 			showToast({
 				title: 'Longi',
@@ -73,7 +74,14 @@ export default function MiniPautas() {
 				type: 'info',
 			})
 		}
-		setVisible(false)
+	}
+
+	const handleExport = () => {
+		showToast({
+			title: 'Longi',
+			message: 'Funcionalidade pendente',
+			type: 'info',
+		})
 	}
 
 	useEffect(() => {
@@ -82,16 +90,13 @@ export default function MiniPautas() {
 	}, [])
 	return (
 		<SafeAreaView style={s.container}>
-			<Pressable style={s.searchButton} onPress={() => setVisible(true)}>
-				<IconSearch color={colors.gray[500]} size={20} />
-				<Text style={s.searchLabel}>Clique para filtrar</Text>
-			</Pressable>
+			<FilterButton onPress={() => setVisible(true)} />
 			{notas.length === 0 ? (
 				<EmptyList title='Nenhuma pauta disponível.' />
 			) : (
 				<View>
 					<TableFlatList columns={columns} data={notas} />
-					<Button title='Exportar' icon='share' />
+					<Button title='Exportar' icon='share' onClick={handleExport} />
 				</View>
 			)}
 

@@ -17,7 +17,9 @@ import { SkeletonAvatar, SkeletonNavbar } from '@/components/skeleton'
 
 export default function Home() {
 	const db = useSQLiteContext()
-	const [isLoading, setIsLoading] = useState(true) // Estado para controlar o carregamento
+	const [isDBReady, setIsDBReady] = useState(false)
+	const { user } = useAuth()
+	const imageUri: string | null = user?.image ?? null
 
 	const createTables = async () => {
 		await createUsuarioTable(db)
@@ -26,20 +28,14 @@ export default function Home() {
 		await createDisciplinaTable(db)
 		await createNotaTable(db)
 		console.log('Tabelas criadas com sucesso!')
+		setIsDBReady(true)
 	}
 
 	useEffect(() => {
-		const loadData = async () => {
-			await createTables()
-			setTimeout(() => {
-				setIsLoading(false)
-			}, 2000)
-		}
-		loadData()
+		createTables()
 	}, [])
 
-	const { user } = useAuth()
-	const imageUri: string | null = user?.image ?? null
+	const isLoading = !user || !isDBReady
 
 	return (
 		<DrawerSceneWrapper>

@@ -19,12 +19,13 @@ import { AlunoSchema } from '@/schema'
 import MyModal from '@/components/MyModal'
 import Button from '@/components/Button'
 import { useSQLiteContext } from 'expo-sqlite'
-import { showToast } from '@/components/customToast'
-import { useNavigation } from 'expo-router'
+import { router, useNavigation } from 'expo-router'
 import TableFlatList from '@/components/TableFlatList' // Importando o componente de tabela
+import { useToast } from '@/context/ToastContext'
 
 export default function Alunos() {
 	const db = useSQLiteContext()
+	const { showToast } = useToast()
 	const [alunos, setAlunos] = useState<IAluno[]>([])
 	const [turmas, setTurmas] = useState<ITurma[] | null>(null)
 	const [isOpen, setIsOpen] = useState(false)
@@ -192,7 +193,7 @@ export default function Alunos() {
 					<EmptyList title='Nenhum aluno encontrado.' />
 				) : (
 					<TableFlatList
-						columns={columns} // Colunas da tabela
+						columns={columns}
 						data={alunosFiltrados?.map(aluno => ({
 							id: aluno.id,
 							Nome: formatName(aluno.nome),
@@ -201,6 +202,9 @@ export default function Alunos() {
 						showActions={true}
 						onEdit={id => handleOpenModal(alunos?.find(aluno => aluno.id === id))}
 						onDelete={onDelete}
+						onPress={id =>
+							router.navigate(`/(stack)/aluno/${id.toString()}/${alunos?.find(aluno => aluno.id === id)?.nome}`)
+						}
 					/>
 				)}
 				<MyModal title='Adicionar Aluno' visible={isOpen} onClose={() => setIsOpen(false)}>

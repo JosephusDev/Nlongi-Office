@@ -8,9 +8,10 @@ export const s = StyleSheet.create({
 		backgroundColor: colors.red.base,
 	},
 	image: {
-		width: '100%',
+		width: 250,
 		height: 250,
 		resizeMode: 'contain',
+		alignSelf: 'center',
 	},
 	title: {
 		fontSize: 20,

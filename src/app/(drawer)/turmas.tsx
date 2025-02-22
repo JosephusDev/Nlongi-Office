@@ -14,8 +14,8 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { TurmaSchema } from '@/schema'
 import Button from '@/components/Button'
 import { useSQLiteContext } from 'expo-sqlite'
-import { showToast } from '@/components/customToast'
 import TableFlatList from '@/components/TableFlatList'
+import { useToast } from '@/context/ToastContext'
 
 export default function Turmas() {
 	const db = useSQLiteContext()
@@ -23,6 +23,7 @@ export default function Turmas() {
 	const [isOpen, setIsOpen] = useState(false)
 	const [selected, setSelected] = useState<ITurma | null>(null)
 	const [search, setSearch] = useState('')
+	const { showToast } = useToast()
 	const {
 		control,
 		handleSubmit,

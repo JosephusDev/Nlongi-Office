@@ -38,18 +38,4 @@ export const s = StyleSheet.create({
 		borderRadius: 8,
 		height: 40,
 	},
-	searchButton: {
-		flexDirection: 'row',
-		alignItems: 'center',
-		gap: 5,
-		borderColor: '#F2F2F2',
-		borderWidth: 2,
-		padding: 10,
-		borderRadius: 8,
-	},
-	searchLabel: {
-		fontFamily: fontFamily.bold,
-		fontSize: 15,
-		color: colors.gray[500],
-	},
 })

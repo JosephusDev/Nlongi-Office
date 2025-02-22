@@ -59,6 +59,7 @@ export async function createNotaTable(db: SQLiteDatabase) {
 	await db
 		.execAsync(`
   CREATE TABLE IF NOT EXISTS nota (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
     valor FLOAT NOT NULL,
     periodo TEXT NOT NULL,
     tipo TEXT NOT NULL,
@@ -66,7 +67,6 @@ export async function createNotaTable(db: SQLiteDatabase) {
     disciplina_id INTEGER NOT NULL,
     FOREIGN KEY (aluno_id) REFERENCES aluno (id) ON DELETE CASCADE,
     FOREIGN KEY (disciplina_id) REFERENCES disciplina (id) ON DELETE CASCADE
-    PRIMARY KEY (aluno_id, periodo, disciplina_id, tipo)
   );
   `)
 		.then(() => console.log('Criado com sucesso!'))

@@ -1,8 +1,8 @@
-import { showToast } from '@/components/customToast'
 import { create, getUser } from '@/models/Usuario'
 import { AuthContextData, User } from '@/types'
 import { useSQLiteContext } from 'expo-sqlite'
 import React, { createContext, useState, useContext } from 'react'
+import { useToast } from './ToastContext'
 
 const AuthContext = createContext<AuthContextData>({} as AuthContextData)
 
@@ -11,6 +11,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 	const [isLoading, setIsLoading] = useState(false)
 	const [user, setUser] = useState<User | null>(null)
 	const db = useSQLiteContext()
+	const { showToast } = useToast()
 
 	const signIn = async (data: User) => {
 		setIsLoading(true)

@@ -22,14 +22,9 @@ export const createNota = async (db: SQLiteDatabase, data: Omit<INota, 'turma_id
 		return false // Indica falha
 	}
 }
-export const updateNota = async (db: SQLiteDatabase, id: number, data: Omit<INota, 'id'>) => {
-	const { valor, periodo, tipo, aluno_id, disciplina_id } = data
-
+export const updateNota = async (db: SQLiteDatabase, id: number, nota: number) => {
 	try {
-		const result = await db.runAsync(
-			`UPDATE nota SET valor = ?, periodo = ?, tipo = ?, aluno_id = ?, disciplina_id = ? WHERE id = ?`,
-			[valor, periodo, tipo, aluno_id, disciplina_id, id],
-		)
+		const result = await db.runAsync(`UPDATE nota SET valor = ? WHERE id = ?`, [nota, id])
 
 		if (result.changes > 0) {
 			console.log('Nota atualizada com sucesso!')
@@ -84,15 +79,50 @@ export const getNotas = async (db: SQLiteDatabase) => {
 	}
 }
 
+export const getNotasByAluno = async (db: SQLiteDatabase, aluno_id: number) => {
+	try {
+		const result = await db.getAllAsync<IAlunoNotas>(
+			`SELECT  
+				min(a.id) as id,
+				min(d.id) as disciplina_id,
+				n.periodo,
+				d.nome as disciplina,
+				CASE 
+					WHEN n.periodo = '1' THEN 'Iº'
+					WHEN n.periodo = '2' THEN 'IIº'
+					WHEN n.periodo = '3' THEN 'IIIº'
+					ELSE n.periodo 
+				END AS trimestre,
+				MAX(CASE WHEN n.tipo = '1' THEN n.id END) AS mac_id,
+				MAX(CASE WHEN n.tipo = '2' THEN n.id END) AS pp_id,
+				MAX(CASE WHEN n.tipo = '3' THEN n.id END) AS pt_id,
+				COALESCE(MAX(CASE WHEN n.tipo = '1' THEN n.valor END), 0) AS mac,
+				COALESCE(MAX(CASE WHEN n.tipo = '2' THEN n.valor END), 0) AS pp,
+				COALESCE(MAX(CASE WHEN n.tipo = '3' THEN n.valor END), 0) AS pt
+			FROM aluno a
+			LEFT JOIN nota n ON n.aluno_id = a.id
+			JOIN disciplina d ON n.disciplina_id = d.id
+			WHERE a.id = ${aluno_id}
+			GROUP BY d.nome, n.periodo
+			ORDER BY d.nome;`,
+		)
+		console.log('Pauta singular: ' + JSON.stringify(result))
+		return result
+	} catch (error) {
+		console.error('Erro ao obter notas:', error)
+		throw error // Propaga o erro para ser tratado no chamador
+	}
+}
+
 export const getMiniPauta = async (db: SQLiteDatabase, periodo_id: string, disciplina_id: number, turma_id: number) => {
 	try {
 		const result = await db.getAllAsync<IAlunoNotas>(
 			`SELECT  
 				a.id,
-				a.nome AS NOME,
-				COALESCE(MAX(CASE WHEN n.tipo = '1' THEN n.valor END), 0) AS MAC,
-				COALESCE(MAX(CASE WHEN n.tipo = '2' THEN n.valor END), 0) AS PP,
-				COALESCE(MAX(CASE WHEN n.tipo = '3' THEN n.valor END), 0) AS PT
+				a.nome AS nome,
+				COALESCE(MAX(CASE WHEN n.tipo = '1' THEN n.valor END), 0) AS mac,
+				COALESCE(MAX(CASE WHEN n.tipo = '2' THEN n.valor END), 0) AS pp,
+				COALESCE(MAX(CASE WHEN n.tipo = '3' THEN n.valor END), 0) AS pt
 			FROM aluno a
 			LEFT JOIN nota n ON n.aluno_id = a.id
 			JOIN disciplina d ON n.disciplina_id = d.id

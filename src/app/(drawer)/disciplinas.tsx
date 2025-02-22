@@ -16,11 +16,12 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { TurmaSchema } from '@/schema'
 import Button from '@/components/Button'
 import { useSQLiteContext } from 'expo-sqlite'
-import { showToast } from '@/components/customToast'
 import TableFlatList from '@/components/TableFlatList'
+import { useToast } from '@/context/ToastContext'
 
 export default function Disciplinas() {
 	const db = useSQLiteContext()
+	const { showToast } = useToast()
 	const [disciplinas, setDisciplinas] = useState<ITurma[]>([])
 	const [isOpen, setIsOpen] = useState(false)
 	const [selected, setSelected] = useState<ITurma | null>(null)

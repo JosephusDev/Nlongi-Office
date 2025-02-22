@@ -1,4 +1,4 @@
-import { Image, Text, View, TextInput, TouchableOpacity, Pressable, ActivityIndicator } from 'react-native'
+import { Text, View, TextInput, TouchableOpacity, Pressable, ActivityIndicator } from 'react-native'
 import { s } from '@/styles/app/auth'
 import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet'
 import { useEffect, useMemo, useRef, useState } from 'react'
@@ -13,15 +13,14 @@ import { Userschema } from '@/schema'
 import { User } from '@/types'
 import { Feather } from '@expo/vector-icons'
 import * as LocalAuthentication from 'expo-local-authentication'
-import { showToast } from '@/components/customToast'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { Redirect } from 'expo-router'
-
+import AnimatedImageHome from '@/components/AnimatedImageHome'
 export default function Auth() {
 	const { signIn, signUp, isLoading, isAuthenticated } = useAuth()
 
 	if (isAuthenticated) {
-		return <Redirect href='/(private)/home' />
+		return <Redirect href='/(drawer)/home' />
 	}
 
 	const bottomSheetRef = useRef<BottomSheet>(null)
@@ -71,7 +70,7 @@ export default function Auth() {
 
 	return (
 		<View style={s.container}>
-			<Image style={s.image} source={require('@/assets/images/icon.png')} />
+			<AnimatedImageHome />
 			<Text style={s.title}>Bem-vindo ao Longi</Text>
 			<BottomSheet
 				ref={bottomSheetRef}
@@ -109,7 +108,12 @@ export default function Auth() {
 									control={control}
 									name='genero'
 									render={({ field: { onChange, onBlur, value } }) => (
-										<Picker selectedValue={value} style={s.input} onValueChange={onChange} onBlur={onBlur}>
+										<Picker
+											selectedValue={value}
+											style={[s.input, { marginLeft: -12 }]}
+											onValueChange={onChange}
+											onBlur={onBlur}
+										>
 											<Picker.Item style={s.genero} label='Selecione o Gênero' value='' />
 											<Picker.Item style={s.genero} label='Masculino' value='M' />
 											<Picker.Item style={s.genero} label='Feminino' value='F' />

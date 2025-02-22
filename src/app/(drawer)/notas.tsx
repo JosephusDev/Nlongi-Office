@@ -15,10 +15,11 @@ import { createNota, getNotas } from '@/models/Nota'
 import EmptyList from '@/components/EmptyList'
 import { useNavigation } from 'expo-router'
 import { getAlunos } from '@/models/Aluno'
-import { showToast } from '@/components/customToast'
+import { useToast } from '@/context/ToastContext'
 
 export default function Notas() {
 	const db = useSQLiteContext()
+	const { showToast } = useToast()
 	const [alunos, setAlunos] = useState<IAluno[]>([])
 	const [notas, setNotas] = useState<INota[]>([])
 	const [turmas, setTurmas] = useState<ITurma[] | null>(null)

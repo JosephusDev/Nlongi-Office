@@ -20,6 +20,7 @@ type TableProps = {
 	showActions?: boolean
 	onEdit?: (id: number) => void
 	onDelete?: (id: number) => void
+	onPress?: (id: number, item: Data) => void
 }
 
 const TableHeader = ({ columns, showActions }: { columns: ColumnConfig[]; showActions: boolean }) => {
@@ -36,7 +37,7 @@ const TableHeader = ({ columns, showActions }: { columns: ColumnConfig[]; showAc
 			))}
 
 			{/* Coluna de ações */}
-			{showActions && <Text style={[s.th, { width: 150 }]}>Ações</Text>}
+			{showActions && <Text style={[s.th, { width: 150, paddingLeft: 50 }]}>Ações</Text>}
 		</View>
 	)
 }
@@ -47,6 +48,7 @@ const TableRow = ({
 	showActions,
 	onEdit,
 	onDelete,
+	onPress,
 	index,
 }: {
 	item: Data
@@ -54,36 +56,39 @@ const TableRow = ({
 	showActions: boolean
 	onEdit?: (id: number) => void
 	onDelete?: (id: number) => void
+	onPress?: (id: number, item: Data) => void
 	index: number
 }) => {
 	return (
-		<View style={s.tbody}>
-			{/* Coluna # */}
-			<Text style={[s.td, { width: 50 }]}>{index + 1}</Text>
+		<Pressable onPress={() => onPress?.(item.id, item)}>
+			<View style={s.tbody}>
+				{/* Coluna # */}
+				<Text style={[s.td, { width: 50 }]}>{index + 1}</Text>
 
-			{/* Colunas definidas pelo pai */}
-			{columns.map((col, colIndex) => (
-				<Text key={colIndex} style={[s.td, { width: col.width || 100 }]}>
-					{item[col.key]}
-				</Text>
-			))}
+				{/* Colunas definidas pelo pai */}
+				{columns.map((col, colIndex) => (
+					<Text key={colIndex} style={[s.td, { width: col.width || 100 }]}>
+						{item[col.key]}
+					</Text>
+				))}
 
-			{/* Coluna de ações */}
-			{showActions && (
-				<View style={{ flexDirection: 'row', gap: 10, width: 100 }}>
-					<Pressable onPress={() => onEdit?.(item.id)} style={{ marginHorizontal: 5 }}>
-						<IconEdit size={20} color={colors.gray[500]} />
-					</Pressable>
-					<Pressable onPress={() => onDelete?.(item.id)}>
-						<IconTrash size={20} color={colors.red.base} />
-					</Pressable>
-				</View>
-			)}
-		</View>
+				{/* Coluna de ações */}
+				{showActions && (
+					<View style={{ flexDirection: 'row', gap: 10, width: 100, justifyContent: 'center', alignItems: 'center' }}>
+						<Pressable onPress={() => onEdit?.(item.id)} style={{ marginHorizontal: 5 }}>
+							<IconEdit size={20} color={colors.gray[500]} />
+						</Pressable>
+						<Pressable onPress={() => onDelete?.(item.id)}>
+							<IconTrash size={20} color={colors.red.base} />
+						</Pressable>
+					</View>
+				)}
+			</View>
+		</Pressable>
 	)
 }
 
-const TableFlatList = ({ columns, data, showActions = false, onEdit, onDelete }: TableProps) => {
+const TableFlatList = ({ columns, data, showActions = false, onEdit, onDelete, onPress }: TableProps) => {
 	return (
 		<View>
 			<ScrollView style={s.main} horizontal>
@@ -92,12 +97,13 @@ const TableFlatList = ({ columns, data, showActions = false, onEdit, onDelete }:
 					<ScrollView>
 						{data.map((item, index) => (
 							<TableRow
-								key={item.id}
+								key={index}
 								item={item}
 								columns={columns}
 								showActions={showActions}
 								onEdit={onEdit}
 								onDelete={onDelete}
+								onPress={onPress}
 								index={index}
 							/>
 						))}

@@ -76,6 +76,20 @@ export const s = StyleSheet.create({
 		flex: 1,
 		color: colors.gray[500],
 	},
+	inputNota: {
+		width: 50,
+		height: 50,
+		borderWidth: 1,
+		borderRadius: DEFAULT_STYLE.radius,
+		textAlign: 'center',
+		borderColor: colors.gray[300],
+		fontSize: 15,
+		fontFamily: fontFamily.regular,
+	},
+	containerNota: {
+		justifyContent: 'center',
+		alignItems: 'center',
+	},
 	error: {
 		color: colors.red.base,
 		fontSize: 13,
@@ -136,18 +150,23 @@ export const s = StyleSheet.create({
 		fontSize: 16,
 		fontFamily: fontFamily.regular,
 		color: colors.gray[500],
-		marginTop: 30,
+		marginTop: 10,
 		marginBottom: 10,
 	},
 	label: {
-		marginTop: 10,
+		marginVertical: 10,
 		fontFamily: fontFamily.semiBold,
 		color: colors.gray[500],
+		width: '100%',
 	},
 	labelModal: {
 		fontSize: 14,
 		fontFamily: fontFamily.bold,
 		marginBottom: -10,
 		color: colors.gray[500],
+	},
+	btnFilter: {
+		borderRadius: 8,
+		height: 40,
 	},
 })

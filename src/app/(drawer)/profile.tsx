@@ -12,16 +12,15 @@ import { Feather } from '@expo/vector-icons'
 import MyModal from '@/components/MyModal'
 import Button from '@/components/Button'
 import { checkBiometricAvailability } from '@/utils/functions'
-import { showToast } from '@/components/customToast'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { colors } from '@/styles/colors'
 import { Controller, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { Userschema } from '@/schema'
+import { EmailSchema, Userschema } from '@/schema'
 import { User } from '@/types'
+import { useToast } from '@/context/ToastContext'
 
-type typeClick = 'profile' | 'bio' | 'logout'
-
+type typeClick = 'profile' | 'bio' | 'logout' | 'backup'
 export default function Profile() {
 	const {
 		control,
@@ -32,6 +31,15 @@ export default function Profile() {
 		context: { isSignUp: !true },
 	})
 
+	const {
+		control: controlEmail,
+		handleSubmit: handleSubmitEmail,
+		formState: { errors: errorEmail },
+	} = useForm({
+		resolver: yupResolver(EmailSchema),
+		context: { isSignUp: !true },
+	})
+
 	const db = useSQLiteContext()
 	const { user, signOut } = useAuth()
 	const [imageUri, setImageUri] = useState<string | null>(user?.image ?? null)
@@ -39,6 +47,7 @@ export default function Profile() {
 	const [title, setTitle] = useState('')
 	const [description, setDescription] = useState('')
 	const [typeClick, setTypeClick] = useState<typeClick>('profile')
+	const { showToast } = useToast()
 
 	async function checkBiometric() {
 		const available = await checkBiometricAvailability()
@@ -121,6 +130,18 @@ export default function Profile() {
 		})
 	}
 
+	const sendBackup = async (data: { email?: string }) => {
+		if (data) {
+			console.log(data)
+			showToast({
+				title: 'Longi',
+				message: 'Backup realizado com sucesso, verifique seu email',
+				type: 'success',
+			})
+		}
+		setVisible(false)
+	}
+
 	const onConfirmModal = () => {
 		switch (typeClick) {
 			case 'logout':
@@ -131,6 +152,9 @@ export default function Profile() {
 				break
 			case 'profile':
 				handleSubmit(updateProfile)()
+				break
+			case 'backup':
+				handleSubmitEmail(sendBackup)()
 				break
 			default:
 				break
@@ -182,6 +206,19 @@ export default function Profile() {
 							<Feather name='chevron-right' size={18} />
 						</View>
 					</Pressable>
+
+					<Pressable onPress={() => handleClickOption('Backup', 'Deseja realizar a cópia de segurança?', 'backup')}>
+						<View style={s.containerOption}>
+							<View style={s.right}>
+								<View style={s.containerIcon}>
+									<Feather name='database' size={18} />
+								</View>
+								<Text style={s.description}>Backup & Cópia de segurança</Text>
+							</View>
+							<Feather name='chevron-right' size={18} />
+						</View>
+					</Pressable>
+
 					<Pressable onPress={() => handleClickOption('Terminar sessão', 'Tem certeza que deseja sair?', 'logout')}>
 						<View style={s.containerOption}>
 							<View style={s.right}>
@@ -235,6 +272,27 @@ export default function Profile() {
 								/>
 							</View>
 							{errors.senha && <Text style={s.error}>{errors.senha.message?.toString()}</Text>}
+						</View>
+					)}
+					{typeClick === 'backup' && (
+						<View style={{ width: '100%', marginTop: 10 }}>
+							<Text style={s.label}>E-mail</Text>
+							<View style={[s.inputContainer, errorEmail.email && { borderColor: colors.red.base }, { marginTop: 5 }]}>
+								<Feather name='mail' size={20} color={colors.gray[100]} />
+								<Controller
+									control={controlEmail}
+									name='email'
+									render={({ field: { onChange, onBlur, value } }) => (
+										<TextInput
+											style={s.input}
+											placeholder='Digite o e-mail para o backup'
+											onChangeText={onChange}
+											onBlur={onBlur}
+										/>
+									)}
+								/>
+							</View>
+							{errorEmail.email && <Text style={s.error}>{errorEmail.email.message?.toString()}</Text>}
 						</View>
 					)}
 					<Button onClick={onConfirmModal} title='Confirmar' icon={'check-circle'} style={{ height: 40 }} />

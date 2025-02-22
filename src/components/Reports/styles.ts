@@ -6,6 +6,10 @@ export const s = StyleSheet.create({
 		marginTop: 20,
 		width: '100%',
 	},
+	scrollView: {
+		marginTop: 20,
+		marginBottom: 100,
+	},
 	card: {
 		padding: 15,
 		borderColor: '#F2F2F2',
@@ -34,21 +38,6 @@ export const s = StyleSheet.create({
 	option: {
 		fontSize: 15,
 		fontFamily: fontFamily.regular,
-		color: colors.gray[500],
-	},
-	searchButton: {
-		flex: 1,
-		flexDirection: 'row',
-		alignItems: 'center',
-		gap: 5,
-		borderColor: '#F2F2F2',
-		borderWidth: 2,
-		padding: 10,
-		borderRadius: 8,
-	},
-	searchLabel: {
-		fontFamily: fontFamily.bold,
-		fontSize: 15,
 		color: colors.gray[500],
 	},
 })
