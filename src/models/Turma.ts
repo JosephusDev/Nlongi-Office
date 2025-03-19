@@ -58,7 +58,7 @@ export const deleteTurma = async (db: SQLiteDatabase, id: number) => {
 
 export const getTurmas = async (db: SQLiteDatabase) => {
 	try {
-		const result = await db.getAllAsync<ITurma>(`SELECT * FROM turma;`)
+		const result = await db.getAllAsync<ITurma>(`SELECT * FROM turma order by nome;`)
 		return result
 	} catch (error) {
 		console.error('Erro ao obter turmas:', error)

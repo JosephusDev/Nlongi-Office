@@ -18,6 +18,7 @@ import ChartTrimestreDisciplina from '@/components/IndividualChart/TrimestreDisc
 import ChartGeral from '@/components/IndividualChart/Geral'
 import FilterButton from '@/components/FilterButton'
 import { useToast } from '@/context/ToastContext'
+import CustomWarning from '@/components/CustomWarning'
 
 export default function Aluno() {
 	const {
@@ -101,8 +102,8 @@ export default function Aluno() {
 			setVisibleSelectedRow(false)
 			// Aqui você pode adicionar a lógica para salvar as alterações no banco de dados
 			let result1, result2, result3
-			if ((updatedRow.mac_id ?? 0) > 0) {
-				result1 = await updateNota(db, updatedRow.mac_id ?? 0, updatedRow.mac)
+			if (updatedRow.mac_id! > 0) {
+				result1 = await updateNota(db, updatedRow.mac_id!, updatedRow.mac)
 				if (result1) {
 					showToast({
 						title: 'Longi',
@@ -117,8 +118,8 @@ export default function Aluno() {
 					})
 				}
 			}
-			if ((updatedRow.pp_id ?? 0) > 0) {
-				result2 = await updateNota(db, updatedRow.pp_id ?? 0, updatedRow.pp)
+			if (updatedRow.pp_id! > 0) {
+				result2 = await updateNota(db, updatedRow.pp_id!, updatedRow.pp)
 				if (result2) {
 					showToast({
 						title: 'Longi',
@@ -133,8 +134,8 @@ export default function Aluno() {
 					})
 				}
 			}
-			if ((updatedRow.pt_id ?? 0) > 0) {
-				result3 = await updateNota(db, updatedRow.pt_id ?? 0, updatedRow.pt)
+			if (updatedRow.pt_id! > 0) {
+				result3 = await updateNota(db, updatedRow.pt_id!, updatedRow.pt)
 				if (result3) {
 					showToast({
 						title: 'Longi',
@@ -170,17 +171,21 @@ export default function Aluno() {
 			{notasFiltradas?.length === 0 ? (
 				<EmptyList title='Nenhuma nota encontrada.' />
 			) : (
-				<TableFlatList
-					columns={columns}
-					data={notasFiltradas}
-					onPress={(id, item) => {
-						setVisibleSelectedRow(true)
-						setSelectedRow(notasFiltradas.find(nota => nota === item))
-					}}
-				/>
+				<View>
+					<TableFlatList
+						columns={columns}
+						data={notasFiltradas}
+						onPress={(id, item) => {
+							setVisibleSelectedRow(true)
+							setSelectedRow(notasFiltradas.find(nota => nota === item))
+						}}
+					/>
+					<CustomWarning message='Clique para alterar as notas.' />
+					{visibleFirstChart && <ChartGeral data={notasFiltradas} />}
+					{visibleSecondChart && <ChartTrimestreDisciplina data={notasFiltradas[0]} />}
+				</View>
 			)}
-			{visibleFirstChart && <ChartGeral data={notasFiltradas} />}
-			{visibleSecondChart && <ChartTrimestreDisciplina data={notasFiltradas[0]} />}
+
 			<MyModal title='Filtro de pesquisa' visible={visible} onClose={() => setVisible(false)}>
 				<Text style={s.label}>Selecione o Trimestre</Text>
 				<Select data={trimestres} onChange={value => setSelectedTrimestre(value)} />

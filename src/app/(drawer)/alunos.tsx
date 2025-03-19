@@ -1,8 +1,6 @@
 import { s } from '@/styles/app/alunos'
-import { Alert, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { Alert, Text, TextInput, View } from 'react-native'
 import { DrawerSceneWrapper } from '@/components/DrawerSceneWrapper'
-import { IconEdit, IconTrash } from '@tabler/icons-react-native'
-import { Feather } from '@expo/vector-icons'
 import { colors } from '@/styles/colors'
 import ToolBar from '@/components/ToolBar'
 import Header from '@/components/Header'
@@ -22,6 +20,7 @@ import { useSQLiteContext } from 'expo-sqlite'
 import { router, useNavigation } from 'expo-router'
 import TableFlatList from '@/components/TableFlatList' // Importando o componente de tabela
 import { useToast } from '@/context/ToastContext'
+import CustomWarning from '@/components/CustomWarning'
 
 export default function Alunos() {
 	const db = useSQLiteContext()
@@ -192,20 +191,23 @@ export default function Alunos() {
 				{alunosFiltrados?.length === 0 ? (
 					<EmptyList title='Nenhum aluno encontrado.' />
 				) : (
-					<TableFlatList
-						columns={columns}
-						data={alunosFiltrados?.map(aluno => ({
-							id: aluno.id,
-							Nome: formatName(aluno.nome),
-							Turma: turmas?.find(turma => turma.id === aluno.turma_id)?.nome || 'N/A',
-						}))}
-						showActions={true}
-						onEdit={id => handleOpenModal(alunos?.find(aluno => aluno.id === id))}
-						onDelete={onDelete}
-						onPress={id =>
-							router.navigate(`/(stack)/aluno/${id.toString()}/${alunos?.find(aluno => aluno.id === id)?.nome}`)
-						}
-					/>
+					<View>
+						<TableFlatList
+							columns={columns}
+							data={alunosFiltrados?.map(aluno => ({
+								id: aluno.id,
+								Nome: formatName(aluno.nome),
+								Turma: turmas?.find(turma => turma.id === aluno.turma_id)?.nome || 'N/A',
+							}))}
+							showActions={true}
+							onEdit={id => handleOpenModal(alunos?.find(aluno => aluno.id === id))}
+							onDelete={onDelete}
+							onPress={id =>
+								router.navigate(`/(stack)/aluno/${id.toString()}/${alunos?.find(aluno => aluno.id === id)?.nome}`)
+							}
+						/>
+						<CustomWarning message='Clique no aluno para ver seu desempenho.' />
+					</View>
 				)}
 				<MyModal title='Adicionar Aluno' visible={isOpen} onClose={() => setIsOpen(false)}>
 					<View style={{ flex: 0, width: '100%' }}>

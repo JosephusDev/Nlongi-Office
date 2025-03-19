@@ -15,6 +15,8 @@ import { getMiniPauta } from '@/models/Nota'
 import { calculateAverage } from '@/utils/functions'
 import { useToast } from '@/context/ToastContext'
 import FilterButton from '../FilterButton'
+import { PautaTrimestral } from '../Reports/docs/PautaTrimestral'
+import * as Print from 'expo-print'
 
 export default function MiniPautas() {
 	const db = useSQLiteContext()
@@ -76,12 +78,8 @@ export default function MiniPautas() {
 		}
 	}
 
-	const handleExport = () => {
-		showToast({
-			title: 'Longi',
-			message: 'Funcionalidade pendente',
-			type: 'info',
-		})
+	const handleExport = async () => {
+		await Print.printAsync({ html: PautaTrimestral, orientation: Print.Orientation.portrait })
 	}
 
 	useEffect(() => {

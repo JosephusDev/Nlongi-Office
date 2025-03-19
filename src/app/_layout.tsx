@@ -6,9 +6,9 @@ import { StatusBar, Text } from 'react-native'
 import { AuthProvider } from '@/context/AuthContext'
 import { SQLiteProvider } from 'expo-sqlite'
 import { createUsuarioTable } from '@/services/database'
-import Toast from 'react-native-toast-message'
 import { Stack } from 'expo-router'
 import { ToastProvider } from '@/context/ToastContext'
+import BackButton from '@/components/BackButton'
 
 export default function Layout() {
 	const [fontsLoaded] = useFonts({
@@ -44,6 +44,8 @@ export default function Layout() {
 									headerStyle: {
 										backgroundColor: colors.red.base,
 									},
+									headerTitleAlign: 'center',
+									headerLeft: () => <BackButton />,
 								}}
 							/>
 						</Stack>
