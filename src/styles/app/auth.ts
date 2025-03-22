@@ -15,7 +15,6 @@ export const s = StyleSheet.create({
 	},
 	title: {
 		fontSize: 20,
-		marginBottom: 10,
 		textAlign: 'center',
 		fontFamily: fontFamily.bold,
 		color: colors.light,

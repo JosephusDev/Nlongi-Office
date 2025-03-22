@@ -43,7 +43,8 @@
     "react-native-toast-message": "^2.2.1",
     "react-native-web": "~0.19.13",
     "xlsx": "^0.18.5",
-    "yup": "^1.6.1"
+    "yup": "^1.6.1",
+    "expo-splash-screen": "~0.29.22"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

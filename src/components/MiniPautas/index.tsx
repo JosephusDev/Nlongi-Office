@@ -15,8 +15,9 @@ import { getMiniPauta } from '@/models/Nota'
 import { calculateAverage } from '@/utils/functions'
 import { useToast } from '@/context/ToastContext'
 import FilterButton from '../FilterButton'
-import { PautaTrimestral } from '../Reports/docs/PautaTrimestral'
 import * as Print from 'expo-print'
+import { Asset } from 'expo-asset'
+const asset = Asset.fromModule(require('@/assets/images/insignia.png'))
 
 export default function MiniPautas() {
 	const db = useSQLiteContext()
@@ -79,7 +80,96 @@ export default function MiniPautas() {
 	}
 
 	const handleExport = async () => {
-		await Print.printAsync({ html: PautaTrimestral, orientation: Print.Orientation.portrait })
+		// Filtra os dados para incluir apenas nome, mac, pp e pt
+		const filteredNotas = notas.map(({ nome, mac, pp, pt }) => ({ nome, mac, pp, pt }))
+
+		// Gera o HTML dinamicamente com os dados filtrados
+		const html = `
+		<html>
+			<head>
+				<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+				<style>
+					p {
+						font-size: 15px; 
+						font-family: Helvetica Neue; 
+						font-weight: normal;
+						margin: 10px 0;
+					}
+					.table-container {
+						display: flex;
+						justify-content: center;
+						margin-top: 50px;
+					}
+					table {
+						width: 90vw;
+						border-collapse: collapse;
+						margin-top: 50px;
+					}
+					th, td {
+						border: 1px solid gray;
+						padding: 4px; /* Reduz o padding para diminuir a altura */
+						text-align: center;
+						font-family: Helvetica Neue;
+						font-size: 12px; /* Reduz o tamanho da fonte */
+						height: 20px; /* Altura fixa para as células */
+					}
+					th {
+						font-weight: bold;
+					}
+					img {
+						width: 5vw;
+					}
+					/* Define larguras pequenas para as colunas específicas */
+					th:nth-child(1), td:nth-child(1) { width: 30px; } /* Nº */
+					th:nth-child(3), td:nth-child(3) { width: 30px; } /* MAC */
+					th:nth-child(4), td:nth-child(4) { width: 30px; } /* PP */
+					th:nth-child(5), td:nth-child(5) { width: 30px; } /* PT */
+					th:nth-child(6), td:nth-child(6) { width: 30px; } /* MT */
+				</style>
+			</head>
+			<body style="text-align: center;">
+				<img
+					src=${asset.localUri ?? asset.uri}
+					alt="Insígnia"
+				/>    
+				<p>REPÚBLICA DE ANGOLA</p>
+				<p>MINISTÉRIO DA EDUCAÇÃO</p>
+				<div class="table-container">
+					<table>
+						<thead>
+							<tr>
+								<th>Nº</th>
+								<th>NOME COMPLETO</th>
+								<th>MAC</th>
+								<th>PP</th>
+								<th>PT</th>
+								<th>MT</th>
+							</tr>
+						</thead>
+						<tbody>
+							${filteredNotas
+								.map(
+									(student, idx) => `
+								<tr>
+									<td>${idx + 1}</td>
+									<td>${student.nome}</td>
+									<td>${student.mac}</td>
+									<td>${student.pp}</td>
+									<td>${student.pt}</td>
+									<td>${((student.mac + student.pp + student.pt) / 3).toFixed(2)}</td>
+								</tr>
+							`,
+								)
+								.join('')}
+						</tbody>
+					</table>
+            	</div>
+			</body>
+		</html>
+		`
+
+		// Imprime o HTML gerado
+		await Print.printAsync({ html, orientation: Print.Orientation.portrait })
 	}
 
 	useEffect(() => {

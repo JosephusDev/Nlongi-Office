@@ -35,7 +35,7 @@ export default function Aluno() {
 	const [selectedTrimestre, setSelectedTrimestre] = useState('')
 	const [visible, setVisible] = useState(false)
 	const [visibleFirstChart, setVisibleFirstChart] = useState(false)
-	const [visibleSecondChart, setVisibleSecondChart] = useState(false)
+	const [visibleSecondChart, setVisibleSecondChart] = useState(true)
 	const [visibleSelectedRow, setVisibleSelectedRow] = useState(false)
 
 	// Estados temporários para os valores dos inputs

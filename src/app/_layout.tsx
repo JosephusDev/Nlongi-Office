@@ -9,6 +9,15 @@ import { createUsuarioTable } from '@/services/database'
 import { Stack } from 'expo-router'
 import { ToastProvider } from '@/context/ToastContext'
 import BackButton from '@/components/BackButton'
+import * as SplashScreen from 'expo-splash-screen'
+import { useEffect } from 'react'
+
+SplashScreen.preventAutoHideAsync()
+
+SplashScreen.setOptions({
+	duration: 1000,
+	fade: true,
+})
 
 export default function Layout() {
 	const [fontsLoaded] = useFonts({
@@ -17,6 +26,12 @@ export default function Layout() {
 		Rubik_600SemiBold,
 		Rubik_700Bold,
 	})
+
+	useEffect(() => {
+		if (fontsLoaded) {
+			SplashScreen.hideAsync()
+		}
+	}, [fontsLoaded])
 
 	if (!fontsLoaded) return <Loading />
 

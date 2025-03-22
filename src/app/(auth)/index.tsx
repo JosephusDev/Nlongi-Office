@@ -52,7 +52,7 @@ export default function Auth() {
 		const hasBio = await AsyncStorage.getItem('@biometria')
 		if (hasBio === 'true' && isLoginScreenVisible) {
 			const result = await LocalAuthentication.authenticateAsync({
-				promptMessage: 'Desbloqueie para utilizar o Longi',
+				promptMessage: 'Desbloqueie para utilizar o Nlongi Office',
 			})
 
 			if (result.success) {
@@ -71,7 +71,7 @@ export default function Auth() {
 	return (
 		<View style={s.container}>
 			<AnimatedImageHome />
-			<Text style={s.title}>Bem-vindo ao Longi</Text>
+			<Text style={s.title}>Nlongi Office</Text>
 			<BottomSheet
 				ref={bottomSheetRef}
 				index={1}
