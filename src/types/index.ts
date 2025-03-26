@@ -68,3 +68,8 @@ export type IAlunoNotas = {
 	pt_id?: number
 	mt?: number
 }
+
+export type SchoolData = {
+	nomeEscola: string
+	anoLetivo: string
+}

@@ -4,7 +4,7 @@ import Button from '../Button'
 import Select from '../Select'
 import { trimestres } from '@/mocks'
 import { useEffect, useState } from 'react'
-import { IAlunoNotas, ITurma } from '@/types'
+import { IAlunoNotas, ITurma, SchoolData } from '@/types'
 import { getDisciplinas } from '@/models/Disciplina'
 import { useSQLiteContext } from 'expo-sqlite'
 import { getTurmas } from '@/models/Turma'
@@ -17,6 +17,7 @@ import { useToast } from '@/context/ToastContext'
 import FilterButton from '../FilterButton'
 import * as Print from 'expo-print'
 import { Asset } from 'expo-asset'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 const asset = Asset.fromModule(require('@/assets/images/insignia.png'))
 
 export default function MiniPautas() {
@@ -83,6 +84,10 @@ export default function MiniPautas() {
 		// Filtra os dados para incluir apenas nome, mac, pp e pt
 		const filteredNotas = notas.map(({ nome, mac, pp, pt }) => ({ nome, mac, pp, pt }))
 
+		// Obter os dados da escola
+		const savedData = await AsyncStorage.getItem('@schoolData')
+		const schoolData: SchoolData = savedData ? JSON.parse(savedData) : {}
+
 		// Gera o HTML dinamicamente com os dados filtrados
 		const html = `
 		<html>
@@ -94,6 +99,12 @@ export default function MiniPautas() {
 						font-family: Helvetica Neue; 
 						font-weight: normal;
 						margin: 10px 0;
+					}
+					strong {
+						font-size: 15px; 
+						font-family: Helvetica Neue; 
+						font-weight: bold;
+						margin: 20px 0;
 					}
 					.table-container {
 						display: flex;
@@ -134,6 +145,8 @@ export default function MiniPautas() {
 				/>    
 				<p>REPÚBLICA DE ANGOLA</p>
 				<p>MINISTÉRIO DA EDUCAÇÃO</p>
+				<p>${schoolData.nomeEscola.toUpperCase()}</p>
+				<strong>PAUTA TRIMESTRAL DOS ALUNOS MATRICULADOS NO ANO LECTIVO ${schoolData.anoLetivo}</strong>
 				<div class="table-container">
 					<table>
 						<thead>

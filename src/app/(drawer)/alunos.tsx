@@ -206,7 +206,7 @@ export default function Alunos() {
 								router.navigate(`/(stack)/aluno/${id.toString()}/${alunos?.find(aluno => aluno.id === id)?.nome}`)
 							}
 						/>
-						<CustomWarning message='Clique no aluno para ver seu desempenho.' />
+						<CustomWarning message='Clique para ver o desempenho do aluno.' />
 					</View>
 				)}
 				<MyModal title='Adicionar Aluno' visible={isOpen} onClose={() => setIsOpen(false)}>

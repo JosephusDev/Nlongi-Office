@@ -52,7 +52,12 @@ export default function Auth() {
 		const hasBio = await AsyncStorage.getItem('@biometria')
 		if (hasBio === 'true' && isLoginScreenVisible) {
 			const result = await LocalAuthentication.authenticateAsync({
-				promptMessage: 'Desbloqueie para utilizar o Nlongi Office',
+				promptMessage: 'Desbloqueie para entrar no Nlongi',
+				disableDeviceFallback: true,
+				biometricsSecurityLevel: 'strong',
+				requireConfirmation: true,
+				cancelLabel: 'Cancelar',
+				fallbackLabel: 'Usar palavra-passe',
 			})
 
 			if (result.success) {

@@ -15,7 +15,7 @@ export const s = StyleSheet.create({
 	},
 	modalView: {
 		width: '100%',
-		backgroundColor: '#EDEDED',
+		backgroundColor: '#FFFFFF',
 		borderTopLeftRadius: 10, // Bordas arredondadas apenas na parte superior
 		borderTopRightRadius: 10,
 		padding: 25,
