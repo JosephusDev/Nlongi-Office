@@ -153,7 +153,6 @@ export default function Profile() {
 			return
 		}
 		const new_user = { ...user, usuario: data.usuario, senha: data.senha }
-		console.log(new_user)
 		const jsonUser = JSON.stringify(new_user)
 		await AsyncStorage.setItem('@user', jsonUser)
 		await update(db, new_user).then(() => {

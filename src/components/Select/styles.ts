@@ -1,31 +1,67 @@
+import { fontFamily } from '@/styles/font-family'
 import { StyleSheet } from 'react-native'
-import { colors, fontFamily } from '@/styles/theme'
 
-export const s = StyleSheet.create({
-	input: {
-		fontSize: 15,
-		fontFamily: fontFamily.regular,
+export const styles = StyleSheet.create({
+	selector: {
 		flexDirection: 'row',
 		alignItems: 'center',
-		marginHorizontal: 5,
-		paddingHorizontal: 8,
-		marginTop: 5,
+		justifyContent: 'space-between',
+		padding: 12,
+		borderWidth: 1,
+		borderColor: '#ccc',
+		borderRadius: 8,
+		backgroundColor: 'white',
 		width: '100%',
-		color: colors.gray[100],
+	},
+	text: {
+		fontSize: 14,
+		fontFamily: fontFamily.regular,
+		color: '#333',
+	},
+	placeholder: {
+		color: '#999',
+	},
+	arrow: { color: '#666' },
+	modalOverlay: {
+		flex: 1,
+		justifyContent: 'flex-end',
+		backgroundColor: 'rgba(0, 0, 0, 0.5)',
+	},
+	modalContainer: {
+		backgroundColor: 'white',
+		maxHeight: '60%',
+	},
+	modalTitle: {
+		fontSize: 16,
+		fontFamily: fontFamily.bold,
+		margin: 20,
+		textAlign: 'center',
 	},
 	option: {
-		fontSize: 15,
-		fontFamily: fontFamily.regular,
-		color: colors.gray[100],
+		padding: 15,
+		borderBottomWidth: 1,
+		borderBottomColor: '#eee',
 	},
-	picker: {
+	selectedOption: {
+		backgroundColor: '#f0f0f0',
 		flex: 1,
-		justifyContent: 'center',
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+	},
+	optionText: {
+		fontSize: 14,
+		fontFamily: fontFamily.regular,
+	},
+	checkmark: {
+		color: '#007AFF',
+	},
+	closeButton: {
+		padding: 15,
 		alignItems: 'center',
-		alignSelf: 'stretch',
-		borderWidth: 1,
-		borderRadius: 10,
-		borderColor: colors.gray[300],
-		height: 40,
+	},
+	closeText: {
+		color: '#007AFF',
+		fontSize: 16,
+		fontFamily: fontFamily.bold,
 	},
 })

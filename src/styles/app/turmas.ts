@@ -169,4 +169,25 @@ export const s = StyleSheet.create({
 		borderRadius: 8,
 		height: 40,
 	},
+	itemContainer: {
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		alignItems: 'center',
+		padding: 15,
+		backgroundColor: '#FFFFFF',
+		borderRadius: 8,
+		marginBottom: 10,
+		elevation: 2,
+	},
+
+	itemText: {
+		fontSize: 16,
+		color: colors.gray[600],
+		fontWeight: '500',
+	},
+
+	iconContainer: {
+		flexDirection: 'row',
+		gap: 15, // Espaçamento entre ícones
+	},
 })

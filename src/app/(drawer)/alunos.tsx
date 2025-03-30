@@ -1,7 +1,6 @@
 import { s } from '@/styles/app/alunos'
 import { Alert, Text, TextInput, View } from 'react-native'
 import { DrawerSceneWrapper } from '@/components/DrawerSceneWrapper'
-import { colors } from '@/styles/colors'
 import ToolBar from '@/components/ToolBar'
 import Header from '@/components/Header'
 import { formatName } from '@/utils/functions'
@@ -112,10 +111,7 @@ export default function Alunos() {
 	const carregarTurmas = async () => {
 		try {
 			const result = await getTurmas(db)
-			result.unshift({
-				id: 0,
-				nome: 'Selecione a turma',
-			})
+			result.unshift({ id: 0, nome: 'Todas as turmas' })
 			setTurmas(result)
 		} catch (error) {
 			showToast({
@@ -151,11 +147,14 @@ export default function Alunos() {
 		return unsubscribe
 	}, [navigation])
 
-	const alunosFiltrados = alunos?.filter(aluno => {
-		const matchesSearch = search ? aluno.nome.toUpperCase().includes(search.toUpperCase()) : true
-		const matchesTurma = selectedTurma ? aluno.turma_id === selectedTurma : true
-		return matchesSearch && matchesTurma
-	})
+	const alunosFiltrados =
+		search || selectedTurma
+			? alunos?.filter(aluno => {
+					const matchesSearch = search ? aluno.nome.toUpperCase().includes(search.toUpperCase()) : true
+					const matchesTurma = selectedTurma ? aluno.turma_id === selectedTurma : true
+					return matchesSearch && matchesTurma
+				})
+			: alunos
 
 	const handleOpenModal = (aluno?: IAluno) => {
 		if (aluno) {
@@ -170,10 +169,7 @@ export default function Alunos() {
 	}
 
 	// Definição das colunas e seus tamanhos
-	const columns = [
-		{ key: 'Nome', label: 'Nome', width: 150 },
-		{ key: 'Turma', label: 'Turma', width: 150 },
-	]
+	const columns = [{ key: 'Nome', label: 'Nome', width: 150 }]
 
 	return (
 		<DrawerSceneWrapper>
@@ -186,7 +182,7 @@ export default function Alunos() {
 				/>
 				<View style={s.card}>
 					<Text style={s.label}>Selecione a Turma</Text>
-					<Select onChange={value => setSelectedTurma(Number(value))} data={turmas ?? []} />
+					<Select value={selectedTurma} onChange={value => setSelectedTurma(Number(value))} data={turmas ?? []} />
 				</View>
 				{alunosFiltrados?.length === 0 ? (
 					<EmptyList title='Nenhum aluno encontrado.' />
@@ -197,7 +193,7 @@ export default function Alunos() {
 							data={alunosFiltrados?.map(aluno => ({
 								id: aluno.id,
 								Nome: formatName(aluno.nome),
-								Turma: turmas?.find(turma => turma.id === aluno.turma_id)?.nome || 'N/A',
+								//Turma: turmas?.find(turma => turma.id === aluno.turma_id)?.nome || 'N/A',
 							}))}
 							showActions={true}
 							onEdit={id => handleOpenModal(alunos?.find(aluno => aluno.id === id))}
@@ -212,7 +208,7 @@ export default function Alunos() {
 				<MyModal title='Adicionar Aluno' visible={isOpen} onClose={() => setIsOpen(false)}>
 					<View style={{ flex: 0, width: '100%' }}>
 						<Text style={s.labelModal}>Nome</Text>
-						<View style={[s.inputContainer, errors.nome && { borderColor: colors.red.base }]}>
+						<View style={s.inputContainer}>
 							<Controller
 								control={control}
 								name='nome'
@@ -231,19 +227,18 @@ export default function Alunos() {
 					</View>
 					<View style={{ flex: 0, width: '100%' }}>
 						<Text style={s.labelModal}>Turma</Text>
-						<View
-							style={[s.inputContainer, { paddingHorizontal: 0 }, errors.turma_id && { borderColor: colors.red.base }]}
-						>
+						<View style={{ paddingHorizontal: 0 }}>
 							<Controller
 								control={control}
 								name='turma_id'
-								render={({ field: { onChange, onBlur, value } }) => (
+								render={({ field: { onChange, value } }) => (
 									<Select
-										style={{ borderRadius: 0, borderWidth: 0 }}
-										onBlur={onBlur}
 										data={turmas ?? []}
-										onChange={onChange}
-										value={value}
+										value={value} // Garante que o valor selecionado é refletido corretamente
+										onChange={selectedValue => {
+											setSelectedTurma(Number(selectedValue)) // Atualiza o estado local
+											onChange(Number(selectedValue)) // Atualiza o react-hook-form
+										}}
 									/>
 								)}
 							/>

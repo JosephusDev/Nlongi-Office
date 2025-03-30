@@ -40,7 +40,7 @@ export default function Turmas() {
 			if (result) {
 				showToast({
 					title: 'Longi',
-					message: 'Turma atualizado com sucesso',
+					message: 'Turma atualizada com sucesso',
 					type: 'success',
 				})
 			} else {
@@ -131,7 +131,7 @@ export default function Turmas() {
 	}
 
 	// Definição das colunas e seus tamanhos
-	const columns = [{ key: 'Turma', label: 'Turma', width: 130 }]
+	const columns = [{ key: 'Turma', label: 'Turma', width: 200 }]
 
 	return (
 		<DrawerSceneWrapper>
@@ -158,7 +158,7 @@ export default function Turmas() {
 				)}
 				<MyModal title='Adicionar Turma' visible={isOpen} onClose={() => setIsOpen(false)}>
 					<View style={{ flex: 0, width: '100%' }}>
-						<Text style={s.labelModal}>Nome</Text>
+						<Text style={s.labelModal}>Digite a Classe e/ou o Curso</Text>
 						<View style={[s.inputContainer, errors.nome && { borderColor: colors.red.base }]}>
 							<Controller
 								control={control}
@@ -166,7 +166,7 @@ export default function Turmas() {
 								render={({ field: { onChange, onBlur, value } }) => (
 									<TextInput
 										style={s.input}
-										placeholder='Ex.: Informática 10ª'
+										placeholder='Ex.: 10ª classe - Bioquímica'
 										onBlur={onBlur}
 										onChangeText={onChange}
 										value={value}

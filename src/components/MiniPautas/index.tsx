@@ -18,10 +18,12 @@ import FilterButton from '../FilterButton'
 import * as Print from 'expo-print'
 import { Asset } from 'expo-asset'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import { useAuth } from '@/context/AuthContext'
 const asset = Asset.fromModule(require('@/assets/images/insignia.png'))
 
 export default function MiniPautas() {
 	const db = useSQLiteContext()
+	const { user } = useAuth()
 	const { showToast } = useToast()
 	const [disciplinas, setDisciplinas] = useState<ITurma[]>([])
 	const [turmas, setTurmas] = useState<ITurma[]>([])
@@ -43,7 +45,6 @@ export default function MiniPautas() {
 
 	const carregarTurmas = async () => {
 		const result = await getTurmas(db)
-		result.unshift({ id: 0, nome: 'Selecione a turma' })
 		setTurmas(result)
 		if (result.length === 0) {
 			showToast({
@@ -56,7 +57,6 @@ export default function MiniPautas() {
 
 	const carregarDisciplinas = async () => {
 		const result = await getDisciplinas(db)
-		result.unshift({ id: 0, nome: 'Selecione a disciplina' })
 		setDisciplinas(result)
 		if (result.length === 0) {
 			showToast({
@@ -88,97 +88,140 @@ export default function MiniPautas() {
 		const savedData = await AsyncStorage.getItem('@schoolData')
 		const schoolData: SchoolData = savedData ? JSON.parse(savedData) : {}
 
+		const disciplina = disciplinas.find(d => d.id === selectedDisciplina)?.nome
+		const turma = turmas.find(t => t.id === selectedTurma)?.nome
+
 		// Gera o HTML dinamicamente com os dados filtrados
 		const html = `
-		<html>
-			<head>
-				<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
-				<style>
-					p {
-						font-size: 15px; 
-						font-family: Helvetica Neue; 
-						font-weight: normal;
-						margin: 10px 0;
-					}
-					strong {
-						font-size: 15px; 
-						font-family: Helvetica Neue; 
-						font-weight: bold;
-						margin: 20px 0;
-					}
-					.table-container {
-						display: flex;
-						justify-content: center;
-						margin-top: 50px;
-					}
-					table {
-						width: 90vw;
-						border-collapse: collapse;
-						margin-top: 50px;
-					}
-					th, td {
-						border: 1px solid gray;
-						padding: 4px; /* Reduz o padding para diminuir a altura */
-						text-align: center;
-						font-family: Helvetica Neue;
-						font-size: 12px; /* Reduz o tamanho da fonte */
-						height: 20px; /* Altura fixa para as células */
-					}
-					th {
-						font-weight: bold;
-					}
-					img {
-						width: 5vw;
-					}
-					/* Define larguras pequenas para as colunas específicas */
-					th:nth-child(1), td:nth-child(1) { width: 30px; } /* Nº */
-					th:nth-child(3), td:nth-child(3) { width: 30px; } /* MAC */
-					th:nth-child(4), td:nth-child(4) { width: 30px; } /* PP */
-					th:nth-child(5), td:nth-child(5) { width: 30px; } /* PT */
-					th:nth-child(6), td:nth-child(6) { width: 30px; } /* MT */
-				</style>
-			</head>
-			<body style="text-align: center;">
-				<img
-					src=${asset.localUri ?? asset.uri}
-					alt="Insígnia"
-				/>    
-				<p>REPÚBLICA DE ANGOLA</p>
-				<p>MINISTÉRIO DA EDUCAÇÃO</p>
-				<p>${schoolData.nomeEscola.toUpperCase()}</p>
-				<strong>PAUTA TRIMESTRAL DOS ALUNOS MATRICULADOS NO ANO LECTIVO ${schoolData.anoLetivo}</strong>
-				<div class="table-container">
-					<table>
-						<thead>
-							<tr>
-								<th>Nº</th>
-								<th>NOME COMPLETO</th>
-								<th>MAC</th>
-								<th>PP</th>
-								<th>PT</th>
-								<th>MT</th>
-							</tr>
-						</thead>
-						<tbody>
-							${filteredNotas
-								.map(
-									(student, idx) => `
+			<html>
+				<head>
+					<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+					<style>
+						p {
+							font-size: 15px; 
+							font-family: Helvetica Neue; 
+							font-weight: normal;
+							margin: 10px 0;
+						}
+						strong {
+							font-size: 15px; 
+							font-family: Helvetica Neue; 
+							font-weight: bold;
+							margin: 20px 0;
+							display: block;
+						}
+						.table-container {
+							display: flex;
+							justify-content: center;
+							margin-top: 30px;
+						}
+						table {
+							width: 90vw;
+							border-collapse: collapse;
+						}
+						th, td {
+							border: 1px solid gray;
+							padding: 4px;
+							text-align: center;
+							font-family: Helvetica Neue;
+							font-size: 12px;
+							height: 20px;
+						}
+						th {
+							font-weight: bold;
+						}
+						img {
+							width: 5vw;
+						}
+						th:nth-child(1), td:nth-child(1) { width: 30px; }
+						th:nth-child(3), td:nth-child(3) { width: 30px; }
+						th:nth-child(4), td:nth-child(4) { width: 30px; }
+						th:nth-child(5), td:nth-child(5) { width: 30px; }
+						th:nth-child(6), td:nth-child(6) { width: 30px; }
+						.info-container {
+							display: flex;
+							flex-wrap: wrap;
+							justify-content: space-between;
+							margin: 40px auto 0;
+							width: 90vw;
+							gap: 10px;
+						}
+						.info-box {
+							display: flex;
+							flex-direction: column;
+							gap: 8px;
+						}
+						.info-item {
+							font-family: Helvetica Neue;
+							font-size: 13px;
+							text-align: left;
+						}
+						.info-label {
+							font-weight: bold;
+						}
+					</style>
+				</head>
+				<body style="text-align: center;"> 
+					<img
+						src=${asset.localUri ?? asset.uri}
+						alt="Insígnia"
+					/>    
+					<p>REPÚBLICA DE ANGOLA</p>
+					<p>MINISTÉRIO DA EDUCAÇÃO</p>
+					<p>${schoolData.nomeEscola.toUpperCase()}</p>
+					<strong>PAUTA TRIMESTRAL DOS ALUNOS MATRICULADOS NO ANO LECTIVO ${schoolData.anoLetivo}</strong>
+					
+					<div class="info-container">
+						<div class="info-box">
+							<div class="info-item">
+								<span class="info-label">DISCIPLINA:</span> <span>${disciplina?.toUpperCase()}</span>
+							</div>
+							<div class="info-item">
+								<span class="info-label">TURMA:</span> <span>${turma?.toUpperCase()}</span>
+							</div>
+						</div>
+						<div class="info-box">
+							<div class="info-item">
+								<span class="info-label">PERIODO:</span> <span>${selectedTrimestre}º Trimestre</span>
+							</div>
+							<div class="info-item">
+								<span class="info-label">PROFESSOR(A):</span> <span>${user?.nome?.toUpperCase()}</span>
+							</div>
+						</div>
+					</div>
+					
+					<div class="table-container">
+						<table>
+							<thead>
 								<tr>
-									<td>${idx + 1}</td>
-									<td>${student.nome}</td>
-									<td>${student.mac}</td>
-									<td>${student.pp}</td>
-									<td>${student.pt}</td>
-									<td>${((student.mac + student.pp + student.pt) / 3).toFixed(2)}</td>
+									<th>Nº</th>
+									<th>NOME COMPLETO</th>
+									<th>MAC</th>
+									<th>PP</th>
+									<th>PT</th>
+									<th>MT</th>
 								</tr>
-							`,
-								)
-								.join('')}
-						</tbody>
-					</table>
-            	</div>
-			</body>
-		</html>
+							</thead>
+							<tbody>
+								${filteredNotas
+									.map(
+										(student, idx) => `
+									<tr>
+										<td>${idx + 1}</td>
+										<td>${student.nome}</td>
+										<td>${student.mac}</td>
+										<td>${student.pp}</td>
+										<td>${student.pt}</td>
+										<td>${((student.mac + student.pp + student.pt) / 3).toFixed(2)}</td>
+									</tr>
+								`,
+									)
+									.join('')}
+							</tbody>
+						</table>
+					</div>
+				</body>
+				</html>
 		`
 
 		// Imprime o HTML gerado

@@ -90,7 +90,7 @@ export const s = StyleSheet.create({
 		height: 45,
 		paddingHorizontal: 8,
 		marginTop: 5,
-		borderColor: colors.gray[400],
+		borderColor: '#ccc',
 	},
 	input: {
 		fontSize: 15,

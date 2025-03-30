@@ -16,8 +16,6 @@ export const s = StyleSheet.create({
 	modalView: {
 		width: '100%',
 		backgroundColor: '#FFFFFF',
-		borderTopLeftRadius: 10, // Bordas arredondadas apenas na parte superior
-		borderTopRightRadius: 10,
 		padding: 25,
 		alignItems: 'center',
 		position: 'absolute',
@@ -46,6 +44,6 @@ export const s = StyleSheet.create({
 	closeButton: {
 		position: 'absolute',
 		top: 10,
-		right: 20,
+		right: 15,
 	},
 })

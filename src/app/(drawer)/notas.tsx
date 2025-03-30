@@ -44,7 +44,6 @@ export default function Notas() {
 	const carregarTurmas = async () => {
 		try {
 			const result = await getTurmas(db)
-			result.unshift({ id: 0, nome: 'Selecione a turma' })
 			setTurmas(result)
 		} catch (error) {
 			ToastAndroid.show('Erro ao carregar turmas', ToastAndroid.SHORT)
@@ -55,7 +54,6 @@ export default function Notas() {
 	const carregarDisciplinas = async () => {
 		try {
 			const result = await getDisciplinas(db)
-			result.unshift({ id: 0, nome: 'Selecione a disciplina' })
 			setDisciplinas(result)
 		} catch (error) {
 			ToastAndroid.show('Erro ao carregar disciplinas', ToastAndroid.SHORT)

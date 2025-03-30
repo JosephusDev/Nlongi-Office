@@ -1,28 +1,68 @@
-import { Picker } from '@react-native-picker/picker'
-import { View, ViewProps } from 'react-native'
-import { s } from './styles'
+import React, { useState, useEffect } from 'react'
+import { View, TouchableOpacity, Text, Modal, FlatList } from 'react-native'
 import { ISelect } from '@/types'
+import { styles } from './styles'
+import { Feather } from '@expo/vector-icons'
 
-interface ISelectProps extends ViewProps {
+interface ISelectProps {
 	data: ISelect[]
-	onChange?: (text: string) => void
-	onBlur?: () => void
-	value?: number | string
+	onChange?: (value: string) => void
+	value?: string | number
+	placeholder?: string
 }
 
-export default function Select({ data, onChange, onBlur, value, style }: ISelectProps) {
+export default function Select({ data, onChange, value, placeholder = 'Selecione um item' }: ISelectProps) {
+	const [modalVisible, setModalVisible] = useState(false)
+	const [selectedItem, setSelectedItem] = useState<ISelect | undefined>(data.find(item => item.id === value))
+
+	useEffect(() => {
+		setSelectedItem(data.find(item => item.id === value))
+	}, [value, data])
+
+	const handleSelect = (item: ISelect) => {
+		setSelectedItem(item)
+		onChange?.(item.id!.toString())
+		setModalVisible(false)
+	}
+
 	return (
-		<View style={[s.picker, style]}>
-			<Picker
-				style={s.input}
-				onValueChange={value => onChange && onChange(value.toString())}
-				selectedValue={value}
-				onBlur={onBlur}
-			>
-				{data.map((item, index) => (
-					<Picker.Item key={index} style={s.option} label={item.nome} value={item.id} />
-				))}
-			</Picker>
+		<View>
+			<TouchableOpacity style={styles.selector} onPress={() => setModalVisible(true)}>
+				<Text ellipsizeMode='tail' numberOfLines={1} style={[styles.text, !selectedItem && styles.placeholder]}>
+					{selectedItem?.nome || placeholder}
+				</Text>
+				<Text style={styles.arrow}>
+					<Feather name='chevron-down' size={20} />
+				</Text>
+			</TouchableOpacity>
+
+			<Modal visible={modalVisible} animationType='slide' transparent>
+				<View style={styles.modalOverlay}>
+					<View style={styles.modalContainer}>
+						<Text style={styles.modalTitle}>{placeholder}</Text>
+						<FlatList
+							data={data}
+							keyExtractor={item => item.id!.toString()}
+							renderItem={({ item }) => (
+								<TouchableOpacity
+									style={[styles.option, item.id === selectedItem?.id && styles.selectedOption]}
+									onPress={() => handleSelect(item)}
+								>
+									<Text style={styles.optionText}>{item.nome}</Text>
+									{item.id === selectedItem?.id && (
+										<Text style={styles.checkmark}>
+											<Feather name='check' size={20} />
+										</Text>
+									)}
+								</TouchableOpacity>
+							)}
+						/>
+						<TouchableOpacity style={styles.closeButton} onPress={() => setModalVisible(false)}>
+							<Text style={styles.closeText}>Fechar</Text>
+						</TouchableOpacity>
+					</View>
+				</View>
+			</Modal>
 		</View>
 	)
 }

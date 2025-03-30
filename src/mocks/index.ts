@@ -98,10 +98,6 @@ export const disciplinas = [
 
 export const trimestres = [
 	{
-		id: 0,
-		nome: 'Selecione o trimestre',
-	},
-	{
 		id: 1,
 		nome: '1º Trimestre',
 	},
@@ -155,4 +151,9 @@ export const notas_alunos = [
 	{ id: 10, nome: 'Beatriz', nota: '' },
 	{ id: 11, nome: 'Joaquim', nota: '' },
 	{ id: 12, nome: 'Maria Costa', nota: '' },
+]
+
+export const genero = [
+	{ id: 'M', nome: 'Masculino' },
+	{ id: 'F', nome: 'Feminino' },
 ]

@@ -53,7 +53,7 @@ export default function Auth() {
 		if (hasBio === 'true' && isLoginScreenVisible) {
 			const result = await LocalAuthentication.authenticateAsync({
 				promptMessage: 'Desbloqueie para entrar no Nlongi',
-				disableDeviceFallback: true,
+				//disableDeviceFallback: true,
 				biometricsSecurityLevel: 'strong',
 				requireConfirmation: true,
 				cancelLabel: 'Cancelar',
