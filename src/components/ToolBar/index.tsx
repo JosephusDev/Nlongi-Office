@@ -15,7 +15,7 @@ export default function ToolBar({ onPressAdd, onSearch, valueSearch, showButton 
 	return (
 		<View style={s.toolbar}>
 			<View style={s.inputContainer}>
-				<IconSearch size={20} color={colors.gray[400]} />
+				<IconSearch size={18} color={colors.gray[400]} />
 				<TextInput value={valueSearch} onChangeText={onSearch} style={s.inputSearch} placeholder='Pesquise...' />
 			</View>
 			{showButton && (

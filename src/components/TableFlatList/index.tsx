@@ -18,6 +18,7 @@ type TableProps = {
 	columns: ColumnConfig[] // Configurações das colunas
 	data: Data[]
 	showActions?: boolean
+	showHeader?: boolean
 	onEdit?: (id: number) => void
 	onDelete?: (id: number) => void
 	onPress?: (id: number, item: Data) => void
@@ -74,7 +75,15 @@ const TableRow = ({
 
 				{/* Coluna de ações */}
 				{showActions && (
-					<View style={{ flexDirection: 'row', gap: 10, width: 100, justifyContent: 'center', alignItems: 'center' }}>
+					<View
+						style={{
+							flexDirection: 'row',
+							gap: 20,
+							width: 100,
+							justifyContent: 'center',
+							alignItems: 'center',
+						}}
+					>
 						<Pressable onPress={() => onEdit?.(item.id)} style={{ marginHorizontal: 5 }}>
 							<IconEdit size={20} color={colors.gray[500]} />
 						</Pressable>
@@ -88,12 +97,20 @@ const TableRow = ({
 	)
 }
 
-const TableFlatList = ({ columns, data, showActions = false, onEdit, onDelete, onPress }: TableProps) => {
+const TableFlatList = ({
+	columns,
+	data,
+	showActions = false,
+	showHeader = false,
+	onEdit,
+	onDelete,
+	onPress,
+}: TableProps) => {
 	return (
 		<View>
 			<ScrollView style={s.main} horizontal>
 				<View>
-					<TableHeader columns={columns} showActions={showActions} />
+					{showHeader && <TableHeader columns={columns} showActions={showActions} />}
 					<ScrollView>
 						{data.map((item, index) => (
 							<TableRow

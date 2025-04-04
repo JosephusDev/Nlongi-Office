@@ -1,6 +1,6 @@
 export const fontFamily = {
-  bold: 'Rubik_700Bold',
-  medium: 'Rubik_500Medium',
-  regular: 'Rubik_400Regular',
-  semiBold: 'Rubik_600SemiBold',
+	bold: 'Nunito_700Bold',
+	medium: 'Nunito_500Medium',
+	regular: 'Nunito_400Regular',
+	semiBold: 'Nunito_600SemiBold',
 }

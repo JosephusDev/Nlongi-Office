@@ -1,4 +1,5 @@
 import { IAluno } from '@/types'
+import { capitalizeName } from '@/utils/functions'
 import { SQLiteDatabase } from 'expo-sqlite'
 
 export const create = async (db: SQLiteDatabase, data: Omit<IAluno, 'id' | 'turma'>) => {
@@ -6,7 +7,7 @@ export const create = async (db: SQLiteDatabase, data: Omit<IAluno, 'id' | 'turm
 
 	try {
 		const result = await db.runAsync(`INSERT INTO aluno (nome, turma_id) VALUES (?, ?)`, [
-			nome?.toUpperCase().trim(),
+			capitalizeName(nome.trim()),
 			turma_id ?? '',
 		])
 

@@ -169,7 +169,7 @@ export default function Alunos() {
 	}
 
 	// Definição das colunas e seus tamanhos
-	const columns = [{ key: 'Nome', label: 'Nome', width: 150 }]
+	const columns = [{ key: 'Nome', label: 'NOME', width: 200 }]
 
 	return (
 		<DrawerSceneWrapper>

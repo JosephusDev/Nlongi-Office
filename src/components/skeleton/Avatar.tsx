@@ -7,7 +7,7 @@ export const SkeletonAvatar = () => {
 			speed={2}
 			viewBox='0 0 380 70'
 			backgroundColor='#f3f3f3'
-			foregroundColor='#ecebeb'
+			foregroundColor='#cccccc'
 			style={styles.skeleton}
 		>
 			<Circle cx='30' cy='30' r='30' />
@@ -23,5 +23,6 @@ const styles = StyleSheet.create({
 		height: 70,
 		padding: 24,
 		paddingTop: 32,
+		marginTop: 32,
 	},
 })

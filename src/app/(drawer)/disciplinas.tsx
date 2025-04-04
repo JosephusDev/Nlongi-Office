@@ -146,20 +146,21 @@ export default function Disciplinas() {
 					valueSearch={search.toUpperCase()}
 					onSearch={text => setSearch(text)}
 				/>
-				{disciplinasFiltradas?.length === 0 ? (
-					<EmptyList title='Nenhuma disciplina encontrada.' />
-				) : (
-					<TableFlatList
-						columns={columns} // Colunas da tabela
-						data={disciplinasFiltradas?.map(disciplina => ({
-							id: disciplina.id,
-							Disciplina: disciplinasFiltradas.find(_disciplina => disciplina.id === _disciplina.id)?.nome,
-						}))}
-						showActions={true}
-						onEdit={id => handleOpenModal(disciplinas?.find(disciplina => disciplina.id === id))}
-						onDelete={onDelete}
-					/>
-				)}
+				<FlatList
+					data={disciplinasFiltradas}
+					keyExtractor={item => item.id.toString()}
+					renderItem={({ item }) => (
+						<View style={s.listItem}>
+							<TouchableOpacity onPress={() => handleOpenModal(item)} onLongPress={() => onDelete(item.id)}>
+								<Text ellipsizeMode='tail' numberOfLines={1} style={s.listItemText}>
+									{item.nome}
+								</Text>
+							</TouchableOpacity>
+						</View>
+					)}
+					ListHeaderComponent={<View style={{ marginTop: 20 }}></View>}
+					ListEmptyComponent={<EmptyList title='Nenhuma turma encontrada.' />}
+				/>
 				<MyModal title='Adicionar Disciplina' visible={isOpen} onClose={() => setIsOpen(false)}>
 					<View style={{ flex: 0, width: '100%' }}>
 						<Text style={s.labelModal}>Nome</Text>

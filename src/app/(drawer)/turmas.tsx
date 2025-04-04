@@ -1,7 +1,7 @@
 import Header from '@/components/Header'
 import ToolBar from '@/components/ToolBar'
 import { s } from '@/styles/app/turmas'
-import { Alert, Text, TextInput, ToastAndroid, View } from 'react-native'
+import { Alert, FlatList, Text, TextInput, ToastAndroid, View } from 'react-native'
 import { colors } from '@/styles/colors'
 import { useEffect, useState } from 'react'
 import { ITurma } from '@/types'
@@ -14,8 +14,8 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { TurmaSchema } from '@/schema'
 import Button from '@/components/Button'
 import { useSQLiteContext } from 'expo-sqlite'
-import TableFlatList from '@/components/TableFlatList'
 import { useToast } from '@/context/ToastContext'
+import { TouchableOpacity } from 'react-native-gesture-handler'
 
 export default function Turmas() {
 	const db = useSQLiteContext()
@@ -34,45 +34,9 @@ export default function Turmas() {
 		resolver: yupResolver(TurmaSchema),
 	})
 
-	const onSubmit = async (data: Pick<ITurma, 'nome'>) => {
-		if (selected?.id) {
-			const result = await update(db, selected.id, data)
-			if (result) {
-				showToast({
-					title: 'Longi',
-					message: 'Turma atualizada com sucesso',
-					type: 'success',
-				})
-			} else {
-				showToast({
-					title: 'Longi',
-					message: 'Erro ao atualizar turma',
-					type: 'error',
-				})
-			}
-		} else {
-			const result = await create(db, data)
-			if (result) {
-				showToast({
-					title: 'Longi',
-					message: 'Turma cadastrada com sucesso',
-					type: 'success',
-				})
-			} else {
-				showToast({
-					title: 'Longi',
-					message: 'Erro ao cadastrar turma',
-					type: 'error',
-				})
-			}
-		}
-		setIsOpen(false)
+	useEffect(() => {
 		carregarTurmas()
-		// limpa os campos do formulario
-		reset()
-		// remove a seleção da turma
-		setSelected(null)
-	}
+	}, [])
 
 	const carregarTurmas = async () => {
 		try {
@@ -84,40 +48,32 @@ export default function Turmas() {
 		}
 	}
 
+	const onSubmit = async (data: Pick<ITurma, 'nome'>) => {
+		if (selected?.id) {
+			await update(db, selected.id, data)
+		} else {
+			await create(db, data)
+		}
+		setIsOpen(false)
+		carregarTurmas()
+		reset()
+		setSelected(null)
+	}
+
 	const onDelete = (id: number) => {
 		Alert.alert('Remover', 'Deseja remover essa Turma?', [
 			{
 				text: 'Sim',
 				onPress: async () => {
-					const result = await deleteTurma(db, id)
-					if (result) {
-						showToast({
-							title: 'Longi',
-							message: 'Turma removido com sucesso',
-							type: 'success',
-						})
-						carregarTurmas()
-					} else {
-						showToast({
-							title: 'Longi',
-							message: 'Erro ao remover turma',
-							type: 'error',
-						})
-					}
+					await deleteTurma(db, id)
+					carregarTurmas()
 				},
 			},
-			{
-				text: 'Não',
-				style: 'cancel',
-			},
+			{ text: 'Não', style: 'cancel' },
 		])
 	}
 
-	useEffect(() => {
-		carregarTurmas()
-	}, [])
-
-	const turmasFiltradas = search ? turmas?.filter(turma => turma.nome.includes(search.toUpperCase())) : turmas
+	const turmasFiltradas = search ? turmas.filter(turma => turma.nome.includes(search.toUpperCase())) : turmas
 
 	const handleOpenModal = (turma?: ITurma) => {
 		if (turma) {
@@ -130,9 +86,6 @@ export default function Turmas() {
 		setIsOpen(true)
 	}
 
-	// Definição das colunas e seus tamanhos
-	const columns = [{ key: 'Turma', label: 'Turma', width: 200 }]
-
 	return (
 		<DrawerSceneWrapper>
 			<View style={s.container}>
@@ -142,23 +95,24 @@ export default function Turmas() {
 					valueSearch={search.toUpperCase()}
 					onSearch={text => setSearch(text)}
 				/>
-				{turmasFiltradas?.length === 0 ? (
-					<EmptyList title='Nenhuma turma encontrada.' />
-				) : (
-					<TableFlatList
-						columns={columns} // Colunas da tabela
-						data={turmasFiltradas?.map(turma => ({
-							id: turma.id,
-							Turma: turmasFiltradas.find(_turma => turma.id === _turma.id)?.nome,
-						}))}
-						showActions={true}
-						onEdit={id => handleOpenModal(turmas?.find(turma => turma.id === id))}
-						onDelete={onDelete}
-					/>
-				)}
+				<FlatList
+					data={turmasFiltradas}
+					keyExtractor={item => item.id.toString()}
+					renderItem={({ item }) => (
+						<View style={s.listItem}>
+							<TouchableOpacity onPress={() => handleOpenModal(item)} onLongPress={() => onDelete(item.id)}>
+								<Text ellipsizeMode='tail' numberOfLines={1} style={s.listItemText}>
+									{item.nome}
+								</Text>
+							</TouchableOpacity>
+						</View>
+					)}
+					ListHeaderComponent={<View style={{ marginTop: 20 }}></View>}
+					ListEmptyComponent={<EmptyList title='Nenhuma turma encontrada.' />}
+				/>
 				<MyModal title='Adicionar Turma' visible={isOpen} onClose={() => setIsOpen(false)}>
-					<View style={{ flex: 0, width: '100%' }}>
-						<Text style={s.labelModal}>Digite a Classe e/ou o Curso</Text>
+					<View style={{ flex: 0, width: '100%', marginTop: 10 }}>
+						<Text style={s.labelModal}>Digite a Classe ou o Curso</Text>
 						<View style={[s.inputContainer, errors.nome && { borderColor: colors.red.base }]}>
 							<Controller
 								control={control}

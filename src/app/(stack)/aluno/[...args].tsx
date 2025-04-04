@@ -1,6 +1,6 @@
 import Header from '@/components/Header'
 import { s } from '@/styles/app/turmas'
-import { Text, TextInput, ToastAndroid, View } from 'react-native'
+import { ScrollView, Text, TextInput, ToastAndroid, View } from 'react-native'
 import { useEffect, useState } from 'react'
 import { IAlunoNotas, ITurma } from '@/types'
 import EmptyList from '@/components/EmptyList'
@@ -19,6 +19,7 @@ import ChartGeral from '@/components/IndividualChart/Geral'
 import FilterButton from '@/components/FilterButton'
 import { useToast } from '@/context/ToastContext'
 import CustomWarning from '@/components/CustomWarning'
+import { colors } from '@/styles/colors'
 
 export default function Aluno() {
 	const {
@@ -156,7 +157,7 @@ export default function Aluno() {
 
 	// Definição das colunas e seus tamanhos
 	const columns = [
-		{ key: 'disciplina', label: 'DISCIPLINA', width: 150 },
+		{ key: 'disciplina', label: 'DISCIPLINA', width: 400 },
 		{ key: 'trimestre', label: 'TRIMESTRE', width: 120 },
 		{ key: 'mac', label: 'MAC', width: 120 },
 		{ key: 'pp', label: 'PP', width: 120 },
@@ -165,61 +166,64 @@ export default function Aluno() {
 	]
 
 	return (
-		<View style={s.container}>
-			<Header title={nome} showButton={false} />
-			<FilterButton style={{ marginTop: 20 }} onPress={() => setVisible(true)} />
-			{notasFiltradas?.length === 0 ? (
-				<EmptyList title='Nenhuma nota encontrada.' />
-			) : (
-				<View>
-					<TableFlatList
-						columns={columns}
-						data={notasFiltradas}
-						onPress={(id, item) => {
-							setVisibleSelectedRow(true)
-							setSelectedRow(notasFiltradas.find(nota => nota === item))
-						}}
-					/>
-					<CustomWarning message='Clique para alterar as notas.' />
-					{visibleFirstChart && <ChartGeral data={notasFiltradas} />}
-					{visibleSecondChart && <ChartTrimestreDisciplina data={notasFiltradas[0]} />}
-				</View>
-			)}
+		<ScrollView style={{ backgroundColor: colors.light }}>
+			<View style={s.container}>
+				<Text style={s.title}>{nome}</Text>
+				<FilterButton style={{ marginTop: 20 }} onPress={() => setVisible(true)} />
+				{notasFiltradas?.length === 0 ? (
+					<EmptyList title='Nenhuma nota encontrada.' />
+				) : (
+					<View>
+						<TableFlatList
+							columns={columns}
+							data={notasFiltradas}
+							onPress={(id, item) => {
+								setVisibleSelectedRow(true)
+								setSelectedRow(notasFiltradas.find(nota => nota === item))
+							}}
+							showHeader
+						/>
+						<CustomWarning message='Clique para alterar as notas.' />
+						{visibleFirstChart && <ChartGeral data={notasFiltradas} />}
+						{visibleSecondChart && <ChartTrimestreDisciplina data={notasFiltradas[0]} />}
+					</View>
+				)}
 
-			<MyModal title='Filtro de pesquisa' visible={visible} onClose={() => setVisible(false)}>
-				<Text style={s.label}>Selecione o Trimestre</Text>
-				<Select data={trimestres} onChange={value => setSelectedTrimestre(value)} />
-				<Text style={s.label}>Selecione a Disciplina</Text>
-				<Select data={disciplinas} onChange={value => setSelectedDisciplina(Number(value))} />
-				<Button title='Filtrar' icon='search' style={s.btnFilter} onClick={handleFilter} />
-			</MyModal>
-			<MyModal
-				title={`${selectedRow?.disciplina} - ${selectedRow?.trimestre} Trimestre`}
-				visible={visibleSelectedRow}
-				onClose={() => setVisibleSelectedRow(false)}
-			>
-				<View style={{ flex: 1, flexDirection: 'row', marginBottom: 10, gap: 20 }}>
-					{selectedRow?.mac_id && (
-						<View style={s.containerNota}>
-							<Text style={[s.label, { textAlign: 'center' }]}>MAC</Text>
-							<TextInput style={s.inputNota} value={tempMac} onChangeText={setTempMac} />
-						</View>
-					)}
-					{selectedRow?.pp_id && (
-						<View style={s.containerNota}>
-							<Text style={[s.label, { textAlign: 'center' }]}>PP</Text>
-							<TextInput style={s.inputNota} value={tempPp} onChangeText={setTempPp} />
-						</View>
-					)}
-					{selectedRow?.pt_id && (
-						<View style={s.containerNota}>
-							<Text style={[s.label, { textAlign: 'center' }]}>PT</Text>
-							<TextInput style={s.inputNota} value={tempPt} onChangeText={setTempPt} />
-						</View>
-					)}
-				</View>
-				<Button title='Confirmar' icon='save' style={s.btnFilter} onClick={handleConfirm} />
-			</MyModal>
-		</View>
+				<MyModal title='Filtro de pesquisa' visible={visible} onClose={() => setVisible(false)}>
+					<Text style={s.label}>Selecione o Trimestre</Text>
+					<Select data={trimestres} onChange={value => setSelectedTrimestre(value)} />
+					<Text style={s.label}>Selecione a Disciplina</Text>
+					<Select data={disciplinas} onChange={value => setSelectedDisciplina(Number(value))} />
+					<Button title='Filtrar' icon='search' style={s.btnFilter} onClick={handleFilter} />
+				</MyModal>
+				<MyModal
+					title={`${selectedRow?.disciplina} \n\n ${selectedRow?.trimestre} Trimestre`}
+					visible={visibleSelectedRow}
+					onClose={() => setVisibleSelectedRow(false)}
+				>
+					<View style={{ flex: 1, flexDirection: 'row', marginBottom: 10, gap: 20 }}>
+						{selectedRow?.mac_id && (
+							<View style={s.containerNota}>
+								<Text style={[s.label, { textAlign: 'center' }]}>MAC</Text>
+								<TextInput style={s.inputNota} value={tempMac} onChangeText={setTempMac} />
+							</View>
+						)}
+						{selectedRow?.pp_id && (
+							<View style={s.containerNota}>
+								<Text style={[s.label, { textAlign: 'center' }]}>PP</Text>
+								<TextInput style={s.inputNota} value={tempPp} onChangeText={setTempPp} />
+							</View>
+						)}
+						{selectedRow?.pt_id && (
+							<View style={s.containerNota}>
+								<Text style={[s.label, { textAlign: 'center' }]}>PT</Text>
+								<TextInput style={s.inputNota} value={tempPt} onChangeText={setTempPt} />
+							</View>
+						)}
+					</View>
+					<Button title='Confirmar' icon='save' style={s.btnFilter} onClick={handleConfirm} />
+				</MyModal>
+			</View>
+		</ScrollView>
 	)
 }

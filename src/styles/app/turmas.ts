@@ -26,6 +26,11 @@ export const s = StyleSheet.create({
 		alignItems: 'center',
 		gap: 5,
 	},
+	title: {
+		fontSize: 18,
+		fontFamily: fontFamily.bold,
+		color: colors.red.base,
+	},
 	item: {
 		flexDirection: 'row',
 		justifyContent: 'center',
@@ -69,6 +74,7 @@ export const s = StyleSheet.create({
 		paddingHorizontal: 8,
 		marginTop: 20,
 		borderColor: colors.gray[400],
+		gap: 5,
 	},
 	input: {
 		fontSize: 15,
@@ -154,7 +160,7 @@ export const s = StyleSheet.create({
 		marginBottom: 10,
 	},
 	label: {
-		marginVertical: 10,
+		marginTop: 10,
 		fontFamily: fontFamily.semiBold,
 		color: colors.gray[500],
 		width: '100%',
@@ -189,5 +195,14 @@ export const s = StyleSheet.create({
 	iconContainer: {
 		flexDirection: 'row',
 		gap: 15, // Espaçamento entre ícones
+	},
+	listItem: {
+		padding: 20,
+		borderBottomWidth: 1,
+		borderBottomColor: colors.gray[300],
+	},
+	listItemText: {
+		fontSize: 15,
+		fontFamily: fontFamily.medium,
 	},
 })

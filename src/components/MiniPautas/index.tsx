@@ -239,7 +239,7 @@ export default function MiniPautas() {
 				<EmptyList title='Nenhuma pauta disponível.' />
 			) : (
 				<View>
-					<TableFlatList columns={columns} data={notas} />
+					<TableFlatList showHeader columns={columns} data={notas} />
 					<Button title='Exportar' icon='share' onClick={handleExport} />
 				</View>
 			)}

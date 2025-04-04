@@ -54,8 +54,8 @@ export function CustomToast({ id, title, message, type = 'info', onHide, duratio
 					transform: [
 						{
 							translateY: opacity.interpolate({
-								inputRange: [0, 1],
-								outputRange: [-20, 0],
+								inputRange: [0, 2],
+								outputRange: [-30, 0],
 							}),
 						},
 					],

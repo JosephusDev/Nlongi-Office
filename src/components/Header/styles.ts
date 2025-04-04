@@ -7,6 +7,7 @@ export const s = StyleSheet.create({
 		flexDirection: 'row',
 		alignItems: 'center',
 		gap: 7,
+		marginTop: 30,
 	},
 	title: {
 		fontSize: 18,

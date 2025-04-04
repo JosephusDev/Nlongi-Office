@@ -44,16 +44,7 @@ export default function Home() {
 					<SkeletonAvatar />
 				) : (
 					<View style={s.header}>
-						<Image
-							style={s.avatar}
-							source={
-								imageUri
-									? { uri: imageUri }
-									: user?.genero === 'M'
-										? require('@/assets/images/icon.png')
-										: require('@/assets/images/professora.png')
-							}
-						/>
+						<Image style={s.avatar} source={imageUri ? { uri: imageUri } : require('@/assets/images/icon.png')} />
 						<View style={s.user}>
 							<Text style={s.hi}>Olá,</Text>
 							<Text style={s.username}>{user?.nome}</Text>

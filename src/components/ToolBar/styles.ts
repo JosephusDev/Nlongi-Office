@@ -12,6 +12,7 @@ export const s = StyleSheet.create({
 		paddingHorizontal: 8,
 		borderColor: colors.gray[400],
 		marginTop: 20,
+		gap: 5,
 	},
 	inputSearch: {
 		fontSize: 14,

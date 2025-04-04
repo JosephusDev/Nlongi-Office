@@ -5,7 +5,7 @@ import * as LocalAuthentication from 'expo-local-authentication'
 export const formatName = (name: string) => {
 	const [firstName, ...rest] = name.split(' ')
 	const lastName = rest.pop() || ''
-	return `${firstName} ${lastName}`.trim()
+	return capitalizeName(`${firstName} ${lastName}`.trim())
 }
 
 export async function checkBiometricAvailability() {
@@ -27,4 +27,16 @@ export const calculateAverage = (data: IAlunoNotas[]): IAlunoNotas[] => {
 		const result = { ...item, mt: parseFloat(average.toFixed(2)) }
 		return result
 	})
+}
+
+export const capitalizeText = (text: string) => {
+	return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase()
+}
+
+export const capitalizeName = (name: string) => {
+	return name
+		.split(' ')
+		.map(value => capitalizeText(value))
+		.join(' ')
+		.trim()
 }

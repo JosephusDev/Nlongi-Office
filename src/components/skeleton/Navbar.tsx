@@ -7,7 +7,7 @@ export const SkeletonNavbar = () => {
 			speed={2}
 			viewBox='0 0 400 400'
 			backgroundColor='#f3f3f3'
-			foregroundColor='#ecebeb'
+			foregroundColor='#cccccc'
 			style={s.container}
 		>
 			{/* Botões da Navbar */}

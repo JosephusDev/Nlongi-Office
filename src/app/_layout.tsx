@@ -1,8 +1,13 @@
 import { colors, fontFamily } from '@/styles/theme'
-import { useFonts, Rubik_400Regular, Rubik_500Medium, Rubik_600SemiBold, Rubik_700Bold } from '@expo-google-fonts/rubik'
+import {
+	useFonts,
+	Nunito_400Regular,
+	Nunito_500Medium,
+	Nunito_600SemiBold,
+	Nunito_700Bold,
+} from '@expo-google-fonts/nunito'
 import { Loading } from '@/components/Loading'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
-import { StatusBar, Text } from 'react-native'
 import { AuthProvider } from '@/context/AuthContext'
 import { SQLiteProvider } from 'expo-sqlite'
 import { createUsuarioTable } from '@/services/database'
@@ -11,6 +16,7 @@ import { ToastProvider } from '@/context/ToastContext'
 import BackButton from '@/components/BackButton'
 import * as SplashScreen from 'expo-splash-screen'
 import { useEffect } from 'react'
+import { StatusBar } from 'expo-status-bar'
 
 SplashScreen.preventAutoHideAsync()
 
@@ -21,10 +27,10 @@ SplashScreen.setOptions({
 
 export default function Layout() {
 	const [fontsLoaded] = useFonts({
-		Rubik_400Regular,
-		Rubik_500Medium,
-		Rubik_600SemiBold,
-		Rubik_700Bold,
+		Nunito_400Regular,
+		Nunito_500Medium,
+		Nunito_600SemiBold,
+		Nunito_700Bold,
 	})
 
 	useEffect(() => {
@@ -40,7 +46,7 @@ export default function Layout() {
 			<ToastProvider>
 				<AuthProvider>
 					<GestureHandlerRootView style={{ flex: 1 }}>
-						<StatusBar barStyle={'light-content'} backgroundColor={colors.red.base} />
+						<StatusBar style='dark' />
 						<Stack
 							screenOptions={{
 								headerShown: false,

@@ -1,4 +1,3 @@
-// components/customToast.tsx
 import { useToast } from '@/context/ToastContext'
 
 type ToastProps = {

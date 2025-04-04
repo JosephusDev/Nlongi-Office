@@ -226,13 +226,7 @@ export default function Profile() {
 					<Pressable style={{ width: 80 }} onPress={imageUpload}>
 						<Image
 							style={s.avatarProfile}
-							source={
-								imageUri
-									? { uri: imageUri }
-									: user?.genero === 'M'
-										? require('@/assets/images/icon.png')
-										: require('@/assets/images/professora.png')
-							}
+							source={imageUri ? { uri: imageUri } : require('@/assets/images/icon.png')}
 						/>
 						<View style={s.containerIconImage}>
 							<Feather name='camera' color={'#FFFFFF'} size={15} />
@@ -375,7 +369,7 @@ export default function Profile() {
 						</View>
 					)}
 					{typeClick === 'school' && (
-						<View style={{ width: '100%', marginTop: -10 }}>
+						<View style={{ width: '100%', marginTop: 10 }}>
 							<Text style={s.label}>Nome da Escola</Text>
 							<View style={[s.inputContainer, { marginTop: 5 }]}>
 								<Feather name='home' size={20} color={colors.gray[100]} />
@@ -398,7 +392,12 @@ export default function Profile() {
 							</View>
 						</View>
 					)}
-					<Button onClick={onConfirmModal} title='Confirmar' icon={'check-circle'} style={{ height: 40 }} />
+					<Button
+						onClick={onConfirmModal}
+						title='Confirmar'
+						icon={'check-circle'}
+						style={{ height: 40, borderRadius: 8 }}
+					/>
 				</MyModal>
 			</View>
 		</DrawerSceneWrapper>

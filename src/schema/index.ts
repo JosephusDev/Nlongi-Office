@@ -11,11 +11,6 @@ export const Userschema = yup
 				then: schema => schema.required('O nome é obrigatório'),
 				otherwise: schema => schema.notRequired(), // Se for login, não obrigatório
 			}),
-		genero: yup.string().when('$isSignUp', {
-			is: true,
-			then: schema => schema.required('O gênero é obrigatório'),
-			otherwise: schema => schema.notRequired(),
-		}),
 		image: yup.string().nullable(),
 		usuario: yup.string().min(3, 'Usuário deve ter no mínimo 3 caracteres').trim().required('Usuário é obrigatório'),
 		senha: yup.string().min(4, 'Senha deve ter no mínimo 4 caracteres').trim().required('Senha é obrigatória'),

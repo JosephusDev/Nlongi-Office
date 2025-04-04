@@ -30,7 +30,7 @@ export const s = StyleSheet.create({
 		textAlign: 'center',
 		fontFamily: fontFamily.bold,
 		fontSize: 18,
-		marginVertical: 20,
+		marginVertical: 10,
 		color: colors.gray[500],
 	},
 	modalSubtitle: {

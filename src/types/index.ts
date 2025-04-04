@@ -12,7 +12,6 @@ export type AuthContextData = {
 export type User = {
 	id?: number
 	nome?: string
-	genero?: string
 	image?: string
 	usuario: string
 	senha: string

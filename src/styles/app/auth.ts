@@ -5,19 +5,30 @@ import { DEFAULT_STYLE } from '@/constants/styles'
 export const s = StyleSheet.create({
 	container: {
 		flex: 1,
-		backgroundColor: colors.red.base,
+		justifyContent: 'center',
+		backgroundColor: colors.light,
+		paddingTop: 50,
+	},
+	containerIconHome: {
+		justifyContent: 'center',
+		alignItems: 'center',
+		alignSelf: 'center',
+		borderWidth: 1,
+		borderRadius: 100,
+		borderColor: colors.red.base,
+		width: 80,
+		height: 80,
+		marginBottom: 20,
 	},
 	image: {
-		width: 250,
-		height: 250,
-		resizeMode: 'contain',
-		alignSelf: 'center',
+		width: 80,
+		height: 80,
 	},
 	title: {
 		fontSize: 20,
 		textAlign: 'center',
 		fontFamily: fontFamily.bold,
-		color: colors.light,
+		marginBottom: 20,
 	},
 	subtitle: {
 		fontSize: 15,
@@ -43,6 +54,7 @@ export const s = StyleSheet.create({
 		paddingHorizontal: 8,
 		marginTop: 5,
 		borderColor: colors.gray[400],
+		gap: 5,
 	},
 	input: {
 		fontSize: 15,
@@ -53,7 +65,7 @@ export const s = StyleSheet.create({
 		flexDirection: 'row',
 		justifyContent: 'center',
 		alignItems: 'center',
-		marginTop: 15,
+		marginTop: 30,
 		gap: 5,
 	},
 	titleLink: {
