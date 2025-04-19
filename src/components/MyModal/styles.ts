@@ -25,6 +25,8 @@ export const s = StyleSheet.create({
 		shadowOpacity: 0.1,
 		shadowRadius: 5,
 		elevation: 5, // Para Android
+		borderTopLeftRadius: 20,
+		borderTopRightRadius: 20,
 	},
 	modalTitle: {
 		textAlign: 'center',

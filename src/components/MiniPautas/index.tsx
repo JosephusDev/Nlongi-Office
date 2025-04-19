@@ -46,25 +46,11 @@ export default function MiniPautas() {
 	const carregarTurmas = async () => {
 		const result = await getTurmas(db)
 		setTurmas(result)
-		if (result.length === 0) {
-			showToast({
-				title: 'Longi',
-				message: 'Nenhuma turma cadastrada',
-				type: 'info',
-			})
-		}
 	}
 
 	const carregarDisciplinas = async () => {
 		const result = await getDisciplinas(db)
 		setDisciplinas(result)
-		if (result.length === 0) {
-			showToast({
-				title: 'Longi',
-				message: 'Nenhuma disciplina cadastrada',
-				type: 'info',
-			})
-		}
 	}
 
 	const handleFilter = async () => {

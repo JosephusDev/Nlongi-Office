@@ -7,7 +7,6 @@ export const s = StyleSheet.create({
 		flex: 1,
 		justifyContent: 'center',
 		backgroundColor: colors.light,
-		paddingTop: 50,
 	},
 	containerIconHome: {
 		justifyContent: 'center',
@@ -95,6 +94,11 @@ export const s = StyleSheet.create({
 	iconHome: {
 		marginTop: 50,
 		marginBottom: 10,
+		alignSelf: 'center',
+	},
+	logo: {
+		width: 150,
+		height: 80,
 		alignSelf: 'center',
 	},
 })

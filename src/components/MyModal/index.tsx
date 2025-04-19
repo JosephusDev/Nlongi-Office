@@ -14,7 +14,7 @@ interface IModalProps {
 
 export default function MyModal({ visible, title, subtitle, children, onClose }: IModalProps) {
 	return (
-		<Modal animationType='fade' transparent={true} visible={visible}>
+		<Modal animationType='slide' transparent={true} visible={visible}>
 			<TouchableOpacity style={s.centeredView} activeOpacity={1} onPress={onClose}>
 				<TouchableOpacity style={s.modalView} activeOpacity={1} onPress={e => e.stopPropagation()}>
 					{typeof title === 'string' ? <Text style={s.modalTitle}>{title}</Text> : title}

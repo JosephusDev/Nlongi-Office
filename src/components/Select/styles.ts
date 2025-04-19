@@ -9,9 +9,9 @@ export const styles = StyleSheet.create({
 		justifyContent: 'space-between',
 		padding: 12,
 		borderWidth: 1,
-		borderColor: '#ccc',
+		borderColor: colors.gray[200],
 		borderRadius: 8,
-		backgroundColor: 'white',
+		backgroundColor: colors.light,
 		width: '100%',
 	},
 	text: {

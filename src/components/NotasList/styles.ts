@@ -5,8 +5,9 @@ import { DEFAULT_STYLE } from '@/constants/styles'
 export const s = StyleSheet.create({
 	card: {
 		padding: 15,
-		borderColor: '#F2F2F2',
-		borderWidth: 2,
+		borderColor: colors.gray[200],
+		backgroundColor: colors.light,
+		borderWidth: 1,
 		borderRadius: 10,
 		justifyContent: 'center',
 		width: '100%',

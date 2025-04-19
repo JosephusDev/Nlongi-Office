@@ -6,15 +6,16 @@ export const s = StyleSheet.create({
 	container: {
 		flex: 1,
 		padding: 24,
-		backgroundColor: colors.light,
+		backgroundColor: '#F2F2F2',
 	},
 	card: {
 		padding: 15,
-		borderColor: '#F2F2F2',
-		borderWidth: 2,
+		borderColor: colors.gray[200],
+		borderWidth: 1,
 		borderRadius: 10,
 		width: '100%',
 		marginTop: 20,
+		backgroundColor: colors.light,
 	},
 	label: {
 		fontSize: 14,

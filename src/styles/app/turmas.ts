@@ -5,8 +5,9 @@ import { DEFAULT_STYLE } from '@/constants/styles'
 export const s = StyleSheet.create({
 	container: {
 		flex: 1,
-		padding: 24,
-		backgroundColor: colors.light,
+		paddingVertical: 24,
+		paddingHorizontal: 15,
+		backgroundColor: '#F2F2F2',
 	},
 	flatList: {
 		paddingTop: 10,
@@ -116,8 +117,9 @@ export const s = StyleSheet.create({
 		width: '100%',
 		paddingHorizontal: 10,
 		paddingVertical: 10,
-		borderColor: '#F2F2F2',
-		borderWidth: 2,
+		borderColor: colors.gray[200],
+		backgroundColor: colors.light,
+		borderWidth: 1,
 		borderRadius: 10,
 	},
 	username: {
@@ -198,13 +200,15 @@ export const s = StyleSheet.create({
 	},
 	listItem: {
 		paddingVertical: 20,
-		borderBottomWidth: 1,
-		borderBottomColor: colors.gray[300],
+		borderWidth: 1,
+		borderColor: colors.gray[200],
 		borderRadius: 10,
 		flex: 1,
 		justifyContent: 'center',
 		alignItems: 'flex-start',
 		paddingLeft: 10,
+		backgroundColor: colors.light,
+		marginBottom: 5,
 	},
 	listItemText: {
 		fontSize: 15,

@@ -1,20 +1,21 @@
 import { fontFamily } from '@/styles/font-family'
 import { StyleSheet } from 'react-native'
+import { colors } from '@/styles/colors'
 
 export const s = StyleSheet.create({
 	main: {
 		marginTop: 20,
-		backgroundColor: 'white',
+		backgroundColor: colors.light,
 		width: '100%',
-		borderColor: '#F2F2F2',
-		borderWidth: 2,
+		borderColor: colors.gray[200],
+		borderWidth: 0.5,
 		borderRadius: 8,
 	},
 	thead: {
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		alignItems: 'center',
-		backgroundColor: '#F2F2F2',
+		backgroundColor: colors.light,
 	},
 	th: {
 		fontSize: 15,

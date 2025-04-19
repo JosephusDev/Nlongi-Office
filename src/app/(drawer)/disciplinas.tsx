@@ -92,7 +92,6 @@ export default function Disciplinas() {
 			const result = await getDisciplinas(db)
 			setDisciplinas(result)
 		} catch (error) {
-			ToastAndroid.show('Erro ao carregar disciplinas', ToastAndroid.SHORT)
 			console.error(error)
 		}
 	}
@@ -157,17 +156,17 @@ export default function Disciplinas() {
 					data={disciplinasFiltradas}
 					keyExtractor={item => item.id.toString()}
 					renderItem={({ item }) => (
-						<View style={s.listItem}>
-							<TouchableOpacity
-								activeOpacity={0.5}
-								onPress={() => handleOpenModal(item)}
-								onLongPress={() => onDelete(item.id)}
-							>
+						<TouchableOpacity
+							activeOpacity={0.5}
+							onPress={() => handleOpenModal(item)}
+							onLongPress={() => onDelete(item.id)}
+						>
+							<View style={s.listItem}>
 								<Text ellipsizeMode='tail' numberOfLines={1} style={s.listItemText}>
 									{item.nome}
 								</Text>
-							</TouchableOpacity>
-						</View>
+							</View>
+						</TouchableOpacity>
 					)}
 					ListHeaderComponent={<View style={{ marginTop: 50 }}></View>}
 					ListEmptyComponent={<EmptyList title='Nenhuma disciplina encontrada.' />}

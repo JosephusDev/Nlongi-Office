@@ -6,7 +6,6 @@ import {
 	Nunito_600SemiBold,
 	Nunito_700Bold,
 } from '@expo-google-fonts/nunito'
-import { Loading } from '@/components/Loading'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { AuthProvider } from '@/context/AuthContext'
 import { SQLiteProvider } from 'expo-sqlite'
@@ -15,8 +14,9 @@ import { Stack } from 'expo-router'
 import { ToastProvider } from '@/context/ToastContext'
 import BackButton from '@/components/BackButton'
 import * as SplashScreen from 'expo-splash-screen'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { StatusBar } from 'expo-status-bar'
+import { SplashScreenComponent } from '@/components/SplashScreen'
 
 SplashScreen.preventAutoHideAsync()
 
@@ -28,13 +28,20 @@ export default function Layout() {
 		Nunito_700Bold,
 	})
 
-	useEffect(() => {
-		if (fontsLoaded) {
-			SplashScreen.hideAsync()
-		}
-	}, [fontsLoaded])
+	const [showSplash, setShowSplash] = useState(true)
 
-	if (!fontsLoaded) return <Loading />
+	useEffect(() => {
+		const timer = setTimeout(() => {
+			setShowSplash(false)
+		}, 5000)
+
+		return () => clearTimeout(timer)
+	}, [])
+
+	if (!fontsLoaded || showSplash) {
+		SplashScreen.hideAsync()
+		return <SplashScreenComponent />
+	}
 
 	return (
 		<SQLiteProvider databaseName='longi.db' onInit={createUsuarioTable}>

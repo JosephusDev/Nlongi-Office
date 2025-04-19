@@ -5,12 +5,13 @@ export const s = StyleSheet.create({
 	container: {
 		justifyContent: 'center',
 		alignItems: 'center',
-		borderColor: '#F2F2F2',
+		borderColor: colors.gray[200],
+		backgroundColor: colors.light,
 		width: '100%',
 		borderRadius: 10,
 		padding: 20,
 		marginTop: 20,
-		borderWidth: 2,
+		borderWidth: 1,
 	},
 	title: {
 		color: colors.gray[400],

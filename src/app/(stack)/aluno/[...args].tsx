@@ -166,7 +166,7 @@ export default function Aluno() {
 	]
 
 	return (
-		<ScrollView style={{ backgroundColor: colors.light }}>
+		<ScrollView style={{ backgroundColor: '#F2F2F2' }}>
 			<View style={s.container}>
 				<Text style={s.title}>{nome}</Text>
 				<FilterButton style={{ marginTop: 20 }} onPress={() => setVisible(true)} />

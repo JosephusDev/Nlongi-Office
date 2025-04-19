@@ -1,8 +1,8 @@
 import { Text, View, TextInput, TouchableOpacity, Pressable, ActivityIndicator, Platform, Image } from 'react-native'
 import { s } from '@/styles/app/auth'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Button from '@/components/Button'
-import { IconBook, IconEye, IconEyeOff } from '@tabler/icons-react-native'
+import { IconEye, IconEyeOff } from '@tabler/icons-react-native'
 import { colors } from '@/styles/colors'
 import { useAuth } from '@/context/AuthContext'
 import { useForm, Controller } from 'react-hook-form'
@@ -12,13 +12,15 @@ import { User } from '@/types'
 import { Feather } from '@expo/vector-icons'
 import * as LocalAuthentication from 'expo-local-authentication'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { Redirect, router } from 'expo-router'
+import { Redirect } from 'expo-router'
+import LottieView from 'lottie-react-native'
 
 export default function Auth() {
 	const { signIn, signUp, isLoading, isAuthenticated } = useAuth()
 	const [isPasswordVisible, setPasswordVisible] = useState(false)
 	const [isLoginScreenVisible, setLoginScreenVisible] = useState(true)
 	const [isCheckingSession, setIsCheckingSession] = useState(true)
+	const animation = useRef<LottieView>(null)
 
 	const {
 		control,
@@ -78,11 +80,7 @@ export default function Auth() {
 	}, [isCheckingSession, isAuthenticated])
 
 	if (isCheckingSession) {
-		return (
-			<View style={[s.container, { justifyContent: 'center', alignItems: 'center' }]}>
-				<ActivityIndicator size='large' color={colors.red.base} />
-			</View>
-		)
+		return null
 	}
 
 	if (isAuthenticated) {
@@ -95,8 +93,19 @@ export default function Auth() {
 
 	return (
 		<View style={s.container}>
-			<IconBook style={s.iconHome} color={colors.red.base} size={50} />
-			<Text style={s.title}>Prof Office</Text>
+			<LottieView
+				autoPlay
+				ref={animation}
+				loop={true}
+				style={{
+					width: 200,
+					height: 200,
+					backgroundColor: colors.light,
+					alignSelf: 'center',
+				}}
+				source={require('@/assets/lottie/book.json')}
+			/>
+			<Image source={require('@/assets/images/banner_black.png')} style={s.logo} />
 			{!isLoginScreenVisible && (
 				<View>
 					<Text style={s.label}>Nome Completo</Text>

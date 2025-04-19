@@ -53,9 +53,35 @@ export default function Turmas() {
 
 	const onSubmit = async (data: Pick<ITurma, 'nome'>) => {
 		if (selected?.id) {
-			await update(db, selected.id, data)
+			const result = await update(db, selected.id, data)
+			if (result) {
+				showToast({
+					title: 'Longi',
+					message: 'Turma atualizada com sucesso',
+					type: 'success',
+				})
+			} else {
+				showToast({
+					title: 'Longi',
+					message: 'Erro ao atualizar turma',
+					type: 'error',
+				})
+			}
 		} else {
-			await create(db, data)
+			const result = await create(db, data)
+			if (result) {
+				showToast({
+					title: 'Longi',
+					message: 'Turma cadastrada com sucesso',
+					type: 'success',
+				})
+			} else {
+				showToast({
+					title: 'Longi',
+					message: 'Erro ao cadastrar turma',
+					type: 'error',
+				})
+			}
 		}
 		setIsOpen(false)
 		carregarTurmas()
@@ -71,8 +97,21 @@ export default function Turmas() {
 
 	const handleConfirmDelete = async () => {
 		if (selectedItemId) {
-			await deleteTurma(db, selectedItemId)
-			carregarTurmas()
+			const result = await deleteTurma(db, selectedItemId)
+			if (result) {
+				showToast({
+					title: 'Longi',
+					message: 'Turma removida com sucesso',
+					type: 'success',
+				})
+				carregarTurmas()
+			} else {
+				showToast({
+					title: 'Longi',
+					message: 'Erro ao remover turma',
+					type: 'error',
+				})
+			}
 			setSelectedItemId(null)
 			setIsDeleteModalOpen(false)
 		}
@@ -104,17 +143,17 @@ export default function Turmas() {
 					data={turmasFiltradas}
 					keyExtractor={item => item.id.toString()}
 					renderItem={({ item }) => (
-						<View style={s.listItem}>
-							<TouchableOpacity
-								activeOpacity={0.5}
-								onPress={() => handleOpenModal(item)}
-								onLongPress={() => onDelete(item.id)}
-							>
+						<TouchableOpacity
+							activeOpacity={0.5}
+							onPress={() => handleOpenModal(item)}
+							onLongPress={() => onDelete(item.id)}
+						>
+							<View style={s.listItem}>
 								<Text ellipsizeMode='tail' numberOfLines={1} style={s.listItemText}>
 									{item.nome}
 								</Text>
-							</TouchableOpacity>
-						</View>
+							</View>
+						</TouchableOpacity>
 					)}
 					ListHeaderComponent={<View style={{ marginTop: 50 }}></View>}
 					ListEmptyComponent={<EmptyList title='Nenhuma turma encontrada.' />}

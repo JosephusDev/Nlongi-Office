@@ -10,8 +10,8 @@ export const s = StyleSheet.create({
 		borderRadius: 8,
 		marginVertical: 10,
 		backgroundColor: '#FFFFFF',
-		borderWidth: 0.5,
-		borderColor: colors.gray[500],
+		borderWidth: 1,
+		borderColor: colors.gray[200],
 	},
 	searchLabel: {
 		fontFamily: fontFamily.bold,
