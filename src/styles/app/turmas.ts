@@ -199,7 +199,7 @@ export const s = StyleSheet.create({
 		gap: 15, // Espaçamento entre ícones
 	},
 	listItem: {
-		paddingVertical: 20,
+		paddingVertical: 15,
 		borderWidth: 1,
 		borderColor: colors.gray[200],
 		borderRadius: 10,
@@ -212,6 +212,6 @@ export const s = StyleSheet.create({
 	},
 	listItemText: {
 		fontSize: 15,
-		fontFamily: fontFamily.medium,
+		fontFamily: fontFamily.semiBold,
 	},
 })

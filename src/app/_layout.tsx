@@ -1,4 +1,13 @@
-import { colors, fontFamily } from '@/styles/theme'
+// hide warnings
+import { LogBox } from 'react-native'
+LogBox.ignoreAllLogs()
+
+import { useEffect, useState } from 'react'
+import { StatusBar } from 'expo-status-bar'
+import { GestureHandlerRootView } from 'react-native-gesture-handler'
+import { Stack } from 'expo-router'
+import { SQLiteProvider } from 'expo-sqlite'
+import * as SplashScreen from 'expo-splash-screen'
 import {
 	useFonts,
 	Nunito_400Regular,
@@ -6,21 +15,24 @@ import {
 	Nunito_600SemiBold,
 	Nunito_700Bold,
 } from '@expo-google-fonts/nunito'
-import { GestureHandlerRootView } from 'react-native-gesture-handler'
+
+// Contextos
 import { AuthProvider } from '@/context/AuthContext'
-import { SQLiteProvider } from 'expo-sqlite'
-import { createUsuarioTable } from '@/services/database'
-import { Stack } from 'expo-router'
 import { ToastProvider } from '@/context/ToastContext'
+
+// Componentes
 import BackButton from '@/components/BackButton'
-import * as SplashScreen from 'expo-splash-screen'
-import { useEffect, useState } from 'react'
-import { StatusBar } from 'expo-status-bar'
 import { SplashScreenComponent } from '@/components/SplashScreen'
 
+// Utilitários
+import { colors, fontFamily } from '@/styles/theme'
+import { createUsuarioTable } from '@/services/database'
+
+// Configuração inicial da splash screen
 SplashScreen.preventAutoHideAsync()
 
 export default function Layout() {
+	// Estado para controle de carregamento de fontes
 	const [fontsLoaded] = useFonts({
 		Nunito_400Regular,
 		Nunito_500Medium,
@@ -28,18 +40,31 @@ export default function Layout() {
 		Nunito_700Bold,
 	})
 
-	const [showSplash, setShowSplash] = useState(true)
+	// Estado para controle de prontidão do app
+	const [appIsReady, setAppIsReady] = useState(false)
 
+	// Efeito para preparação inicial do app
 	useEffect(() => {
-		const timer = setTimeout(() => {
-			setShowSplash(false)
-		}, 5000)
+		const prepareApp = async () => {
+			try {
+				// Esconde a splash screen nativa quando as fontes estiverem carregadas
+				if (fontsLoaded) {
+					await SplashScreen.hideAsync()
+				}
+				// Tempo mínimo da splash screen (3 segundos)
+				await new Promise(resolve => setTimeout(resolve, 3000))
+			} catch (error) {
+				console.warn('Error during app preparation:', error)
+			} finally {
+				setAppIsReady(true)
+			}
+		}
 
-		return () => clearTimeout(timer)
-	}, [])
+		prepareApp()
+	}, [fontsLoaded])
 
-	if (!fontsLoaded || showSplash) {
-		SplashScreen.hideAsync()
+	// Mostra a splash screen personalizada enquanto carrega
+	if (!fontsLoaded || !appIsReady) {
 		return <SplashScreenComponent />
 	}
 
@@ -62,7 +87,11 @@ export default function Layout() {
 								options={{
 									headerShown: true,
 									headerTitle: 'Desempenho individual',
-									headerTitleStyle: { fontFamily: fontFamily.bold, color: '#FFFFFF', fontSize: 18 },
+									headerTitleStyle: {
+										fontFamily: fontFamily.bold,
+										color: '#FFFFFF',
+										fontSize: 18,
+									},
 									headerTintColor: '#FFFFFF',
 									headerStyle: {
 										backgroundColor: colors.red.base,

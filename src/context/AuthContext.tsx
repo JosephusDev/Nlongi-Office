@@ -22,8 +22,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 			if (response) {
 				setUser(response[0])
 				setIsAuthenticated(true)
-				// Salva os dados da sessão
-				await AsyncStorage.setItem('@session', 'true')
+				router.push('/(drawer)/home')
 			} else {
 				showToast({
 					title: 'Longi',
@@ -64,7 +63,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 	}
 
 	const signOut = async () => {
-		await AsyncStorage.removeItem('@session')
 		setIsAuthenticated(false)
 		router.replace('/(auth)')
 	}

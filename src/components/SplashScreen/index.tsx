@@ -4,7 +4,7 @@ import { colors } from '@/styles/colors'
 import { StatusBar } from 'expo-status-bar'
 import { Fragment, useEffect } from 'react'
 import * as NavigationBar from 'expo-navigation-bar'
-
+import { fontFamily } from '@/styles/theme'
 const { width, height } = Dimensions.get('window')
 
 export const SplashScreenComponent = () => {
@@ -26,9 +26,13 @@ export const SplashScreenComponent = () => {
 				<LottieView
 					source={require('@/assets/lottie/rocket-splash.json')}
 					autoPlay
-					loop={false}
+					loop={true}
 					style={styles.animation}
 				/>
+				<View style={styles.footer}>
+					<Text style={styles.footerText}>by</Text>
+					<Text style={[styles.footerText, { fontSize: 20, fontFamily: fontFamily.bold }]}>Fulltech</Text>
+				</View>
 			</View>
 		</Fragment>
 	)
@@ -42,11 +46,27 @@ const styles = StyleSheet.create({
 		backgroundColor: colors.red.base,
 	},
 	animation: {
-		width: width * 0.8,
-		height: height * 0.4,
+		width: width * 0.6,
+		height: height * 0.3,
 	},
 	logo: {
-		width: width * 0.8,
-		height: height * 0.2,
+		width: width * 0.6,
+		height: height * 0.1,
+	},
+	footer: {
+		position: 'absolute',
+		bottom: 50,
+		width: '100%',
+		alignItems: 'center',
+		paddingBottom: 20,
+	},
+	footerText: {
+		color: colors.light,
+		textAlign: 'center',
+		fontFamily: fontFamily.medium,
+		fontSize: 18,
+		marginTop: 10,
+		marginBottom: 10,
+		marginHorizontal: 20,
 	},
 })

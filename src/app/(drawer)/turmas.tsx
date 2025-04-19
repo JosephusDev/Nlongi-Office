@@ -155,7 +155,7 @@ export default function Turmas() {
 							</View>
 						</TouchableOpacity>
 					)}
-					ListHeaderComponent={<View style={{ marginTop: 50 }}></View>}
+					ListHeaderComponent={<View style={{ marginTop: 20 }}></View>}
 					ListEmptyComponent={<EmptyList title='Nenhuma turma encontrada.' />}
 				/>
 				<MyModal title='Adicionar Turma' visible={isOpen} onClose={() => setIsOpen(false)}>

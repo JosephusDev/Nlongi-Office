@@ -162,13 +162,13 @@ export default function Disciplinas() {
 							onLongPress={() => onDelete(item.id)}
 						>
 							<View style={s.listItem}>
-								<Text ellipsizeMode='tail' numberOfLines={1} style={s.listItemText}>
+								<Text ellipsizeMode='tail' numberOfLines={2} style={s.listItemText}>
 									{item.nome}
 								</Text>
 							</View>
 						</TouchableOpacity>
 					)}
-					ListHeaderComponent={<View style={{ marginTop: 50 }}></View>}
+					ListHeaderComponent={<View style={{ marginTop: 20 }}></View>}
 					ListEmptyComponent={<EmptyList title='Nenhuma disciplina encontrada.' />}
 				/>
 				<MyModal

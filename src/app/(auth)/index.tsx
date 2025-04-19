@@ -16,10 +16,9 @@ import { Redirect } from 'expo-router'
 import LottieView from 'lottie-react-native'
 
 export default function Auth() {
-	const { signIn, signUp, isLoading, isAuthenticated } = useAuth()
+	const { signIn, signUp, isLoading } = useAuth()
 	const [isPasswordVisible, setPasswordVisible] = useState(false)
 	const [isLoginScreenVisible, setLoginScreenVisible] = useState(true)
-	const [isCheckingSession, setIsCheckingSession] = useState(true)
 	const animation = useRef<LottieView>(null)
 
 	const {
@@ -41,8 +40,7 @@ export default function Auth() {
 
 	async function handleAuthentication() {
 		const hasBio = await AsyncStorage.getItem('@biometria')
-		const sessionData = await AsyncStorage.getItem('@session')
-		if (hasBio === 'true' && isLoginScreenVisible && !sessionData) {
+		if (hasBio === 'true' && isLoginScreenVisible) {
 			const result = await LocalAuthentication.authenticateAsync({
 				promptMessage: 'Desbloqueie para entrar no Prof Office',
 				biometricsSecurityLevel: 'strong',
@@ -60,32 +58,8 @@ export default function Auth() {
 	}
 
 	useEffect(() => {
-		const checkSession = async () => {
-			const sessionData = await AsyncStorage.getItem('@session')
-			if (sessionData) {
-				const jsonValue = await AsyncStorage.getItem('@user')
-				const jsonUser = JSON.parse(jsonValue ?? '')
-				await signIn(jsonUser)
-			}
-			setIsCheckingSession(false)
-		}
-
-		checkSession()
+		handleAuthentication()
 	}, [])
-
-	useEffect(() => {
-		if (!isCheckingSession && !isAuthenticated) {
-			handleAuthentication()
-		}
-	}, [isCheckingSession, isAuthenticated])
-
-	if (isCheckingSession) {
-		return null
-	}
-
-	if (isAuthenticated) {
-		return <Redirect href='/(drawer)/home' />
-	}
 
 	const togglePasswordVisibility = () => {
 		setPasswordVisible(prev => !prev)
