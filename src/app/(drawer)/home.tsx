@@ -14,11 +14,13 @@ import {
 	createNotaTable,
 } from '@/services/database'
 import { SkeletonAvatar, SkeletonNavbar } from '@/components/skeleton'
+import { useToast } from '@/context/ToastContext'
 
 export default function Home() {
 	const db = useSQLiteContext()
 	const [isDBReady, setIsDBReady] = useState(false)
 	const { user } = useAuth()
+	const { showToast } = useToast()
 	const imageUri: string | null = user?.image ?? null
 
 	const createTables = async () => {
@@ -34,6 +36,17 @@ export default function Home() {
 	useEffect(() => {
 		createTables()
 	}, [])
+
+	useEffect(() => {
+		if (user && isDBReady) {
+			showToast({
+				title: 'Mensagem',
+				message: `Olá, Seja bem-vindo(a).`,
+				type: 'success',
+				duration: 4000,
+			})
+		}
+	}, [user, isDBReady])
 
 	const isLoading = !user || !isDBReady
 

@@ -1,5 +1,6 @@
 import { fontFamily } from '@/styles/font-family'
 import { StyleSheet } from 'react-native'
+import { colors } from '@/styles/theme'
 
 export const styles = StyleSheet.create({
 	selector: {
@@ -53,14 +54,14 @@ export const styles = StyleSheet.create({
 		fontFamily: fontFamily.regular,
 	},
 	checkmark: {
-		color: '#007AFF',
+		color: colors.red.base,
 	},
 	closeButton: {
 		padding: 15,
 		alignItems: 'center',
 	},
 	closeText: {
-		color: '#007AFF',
+		color: colors.red.base,
 		fontSize: 16,
 		fontFamily: fontFamily.bold,
 	},

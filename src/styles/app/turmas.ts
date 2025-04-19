@@ -197,9 +197,14 @@ export const s = StyleSheet.create({
 		gap: 15, // Espaçamento entre ícones
 	},
 	listItem: {
-		padding: 20,
+		paddingVertical: 20,
 		borderBottomWidth: 1,
 		borderBottomColor: colors.gray[300],
+		borderRadius: 10,
+		flex: 1,
+		justifyContent: 'center',
+		alignItems: 'flex-start',
+		paddingLeft: 10,
 	},
 	listItemText: {
 		fontSize: 15,

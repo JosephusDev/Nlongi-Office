@@ -32,7 +32,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
 	return (
 		<ToastContext.Provider value={{ showToast, removeToast }}>
 			{children}
-			<View style={{ position: 'absolute', bottom: 0, left: 0, right: 0 }}>
+			<View style={{ position: 'absolute', top: 60, left: 0, right: 0 }}>
 				{messages.map(msg => (
 					<CustomToast
 						key={msg.id}

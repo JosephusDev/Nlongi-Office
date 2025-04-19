@@ -1,7 +1,7 @@
 import Header from '@/components/Header'
 import ToolBar from '@/components/ToolBar'
 import { s } from '@/styles/app/turmas'
-import { Alert, FlatList, Text, TextInput, ToastAndroid, View } from 'react-native'
+import { Alert, FlatList, Text, TextInput, ToastAndroid, View, Vibration } from 'react-native'
 import { colors } from '@/styles/colors'
 import { useEffect, useState } from 'react'
 import { ITurma } from '@/types'
@@ -16,13 +16,16 @@ import Button from '@/components/Button'
 import { useSQLiteContext } from 'expo-sqlite'
 import { useToast } from '@/context/ToastContext'
 import { TouchableOpacity } from 'react-native-gesture-handler'
+import { IconTrash } from '@tabler/icons-react-native'
 
 export default function Turmas() {
 	const db = useSQLiteContext()
 	const [turmas, setTurmas] = useState<ITurma[]>([])
 	const [isOpen, setIsOpen] = useState(false)
+	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
 	const [selected, setSelected] = useState<ITurma | null>(null)
 	const [search, setSearch] = useState('')
+	const [selectedItemId, setSelectedItemId] = useState<number | null>(null)
 	const { showToast } = useToast()
 	const {
 		control,
@@ -61,16 +64,18 @@ export default function Turmas() {
 	}
 
 	const onDelete = (id: number) => {
-		Alert.alert('Remover', 'Deseja remover essa Turma?', [
-			{
-				text: 'Sim',
-				onPress: async () => {
-					await deleteTurma(db, id)
-					carregarTurmas()
-				},
-			},
-			{ text: 'Não', style: 'cancel' },
-		])
+		Vibration.vibrate(50)
+		setSelectedItemId(id)
+		setIsDeleteModalOpen(true)
+	}
+
+	const handleConfirmDelete = async () => {
+		if (selectedItemId) {
+			await deleteTurma(db, selectedItemId)
+			carregarTurmas()
+			setSelectedItemId(null)
+			setIsDeleteModalOpen(false)
+		}
 	}
 
 	const turmasFiltradas = search ? turmas.filter(turma => turma.nome.includes(search.toUpperCase())) : turmas
@@ -100,14 +105,18 @@ export default function Turmas() {
 					keyExtractor={item => item.id.toString()}
 					renderItem={({ item }) => (
 						<View style={s.listItem}>
-							<TouchableOpacity onPress={() => handleOpenModal(item)} onLongPress={() => onDelete(item.id)}>
+							<TouchableOpacity
+								activeOpacity={0.5}
+								onPress={() => handleOpenModal(item)}
+								onLongPress={() => onDelete(item.id)}
+							>
 								<Text ellipsizeMode='tail' numberOfLines={1} style={s.listItemText}>
 									{item.nome}
 								</Text>
 							</TouchableOpacity>
 						</View>
 					)}
-					ListHeaderComponent={<View style={{ marginTop: 20 }}></View>}
+					ListHeaderComponent={<View style={{ marginTop: 50 }}></View>}
 					ListEmptyComponent={<EmptyList title='Nenhuma turma encontrada.' />}
 				/>
 				<MyModal title='Adicionar Turma' visible={isOpen} onClose={() => setIsOpen(false)}>
@@ -136,6 +145,33 @@ export default function Turmas() {
 						onClick={handleSubmit(onSubmit)}
 						style={{ borderRadius: 8, marginTop: 30 }}
 					/>
+				</MyModal>
+				<MyModal
+					title={<IconTrash size={30} color={colors.red.base} />}
+					visible={isDeleteModalOpen}
+					onClose={() => {
+						setIsDeleteModalOpen(false)
+						setSelectedItemId(null)
+					}}
+				>
+					<View style={{ flex: 0, width: '100%', marginTop: 10 }}>
+						<Text style={[s.labelModal, { width: '100%', textAlign: 'center' }]}>Deseja remover essa Turma?</Text>
+					</View>
+					<View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 30 }}>
+						<Button
+							title='Cancelar'
+							onClick={() => {
+								setIsDeleteModalOpen(false)
+								setSelectedItemId(null)
+							}}
+							style={{ borderRadius: 8, flex: 1, marginRight: 10, backgroundColor: colors.gray[400] }}
+						/>
+						<Button
+							title='Confirmar'
+							onClick={handleConfirmDelete}
+							style={{ borderRadius: 8, flex: 1, marginLeft: 10, backgroundColor: colors.red.base }}
+						/>
+					</View>
 				</MyModal>
 			</View>
 		</DrawerSceneWrapper>

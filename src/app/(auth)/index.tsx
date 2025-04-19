@@ -12,16 +12,13 @@ import { User } from '@/types'
 import { Feather } from '@expo/vector-icons'
 import * as LocalAuthentication from 'expo-local-authentication'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { Redirect } from 'expo-router'
+import { Redirect, router } from 'expo-router'
+
 export default function Auth() {
 	const { signIn, signUp, isLoading, isAuthenticated } = useAuth()
-
-	if (isAuthenticated) {
-		return <Redirect href='/(drawer)/home' />
-	}
-
 	const [isPasswordVisible, setPasswordVisible] = useState(false)
 	const [isLoginScreenVisible, setLoginScreenVisible] = useState(true)
+	const [isCheckingSession, setIsCheckingSession] = useState(true)
 
 	const {
 		control,
@@ -29,12 +26,8 @@ export default function Auth() {
 		formState: { errors },
 	} = useForm({
 		resolver: yupResolver(Userschema),
-		context: { isSignUp: !isLoginScreenVisible }, // Define o contexto para Yup separar as regras para SignIn e SignUp
+		context: { isSignUp: !isLoginScreenVisible },
 	})
-
-	const togglePasswordVisibility = () => {
-		setPasswordVisible(prev => !prev)
-	}
 
 	const onSubmit = (data: Omit<User, 'image'>) => {
 		if (isLoginScreenVisible) {
@@ -46,10 +39,10 @@ export default function Auth() {
 
 	async function handleAuthentication() {
 		const hasBio = await AsyncStorage.getItem('@biometria')
-		if (hasBio === 'true' && isLoginScreenVisible) {
+		const sessionData = await AsyncStorage.getItem('@session')
+		if (hasBio === 'true' && isLoginScreenVisible && !sessionData) {
 			const result = await LocalAuthentication.authenticateAsync({
-				promptMessage: 'Desbloqueie para entrar no Nlongi',
-				//disableDeviceFallback: true,
+				promptMessage: 'Desbloqueie para entrar no Prof Office',
 				biometricsSecurityLevel: 'strong',
 				requireConfirmation: true,
 				cancelLabel: 'Cancelar',
@@ -59,22 +52,51 @@ export default function Auth() {
 			if (result.success) {
 				const jsonValue = await AsyncStorage.getItem('@user')
 				const jsonUser = JSON.parse(jsonValue ?? '')
-				console.log(jsonUser)
 				onSubmit(jsonUser)
 			}
 		}
 	}
 
 	useEffect(() => {
-		handleAuthentication()
+		const checkSession = async () => {
+			const sessionData = await AsyncStorage.getItem('@session')
+			if (sessionData) {
+				const jsonValue = await AsyncStorage.getItem('@user')
+				const jsonUser = JSON.parse(jsonValue ?? '')
+				await signIn(jsonUser)
+			}
+			setIsCheckingSession(false)
+		}
+
+		checkSession()
 	}, [])
+
+	useEffect(() => {
+		if (!isCheckingSession && !isAuthenticated) {
+			handleAuthentication()
+		}
+	}, [isCheckingSession, isAuthenticated])
+
+	if (isCheckingSession) {
+		return (
+			<View style={[s.container, { justifyContent: 'center', alignItems: 'center' }]}>
+				<ActivityIndicator size='large' color={colors.red.base} />
+			</View>
+		)
+	}
+
+	if (isAuthenticated) {
+		return <Redirect href='/(drawer)/home' />
+	}
+
+	const togglePasswordVisibility = () => {
+		setPasswordVisible(prev => !prev)
+	}
 
 	return (
 		<View style={s.container}>
-			<View style={s.containerIconHome}>
-				<IconBook color={colors.red.base} size={50} />
-			</View>
-			<Text style={s.title}>Nlongi Office</Text>
+			<IconBook style={s.iconHome} color={colors.red.base} size={50} />
+			<Text style={s.title}>Prof Office</Text>
 			{!isLoginScreenVisible && (
 				<View>
 					<Text style={s.label}>Nome Completo</Text>

@@ -1,11 +1,11 @@
 {
 	"expo": {
-		"name": "Longi",
-		"slug": "longi",
+		"name": "Prof Office",
+		"slug": "prof-office",
 		"version": "1.0.0",
 		"orientation": "portrait",
 		"icon": "./assets/images/icon.png",
-		"scheme": "myapp",
+		"scheme": "prof-office",
 		"userInterfaceStyle": "automatic",
 		"newArchEnabled": true,
 		"splash": {

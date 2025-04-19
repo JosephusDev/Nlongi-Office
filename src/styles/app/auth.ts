@@ -92,4 +92,9 @@ export const s = StyleSheet.create({
 		marginHorizontal: 30,
 		fontFamily: fontFamily.regular,
 	},
+	iconHome: {
+		marginTop: 50,
+		marginBottom: 10,
+		alignSelf: 'center',
+	},
 })

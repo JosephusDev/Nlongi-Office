@@ -23,14 +23,25 @@ export const s = StyleSheet.create({
 		flex: 1,
 	},
 	title: {
-		fontSize: 14,
+		fontSize: 16,
 		fontFamily: fontFamily.bold,
 		color: '#FFFFFF',
 		marginBottom: 4,
 	},
 	message: {
-		fontSize: 12,
+		fontSize: 14,
 		fontFamily: fontFamily.regular,
 		color: '#FFFFFF',
+	},
+	progressBarContainer: {
+		height: 6,
+		backgroundColor: 'rgba(255, 255, 255, 0.3)',
+		borderRadius: 50,
+		marginTop: 8,
+		overflow: 'hidden',
+	},
+	progressBar: {
+		height: '100%',
+		backgroundColor: '#FFFFFF',
 	},
 })

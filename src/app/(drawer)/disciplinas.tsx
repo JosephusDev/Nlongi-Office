@@ -1,7 +1,17 @@
 import Header from '@/components/Header'
 import ToolBar from '@/components/ToolBar'
 import { s } from '@/styles/app/turmas'
-import { Alert, FlatList, Text, TextInput, ToastAndroid, TouchableOpacity, View } from 'react-native'
+import {
+	Alert,
+	FlatList,
+	Text,
+	TextInput,
+	ToastAndroid,
+	TouchableOpacity,
+	View,
+	Vibration,
+	Pressable,
+} from 'react-native'
 import { Feather } from '@expo/vector-icons'
 import { colors } from '@/styles/colors'
 import { useEffect, useState } from 'react'
@@ -16,7 +26,6 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { TurmaSchema } from '@/schema'
 import Button from '@/components/Button'
 import { useSQLiteContext } from 'expo-sqlite'
-import TableFlatList from '@/components/TableFlatList'
 import { useToast } from '@/context/ToastContext'
 
 export default function Disciplinas() {
@@ -24,8 +33,10 @@ export default function Disciplinas() {
 	const { showToast } = useToast()
 	const [disciplinas, setDisciplinas] = useState<ITurma[]>([])
 	const [isOpen, setIsOpen] = useState(false)
+	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
 	const [selected, setSelected] = useState<ITurma | null>(null)
 	const [search, setSearch] = useState('')
+	const [selectedItemId, setSelectedItemId] = useState<number | null>(null)
 	const {
 		control,
 		handleSubmit,
@@ -87,32 +98,31 @@ export default function Disciplinas() {
 	}
 
 	const onDelete = (id: number) => {
-		Alert.alert('Remover', 'Deseja remover essa Disciplina?', [
-			{
-				text: 'Sim',
-				onPress: async () => {
-					const result = await deleteDisciplina(db, id)
-					if (result) {
-						showToast({
-							title: 'Longi',
-							message: 'Disciplina removido com sucesso',
-							type: 'success',
-						})
-						carregarDisciplinas()
-					} else {
-						showToast({
-							title: 'Longi',
-							message: 'Erro ao remover disciplina',
-							type: 'error',
-						})
-					}
-				},
-			},
-			{
-				text: 'Não',
-				style: 'cancel',
-			},
-		])
+		Vibration.vibrate(50)
+		setSelectedItemId(id)
+		setIsDeleteModalOpen(true)
+	}
+
+	const handleConfirmDelete = async () => {
+		if (selectedItemId) {
+			const result = await deleteDisciplina(db, selectedItemId)
+			if (result) {
+				showToast({
+					title: 'Longi',
+					message: 'Disciplina removido com sucesso',
+					type: 'success',
+				})
+				carregarDisciplinas()
+			} else {
+				showToast({
+					title: 'Longi',
+					message: 'Erro ao remover disciplina',
+					type: 'error',
+				})
+			}
+			setSelectedItemId(null)
+			setIsDeleteModalOpen(false)
+		}
 	}
 
 	useEffect(() => {
@@ -134,9 +144,6 @@ export default function Disciplinas() {
 		setIsOpen(true)
 	}
 
-	// Definição das colunas e seus tamanhos
-	const columns = [{ key: 'Disciplina', label: 'Disciplina', width: 150 }]
-
 	return (
 		<DrawerSceneWrapper>
 			<View style={s.container}>
@@ -151,17 +158,25 @@ export default function Disciplinas() {
 					keyExtractor={item => item.id.toString()}
 					renderItem={({ item }) => (
 						<View style={s.listItem}>
-							<TouchableOpacity onPress={() => handleOpenModal(item)} onLongPress={() => onDelete(item.id)}>
+							<TouchableOpacity
+								activeOpacity={0.5}
+								onPress={() => handleOpenModal(item)}
+								onLongPress={() => onDelete(item.id)}
+							>
 								<Text ellipsizeMode='tail' numberOfLines={1} style={s.listItemText}>
 									{item.nome}
 								</Text>
 							</TouchableOpacity>
 						</View>
 					)}
-					ListHeaderComponent={<View style={{ marginTop: 20 }}></View>}
-					ListEmptyComponent={<EmptyList title='Nenhuma turma encontrada.' />}
+					ListHeaderComponent={<View style={{ marginTop: 50 }}></View>}
+					ListEmptyComponent={<EmptyList title='Nenhuma disciplina encontrada.' />}
 				/>
-				<MyModal title='Adicionar Disciplina' visible={isOpen} onClose={() => setIsOpen(false)}>
+				<MyModal
+					title={selected?.id ? 'Editar Disciplina' : 'Adicionar Disciplina'}
+					visible={isOpen}
+					onClose={() => setIsOpen(false)}
+				>
 					<View style={{ flex: 0, width: '100%' }}>
 						<Text style={s.labelModal}>Nome</Text>
 						<View style={[s.inputContainer, errors.nome && { borderColor: colors.red.base }]}>
@@ -187,6 +202,33 @@ export default function Disciplinas() {
 						onClick={handleSubmit(onSubmit)}
 						style={{ borderRadius: 8, marginTop: 30 }}
 					/>
+				</MyModal>
+				<MyModal
+					title={<IconTrash size={30} color={colors.red.base} />}
+					visible={isDeleteModalOpen}
+					onClose={() => {
+						setIsDeleteModalOpen(false)
+						setSelectedItemId(null)
+					}}
+				>
+					<View style={{ flex: 0, width: '100%', marginTop: 10 }}>
+						<Text style={[s.labelModal, { width: '100%', textAlign: 'center' }]}>Deseja remover essa Disciplina?</Text>
+					</View>
+					<View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 30 }}>
+						<Button
+							title='Cancelar'
+							onClick={() => {
+								setIsDeleteModalOpen(false)
+								setSelectedItemId(null)
+							}}
+							style={{ borderRadius: 8, flex: 1, marginRight: 10, backgroundColor: colors.gray[400] }}
+						/>
+						<Button
+							title='Confirmar'
+							onClick={handleConfirmDelete}
+							style={{ borderRadius: 8, flex: 1, marginLeft: 10, backgroundColor: colors.red.base }}
+						/>
+					</View>
 				</MyModal>
 			</View>
 		</DrawerSceneWrapper>

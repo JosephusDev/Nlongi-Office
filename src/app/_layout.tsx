@@ -20,11 +20,6 @@ import { StatusBar } from 'expo-status-bar'
 
 SplashScreen.preventAutoHideAsync()
 
-SplashScreen.setOptions({
-	duration: 1000,
-	fade: true,
-})
-
 export default function Layout() {
 	const [fontsLoaded] = useFonts({
 		Nunito_400Regular,

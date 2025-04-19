@@ -22,6 +22,7 @@ type TableProps = {
 	onEdit?: (id: number) => void
 	onDelete?: (id: number) => void
 	onPress?: (id: number, item: Data) => void
+	onLongPress?: (id: number) => void
 }
 
 const TableHeader = ({ columns, showActions }: { columns: ColumnConfig[]; showActions: boolean }) => {
@@ -48,20 +49,20 @@ const TableRow = ({
 	columns,
 	showActions,
 	onEdit,
-	onDelete,
 	onPress,
+	onLongPress,
 	index,
 }: {
 	item: Data
 	columns: ColumnConfig[]
 	showActions: boolean
 	onEdit?: (id: number) => void
-	onDelete?: (id: number) => void
 	onPress?: (id: number, item: Data) => void
+	onLongPress?: (id: number) => void
 	index: number
 }) => {
 	return (
-		<Pressable onPress={() => onPress?.(item.id, item)}>
+		<Pressable onPress={() => onPress?.(item.id, item)} onLongPress={() => onLongPress?.(item.id)}>
 			<View style={s.tbody}>
 				{/* Coluna # */}
 				<Text style={[s.td, { width: 50 }]}>{index + 1}</Text>
@@ -87,9 +88,6 @@ const TableRow = ({
 						<Pressable onPress={() => onEdit?.(item.id)} style={{ marginHorizontal: 5 }}>
 							<IconEdit size={20} color={colors.gray[500]} />
 						</Pressable>
-						<Pressable onPress={() => onDelete?.(item.id)}>
-							<IconTrash size={20} color={colors.red.base} />
-						</Pressable>
 					</View>
 				)}
 			</View>
@@ -103,8 +101,8 @@ const TableFlatList = ({
 	showActions = false,
 	showHeader = false,
 	onEdit,
-	onDelete,
 	onPress,
+	onLongPress,
 }: TableProps) => {
 	return (
 		<View>
@@ -119,8 +117,8 @@ const TableFlatList = ({
 								columns={columns}
 								showActions={showActions}
 								onEdit={onEdit}
-								onDelete={onDelete}
 								onPress={onPress}
+								onLongPress={onLongPress}
 								index={index}
 							/>
 						))}

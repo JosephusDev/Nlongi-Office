@@ -63,7 +63,7 @@ export const s = StyleSheet.create({
 		marginBottom: 10,
 	},
 	labelModal: {
-		fontSize: 14,
+		fontSize: 15,
 		fontFamily: fontFamily.bold,
 		marginTop: 10,
 		color: colors.gray[500],

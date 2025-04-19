@@ -36,9 +36,9 @@ export default function Select({ data, onChange, value, placeholder = 'Selecione
 				</Text>
 			</TouchableOpacity>
 
-			<Modal visible={modalVisible} animationType='slide' transparent>
-				<View style={styles.modalOverlay}>
-					<View style={styles.modalContainer}>
+			<Modal visible={modalVisible} animationType='fade' transparent>
+				<TouchableOpacity style={styles.modalOverlay} activeOpacity={1} onPress={() => setModalVisible(false)}>
+					<TouchableOpacity style={styles.modalContainer} activeOpacity={1} onPress={e => e.stopPropagation()}>
 						<Text style={styles.modalTitle}>{placeholder}</Text>
 						<FlatList
 							data={data}
@@ -60,8 +60,8 @@ export default function Select({ data, onChange, value, placeholder = 'Selecione
 						<TouchableOpacity style={styles.closeButton} onPress={() => setModalVisible(false)}>
 							<Text style={styles.closeText}>Fechar</Text>
 						</TouchableOpacity>
-					</View>
-				</View>
+					</TouchableOpacity>
+				</TouchableOpacity>
 			</Modal>
 		</View>
 	)

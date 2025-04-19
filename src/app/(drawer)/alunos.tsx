@@ -1,5 +1,5 @@
 import { s } from '@/styles/app/alunos'
-import { Alert, Text, TextInput, View } from 'react-native'
+import { Alert, Text, TextInput, View, Vibration } from 'react-native'
 import { DrawerSceneWrapper } from '@/components/DrawerSceneWrapper'
 import ToolBar from '@/components/ToolBar'
 import Header from '@/components/Header'
@@ -20,6 +20,8 @@ import { router, useNavigation } from 'expo-router'
 import TableFlatList from '@/components/TableFlatList' // Importando o componente de tabela
 import { useToast } from '@/context/ToastContext'
 import CustomWarning from '@/components/CustomWarning'
+import { IconTrash } from '@tabler/icons-react-native'
+import { colors } from '@/styles/colors'
 
 export default function Alunos() {
 	const db = useSQLiteContext()
@@ -27,9 +29,11 @@ export default function Alunos() {
 	const [alunos, setAlunos] = useState<IAluno[]>([])
 	const [turmas, setTurmas] = useState<ITurma[] | null>(null)
 	const [isOpen, setIsOpen] = useState(false)
+	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
 	const [selected, setSelected] = useState<IAluno | null>(null)
 	const [selectedTurma, setSelectedTurma] = useState(0)
 	const [search, setSearch] = useState('')
+	const [selectedItemId, setSelectedItemId] = useState<number | null>(null)
 
 	const {
 		control,
@@ -80,32 +84,31 @@ export default function Alunos() {
 	}
 
 	const onDelete = (id: number) => {
-		Alert.alert('Remover', 'Deseja remover esse Aluno?', [
-			{
-				text: 'Sim',
-				onPress: async () => {
-					const result = await deleteAluno(db, id)
-					if (result) {
-						showToast({
-							title: 'Longi',
-							message: 'Aluno removido com sucesso',
-							type: 'success',
-						})
-						carregarAlunos()
-					} else {
-						showToast({
-							title: 'Longi',
-							message: 'Erro ao remover aluno',
-							type: 'error',
-						})
-					}
-				},
-			},
-			{
-				text: 'Não',
-				style: 'cancel',
-			},
-		])
+		Vibration.vibrate(50)
+		setSelectedItemId(id)
+		setIsDeleteModalOpen(true)
+	}
+
+	const handleConfirmDelete = async () => {
+		if (selectedItemId) {
+			const result = await deleteAluno(db, selectedItemId)
+			if (result) {
+				showToast({
+					title: 'Longi',
+					message: 'Aluno removido com sucesso',
+					type: 'success',
+				})
+				carregarAlunos()
+			} else {
+				showToast({
+					title: 'Longi',
+					message: 'Erro ao remover aluno',
+					type: 'error',
+				})
+			}
+			setSelectedItemId(null)
+			setIsDeleteModalOpen(false)
+		}
 	}
 
 	const carregarTurmas = async () => {
@@ -193,11 +196,10 @@ export default function Alunos() {
 							data={alunosFiltrados?.map(aluno => ({
 								id: aluno.id,
 								Nome: formatName(aluno.nome),
-								//Turma: turmas?.find(turma => turma.id === aluno.turma_id)?.nome || 'N/A',
 							}))}
 							showActions={true}
 							onEdit={id => handleOpenModal(alunos?.find(aluno => aluno.id === id))}
-							onDelete={onDelete}
+							onLongPress={id => onDelete(id)}
 							onPress={id =>
 								router.navigate(`/(stack)/aluno/${id.toString()}/${alunos?.find(aluno => aluno.id === id)?.nome}`)
 							}
@@ -251,6 +253,33 @@ export default function Alunos() {
 						onClick={handleSubmit(onSubmit)}
 						style={{ borderRadius: 8, marginTop: 30, height: 40 }}
 					/>
+				</MyModal>
+				<MyModal
+					title={<IconTrash size={30} color={colors.red.base} />}
+					visible={isDeleteModalOpen}
+					onClose={() => {
+						setIsDeleteModalOpen(false)
+						setSelectedItemId(null)
+					}}
+				>
+					<View style={{ flex: 0, width: '100%', marginTop: 10 }}>
+						<Text style={[s.labelModal, { width: '100%', textAlign: 'center' }]}>Deseja remover esse Aluno?</Text>
+					</View>
+					<View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 30 }}>
+						<Button
+							title='Cancelar'
+							onClick={() => {
+								setIsDeleteModalOpen(false)
+								setSelectedItemId(null)
+							}}
+							style={{ borderRadius: 8, flex: 1, marginRight: 10, backgroundColor: colors.gray[400] }}
+						/>
+						<Button
+							title='Confirmar'
+							onClick={handleConfirmDelete}
+							style={{ borderRadius: 8, flex: 1, marginLeft: 10, backgroundColor: colors.red.base }}
+						/>
+					</View>
 				</MyModal>
 			</View>
 		</DrawerSceneWrapper>

@@ -11,7 +11,7 @@ type ValueToastVariant = {
 const toastVariants: Record<any, ValueToastVariant> = {
 	success: { backgroundColor: '#38C793', icon: 'check-circle' },
 	error: { backgroundColor: '#DF1C41', icon: 'alert-circle' },
-	info: { backgroundColor: '#F2AE40', icon: 'info' },
+	info: { backgroundColor: '#DF1C41', icon: 'info' },
 }
 
 type CustomToastProps = {
@@ -25,6 +25,7 @@ type CustomToastProps = {
 
 export function CustomToast({ id, title, message, type = 'info', onHide, duration = 3000 }: CustomToastProps) {
 	const opacity = useRef(new Animated.Value(0)).current
+	const progress = useRef(new Animated.Value(0)).current
 
 	useEffect(() => {
 		Animated.sequence([
@@ -33,7 +34,14 @@ export function CustomToast({ id, title, message, type = 'info', onHide, duratio
 				duration: 500,
 				useNativeDriver: true,
 			}),
-			Animated.delay(duration - 1000),
+			Animated.parallel([
+				Animated.timing(progress, {
+					toValue: 1,
+					duration: duration - 1000,
+					useNativeDriver: false,
+				}),
+				Animated.delay(duration - 1000),
+			]),
 			Animated.timing(opacity, {
 				toValue: 0,
 				duration: 500,
@@ -68,6 +76,19 @@ export function CustomToast({ id, title, message, type = 'info', onHide, duratio
 					<Text style={s.title}>{title}</Text>
 					<Text style={s.message}>{message}</Text>
 				</View>
+			</View>
+			<View style={s.progressBarContainer}>
+				<Animated.View
+					style={[
+						s.progressBar,
+						{
+							width: progress.interpolate({
+								inputRange: [0, 1],
+								outputRange: ['0%', '100%'],
+							}),
+						},
+					]}
+				/>
 			</View>
 		</Animated.View>
 	)

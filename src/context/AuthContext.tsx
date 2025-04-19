@@ -3,6 +3,8 @@ import { AuthContextData, User } from '@/types'
 import { useSQLiteContext } from 'expo-sqlite'
 import React, { createContext, useState, useContext } from 'react'
 import { useToast } from './ToastContext'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import { router } from 'expo-router'
 
 const AuthContext = createContext<AuthContextData>({} as AuthContextData)
 
@@ -20,6 +22,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 			if (response) {
 				setUser(response[0])
 				setIsAuthenticated(true)
+				// Salva os dados da sessão
+				await AsyncStorage.setItem('@session', 'true')
 			} else {
 				showToast({
 					title: 'Longi',
@@ -60,7 +64,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 	}
 
 	const signOut = async () => {
+		await AsyncStorage.removeItem('@session')
 		setIsAuthenticated(false)
+		router.replace('/(auth)')
 	}
 
 	return (

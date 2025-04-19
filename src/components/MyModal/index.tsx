@@ -6,7 +6,7 @@ import { colors } from '@/styles/colors'
 
 interface IModalProps {
 	visible: boolean
-	title: string
+	title: string | React.ReactNode
 	subtitle?: string
 	children?: React.ReactNode
 	onClose?: () => void
@@ -14,17 +14,14 @@ interface IModalProps {
 
 export default function MyModal({ visible, title, subtitle, children, onClose }: IModalProps) {
 	return (
-		<Modal animationType='slide' transparent={true} visible={visible}>
-			<View style={s.centeredView}>
-				<View style={s.modalView}>
-					<TouchableOpacity style={s.closeButton} onPress={onClose}>
-						<Feather name='x' size={24} color={colors.gray[500]} />
-					</TouchableOpacity>
-					<Text style={s.modalTitle}>{title}</Text>
+		<Modal animationType='fade' transparent={true} visible={visible}>
+			<TouchableOpacity style={s.centeredView} activeOpacity={1} onPress={onClose}>
+				<TouchableOpacity style={s.modalView} activeOpacity={1} onPress={e => e.stopPropagation()}>
+					{typeof title === 'string' ? <Text style={s.modalTitle}>{title}</Text> : title}
 					{subtitle && <Text style={s.modalSubtitle}>{subtitle}</Text>}
 					{children}
-				</View>
-			</View>
+				</TouchableOpacity>
+			</TouchableOpacity>
 		</Modal>
 	)
 }
