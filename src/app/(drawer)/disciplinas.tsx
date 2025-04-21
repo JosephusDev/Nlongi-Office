@@ -1,22 +1,12 @@
 import Header from '@/components/Header'
 import ToolBar from '@/components/ToolBar'
 import { s } from '@/styles/app/turmas'
-import {
-	Alert,
-	FlatList,
-	Text,
-	TextInput,
-	ToastAndroid,
-	TouchableOpacity,
-	View,
-	Vibration,
-	Pressable,
-} from 'react-native'
-import { Feather } from '@expo/vector-icons'
+import { FlatList, Text, TextInput, TouchableOpacity, View, Vibration } from 'react-native'
+import Feather from '@expo/vector-icons/Feather'
 import { colors } from '@/styles/colors'
 import { useEffect, useState } from 'react'
 import { ITurma } from '@/types'
-import { IconEdit, IconTrash } from '@tabler/icons-react-native'
+import { IconTrash } from '@tabler/icons-react-native'
 import EmptyList from '@/components/EmptyList'
 import { DrawerSceneWrapper } from '@/components/DrawerSceneWrapper'
 import { create, getDisciplinas, deleteDisciplina, update } from '@/models/Disciplina'
@@ -162,6 +152,7 @@ export default function Disciplinas() {
 							onLongPress={() => onDelete(item.id)}
 						>
 							<View style={s.listItem}>
+								<Feather name='book' size={20} color={colors.gray[400]} />
 								<Text ellipsizeMode='tail' numberOfLines={2} style={s.listItemText}>
 									{item.nome}
 								</Text>

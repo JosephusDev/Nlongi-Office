@@ -11,7 +11,7 @@ export const s = StyleSheet.create({
 		marginVertical: 10,
 		backgroundColor: '#FFFFFF',
 		borderWidth: 1,
-		borderColor: colors.gray[200],
+		borderColor: colors.gray[300],
 	},
 	searchLabel: {
 		fontFamily: fontFamily.bold,
