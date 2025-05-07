@@ -3,7 +3,6 @@ import { AuthContextData, User } from '@/types'
 import { useSQLiteContext } from 'expo-sqlite'
 import React, { createContext, useState, useContext } from 'react'
 import { useToast } from './ToastContext'
-import AsyncStorage from '@react-native-async-storage/async-storage'
 import { router } from 'expo-router'
 
 const AuthContext = createContext<AuthContextData>({} as AuthContextData)

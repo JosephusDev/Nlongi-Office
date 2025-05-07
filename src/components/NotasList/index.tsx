@@ -3,17 +3,29 @@ import { Feather } from '@expo/vector-icons'
 import { s } from './styles'
 import { colors } from '@/styles/colors'
 import { formatName } from '@/utils/functions'
-import { useRef } from 'react'
+import { useRef, useEffect } from 'react'
 import { IAluno, INota } from '@/types'
 
 export default function NotasList({
 	alunos,
 	onNotaChange,
+	clearInputs,
 }: {
 	alunos: IAluno[]
 	onNotaChange: (id: number, nota: string) => void
+	clearInputs: boolean
 }) {
 	const inputRefs = useRef<(TextInput | null)[]>([])
+
+	useEffect(() => {
+		if (clearInputs) {
+			inputRefs.current.forEach(input => {
+				if (input) {
+					input.clear()
+				}
+			})
+		}
+	}, [clearInputs])
 
 	return (
 		<View style={s.card}>

@@ -24,7 +24,7 @@ export async function checkBiometricAvailability() {
 export const calculateAverage = (data: IAlunoNotas[]): IAlunoNotas[] => {
 	return data.map(item => {
 		const average = (item.mac + item.pp + item.pt) / 3
-		const result = { ...item, mt: parseFloat(average.toFixed(2)) }
+		const result = { ...item, mt: parseFloat(average.toFixed(1)) }
 		return result
 	})
 }

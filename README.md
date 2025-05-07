@@ -1,4 +1,4 @@
-# Documento de Planejamento para o App Longi
+# Documento de Planejamento para o Prof Office
 
 ## **Objetivo**
 Criar um aplicativo local e offline que facilite a gestão de turmas, alunos, notas, pautas, estatísticas de desempenho e outras funcionalidades relacionadas. Este aplicativo será voltado para professores e utilizará o banco de dados SQLite para armazenamento dos dados.
@@ -95,7 +95,7 @@ Criar um aplicativo local e offline que facilite a gestão de turmas, alunos, no
 - [ ] Implementar CRUD para alunos.
 - [ ] Implementar registro e cálculo de notas.
 - [ ] Implementar controle de frequência.
-- [ ] Gerar relatórios e exportações (PDF, EXCEL).
+- [ ] Gerar relatórios e exportações (PDF).
 
 ### **Funcionalidades Secundárias**
 - [ ] Implementar sistema de busca.

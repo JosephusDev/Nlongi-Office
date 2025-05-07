@@ -30,6 +30,7 @@ export default function Notas() {
 	const [selectedDisciplina, setSelectedDisciplina] = useState<number | null>(null)
 	const [selectedTipoProva, setSelectedTipoProva] = useState<string | null>(null)
 	const [selectedTrimestre, setSelectedTrimestre] = useState<string | null>(null)
+	const [shouldClearInputs, setShouldClearInputs] = useState(false)
 
 	const carregarAlunos = async () => {
 		try {
@@ -68,7 +69,9 @@ export default function Notas() {
 			const notaExistente = prevNotas.find(nota => nota.aluno_id === aluno_id)
 			if (notaExistente) {
 				return prevNotas.map(nota =>
-					nota.aluno_id === aluno_id ? { ...nota, valor: parseFloat(novaNota) || 0 } : nota,
+					nota.aluno_id === aluno_id && nota.tipo === selectedTipoProva && nota.periodo === selectedTrimestre
+						? { ...nota, valor: parseFloat(novaNota) || 0 }
+						: nota,
 				)
 			} else {
 				return [
@@ -96,6 +99,7 @@ export default function Notas() {
 			}
 		}
 		setNotas([])
+		setShouldClearInputs(true)
 		if (error) {
 			showToast({
 				title: 'Longi',
@@ -109,6 +113,7 @@ export default function Notas() {
 				type: 'success',
 			})
 		}
+		setTimeout(() => setShouldClearInputs(false), 100)
 	}
 
 	const navigation = useNavigation()
@@ -140,7 +145,7 @@ export default function Notas() {
 				{alunosFiltrados.length === 0 ? (
 					<EmptyList title='Nenhum aluno encontrado.' />
 				) : (
-					<NotasList alunos={alunosFiltrados} onNotaChange={handleNotaChange} />
+					<NotasList alunos={alunosFiltrados} onNotaChange={handleNotaChange} clearInputs={shouldClearInputs} />
 				)}
 				<Button onClick={saveNotas} style={s.button} icon='save' title='Guardar' />
 			</ScrollView>

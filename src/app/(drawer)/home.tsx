@@ -40,8 +40,8 @@ export default function Home() {
 	useEffect(() => {
 		if (user && isDBReady) {
 			showToast({
-				title: 'Mensagem',
-				message: `Olá, Seja bem-vindo(a).`,
+				title: 'Logado com sucesso',
+				message: `Olá, ${user.nome}.`,
 				type: 'success',
 				duration: 4000,
 			})

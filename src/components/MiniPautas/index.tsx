@@ -1,10 +1,9 @@
-import { SafeAreaView, ScrollView, Text, View } from 'react-native'
+import { SafeAreaView, Text, View } from 'react-native'
 import { s } from './styles'
 import Button from '../Button'
 import Select from '../Select'
-import { trimestres } from '@/mocks'
 import { useEffect, useState } from 'react'
-import { IAlunoNotas, ITurma, SchoolData } from '@/types'
+import { IMiniPauta, ITurma, SchoolData } from '@/types'
 import { getDisciplinas } from '@/models/Disciplina'
 import { useSQLiteContext } from 'expo-sqlite'
 import { getTurmas } from '@/models/Turma'
@@ -12,7 +11,6 @@ import TableFlatList from '../TableFlatList'
 import MyModal from '../MyModal'
 import EmptyList from '../EmptyList'
 import { getMiniPauta } from '@/models/Nota'
-import { calculateAverage } from '@/utils/functions'
 import { useToast } from '@/context/ToastContext'
 import FilterButton from '../FilterButton'
 import * as Print from 'expo-print'
@@ -27,20 +25,29 @@ export default function MiniPautas() {
 	const { showToast } = useToast()
 	const [disciplinas, setDisciplinas] = useState<ITurma[]>([])
 	const [turmas, setTurmas] = useState<ITurma[]>([])
-	const [notas, setNotas] = useState<IAlunoNotas[]>([])
+	const [notas, setNotas] = useState<IMiniPauta[]>([])
 	const [visible, setVisible] = useState(false)
 
 	// Estados para armazenar os filtros selecionados
 	const [selectedTurma, setSelectedTurma] = useState(0)
 	const [selectedDisciplina, setSelectedDisciplina] = useState(0)
-	const [selectedTrimestre, setSelectedTrimestre] = useState('')
 
 	const columns = [
 		{ key: 'nome', label: 'NOME', width: 200 },
-		{ key: 'mac', label: 'MAC', width: 100 },
-		{ key: 'pp', label: 'PP', width: 100 },
-		{ key: 'pt', label: 'PT', width: 100 },
-		{ key: 'mt', label: 'MT', width: 100 },
+		{ key: 'mac1', label: 'MAC1', width: 100 },
+		{ key: 'pp1', label: 'PP1', width: 100 },
+		{ key: 'pt1', label: 'PT1', width: 100 },
+		{ key: 'mt1', label: 'MT1', width: 100 },
+		{ key: 'mac2', label: 'MAC2', width: 100 },
+		{ key: 'pp2', label: 'PP2', width: 100 },
+		{ key: 'pt2', label: 'PT2', width: 100 },
+		{ key: 'mt2', label: 'MT2', width: 100 },
+		{ key: 'mac3', label: 'MAC3', width: 100 },
+		{ key: 'pp3', label: 'PP3', width: 100 },
+		{ key: 'pt3', label: 'PT3', width: 100 },
+		{ key: 'mt3', label: 'MT3', width: 100 },
+		{ key: 'mediaGeral', label: 'MF', width: 100 },
+		{ key: 'resultado', label: 'RESULTADO', width: 150 },
 	]
 
 	const carregarTurmas = async () => {
@@ -54,8 +61,31 @@ export default function MiniPautas() {
 	}
 
 	const handleFilter = async () => {
-		const result = await getMiniPauta(db, selectedTrimestre, selectedDisciplina, selectedTurma)
-		setNotas(calculateAverage(result))
+		const result = await getMiniPauta(db, selectedDisciplina, selectedTurma)
+		const notasComMedias = result.map(nota => {
+			const mt1 = (nota.mac1 + nota.pp1 + nota.pt1) / 3 || 0
+			const mt2 = (nota.mac2 + nota.pp2 + nota.pt2) / 3 || 0
+			const mt3 = (nota.mac3 + nota.pp3 + nota.pt3) / 3 || 0
+
+			// Calcula a média geral apenas se houver pelo menos uma média trimestral
+			const mediasTrimestrais = [mt1, mt2, mt3].filter(mt => mt > 0)
+			const mediaGeral =
+				mediasTrimestrais.length > 0
+					? mediasTrimestrais.reduce((acc, curr) => acc + curr, 0) / mediasTrimestrais.length
+					: 0
+
+			const resultado = mediaGeral >= 10 ? 'APROVADO' : 'REPROVADO'
+
+			return {
+				...nota,
+				mt1: mt1.toFixed(1),
+				mt2: mt2.toFixed(1),
+				mt3: mt3.toFixed(1),
+				mediaGeral: mediaGeral.toFixed(1),
+				resultado,
+			}
+		})
+		setNotas(notasComMedias)
 		setVisible(false)
 		if (result.length === 0) {
 			showToast({
@@ -67,12 +97,9 @@ export default function MiniPautas() {
 	}
 
 	const handleExport = async () => {
-		// Filtra os dados para incluir apenas nome, mac, pp e pt
-		const filteredNotas = notas.map(({ nome, mac, pp, pt }) => ({ nome, mac, pp, pt }))
-
 		// Obter os dados da escola
 		const savedData = await AsyncStorage.getItem('@schoolData')
-		const schoolData: SchoolData = savedData ? JSON.parse(savedData) : {}
+		const schoolData: SchoolData = savedData ? JSON.parse(savedData) : null
 
 		const disciplina = disciplinas.find(d => d.id === selectedDisciplina)?.nome
 		const turma = turmas.find(t => t.id === selectedTurma)?.nome
@@ -116,14 +143,22 @@ export default function MiniPautas() {
 						th {
 							font-weight: bold;
 						}
+						.negative-grade {
+							color: red;
+						}
+						.approved {
+							color: green;
+							font-weight: bold;
+						}
+						.failed {
+							color: red;
+							font-weight: bold;
+						}
 						img {
 							width: 5vw;
 						}
 						th:nth-child(1), td:nth-child(1) { width: 30px; }
-						th:nth-child(3), td:nth-child(3) { width: 30px; }
-						th:nth-child(4), td:nth-child(4) { width: 30px; }
-						th:nth-child(5), td:nth-child(5) { width: 30px; }
-						th:nth-child(6), td:nth-child(6) { width: 30px; }
+						th:nth-child(2), td:nth-child(2) { width: 200px; }
 						.info-container {
 							display: flex;
 							flex-wrap: wrap;
@@ -155,7 +190,7 @@ export default function MiniPautas() {
 					<p>REPÚBLICA DE ANGOLA</p>
 					<p>MINISTÉRIO DA EDUCAÇÃO</p>
 					<p>${schoolData.nomeEscola.toUpperCase()}</p>
-					<strong>PAUTA TRIMESTRAL DOS ALUNOS MATRICULADOS NO ANO LECTIVO ${schoolData.anoLetivo}</strong>
+					<strong>PAUTA ANUAL DOS ALUNOS MATRICULADOS NO ANO LECTIVO ${schoolData.anoLetivo}</strong>
 					
 					<div class="info-container">
 						<div class="info-box">
@@ -168,9 +203,6 @@ export default function MiniPautas() {
 						</div>
 						<div class="info-box">
 							<div class="info-item">
-								<span class="info-label">PERIODO:</span> <span>${selectedTrimestre}º Trimestre</span>
-							</div>
-							<div class="info-item">
 								<span class="info-label">PROFESSOR(A):</span> <span>${user?.nome?.toUpperCase()}</span>
 							</div>
 						</div>
@@ -182,23 +214,43 @@ export default function MiniPautas() {
 								<tr>
 									<th>Nº</th>
 									<th>NOME COMPLETO</th>
-									<th>MAC</th>
-									<th>PP</th>
-									<th>PT</th>
-									<th>MT</th>
+									<th>MAC1</th>
+									<th>PP1</th>
+									<th>PT1</th>
+									<th>MT1</th>
+									<th>MAC2</th>
+									<th>PP2</th>
+									<th>PT2</th>
+									<th>MT2</th>
+									<th>MAC3</th>
+									<th>PP3</th>
+									<th>PT3</th>
+									<th>MT3</th>
+									<th>MF</th>
+									<th>RESULTADO</th>
 								</tr>
 							</thead>
 							<tbody>
-								${filteredNotas
+								${notas
 									.map(
 										(student, idx) => `
 									<tr>
 										<td>${idx + 1}</td>
 										<td>${student.nome}</td>
-										<td>${student.mac}</td>
-										<td>${student.pp}</td>
-										<td>${student.pt}</td>
-										<td>${((student.mac + student.pp + student.pt) / 3).toFixed(2)}</td>
+										<td class="${Number(student.mac1) < 10 ? 'negative-grade' : ''}">${Number(student.mac1).toString().padStart(2, '0')}</td>
+										<td class="${Number(student.pp1) < 10 ? 'negative-grade' : ''}">${Number(student.pp1).toString().padStart(2, '0')}</td>
+										<td class="${Number(student.pt1) < 10 ? 'negative-grade' : ''}">${Number(student.pt1).toString().padStart(2, '0')}</td>
+										<td class="${Number(student.mt1) < 10 ? 'negative-grade' : ''}">${Number(student.mt1).toString().padStart(2, '0')}</td>
+										<td class="${Number(student.mac2) < 10 ? 'negative-grade' : ''}">${Number(student.mac2).toString().padStart(2, '0')}</td>
+										<td class="${Number(student.pp2) < 10 ? 'negative-grade' : ''}">${Number(student.pp2).toString().padStart(2, '0')}</td>
+										<td class="${Number(student.pt2) < 10 ? 'negative-grade' : ''}">${Number(student.pt2).toString().padStart(2, '0')}</td>
+										<td class="${Number(student.mt2) < 10 ? 'negative-grade' : ''}">${Number(student.mt2).toString().padStart(2, '0')}</td>
+										<td class="${Number(student.mac3) < 10 ? 'negative-grade' : ''}">${Number(student.mac3).toString().padStart(2, '0')}</td>
+										<td class="${Number(student.pp3) < 10 ? 'negative-grade' : ''}">${Number(student.pp3).toString().padStart(2, '0')}</td>
+										<td class="${Number(student.pt3) < 10 ? 'negative-grade' : ''}">${Number(student.pt3).toString().padStart(2, '0')}</td>
+										<td class="${Number(student.mt3) < 10 ? 'negative-grade' : ''}">${Number(student.mt3).toString().padStart(2, '0')}</td>
+										<td class="${Number(student.mediaGeral) < 10 ? 'negative-grade' : ''}">${Number(student.mediaGeral).toString().padStart(2, '0')}</td>
+										<td class="${student.resultado === 'APROVADO' ? 'approved' : 'failed'}">${student.resultado}</td>
 									</tr>
 								`,
 									)
@@ -211,7 +263,15 @@ export default function MiniPautas() {
 		`
 
 		// Imprime o HTML gerado
-		await Print.printAsync({ html, orientation: Print.Orientation.portrait })
+		if (!schoolData.nomeEscola || !schoolData.anoLetivo) {
+			showToast({
+				title: 'Erro',
+				message: 'Verifique as informações da Escola',
+				type: 'error',
+			})
+			return
+		}
+		await Print.printAsync({ html, orientation: Print.Orientation.landscape })
 	}
 
 	useEffect(() => {
@@ -233,8 +293,6 @@ export default function MiniPautas() {
 			<MyModal title='Filtro de pesquisa' visible={visible} onClose={() => setVisible(false)}>
 				<Text style={s.label}>Selecione a Turma</Text>
 				<Select data={turmas} onChange={value => setSelectedTurma(Number(value))} />
-				<Text style={s.label}>Selecione o Trimestre</Text>
-				<Select data={trimestres} onChange={value => setSelectedTrimestre(value)} />
 				<Text style={s.label}>Selecione a Disciplina</Text>
 				<Select data={disciplinas} onChange={value => setSelectedDisciplina(Number(value))} />
 				<Button title='Filtrar' icon='search' style={s.btnFilter} onClick={handleFilter} />

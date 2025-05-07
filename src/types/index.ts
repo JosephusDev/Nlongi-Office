@@ -68,6 +68,27 @@ export type IAlunoNotas = {
 	mt?: number
 }
 
+export type IMiniPauta = {
+	id: number
+	nome: string
+	disciplina?: string
+	disciplina_id?: number
+	mac1: number
+	pp1: number
+	pt1: number
+	mac2: number
+	pp2: number
+	pt2: number
+	mac3: number
+	pp3: number
+	pt3: number
+	mt1?: string
+	mt2?: string
+	mt3?: string
+	mediaGeral?: string
+	resultado?: string
+}
+
 export type SchoolData = {
 	nomeEscola: string
 	anoLetivo: string

@@ -369,19 +369,26 @@ export default function Profile() {
 					)}
 					{typeClick === 'school' && (
 						<View style={{ width: '100%', marginTop: 10 }}>
-							<Text style={s.label}>Nome da Escola</Text>
-							<View style={[s.inputContainer, { marginTop: 5 }]}>
-								<Feather name='home' size={20} color={colors.gray[100]} />
+							<Text style={[s.label, { flex: 1, flexDirection: 'row' }]}>
+								<Feather name='home' size={15} color={colors.gray[100]} />
+								Nome da Escola
+							</Text>
+							<View
+								style={[s.inputContainer, { marginTop: 5, height: 100, alignItems: 'flex-start', paddingVertical: 10 }]}
+							>
 								<TextInput
 									style={s.input}
 									placeholder='Digite o nome da escola'
+									multiline={true}
 									onChangeText={text => setSchoolData({ ...schoolData, nomeEscola: text })}
 									value={schoolData.nomeEscola}
 								/>
 							</View>
-							<Text style={s.label}>Ano Letivo</Text>
+							<Text style={[s.label, { flex: 1, flexDirection: 'row' }]}>
+								<Feather name='calendar' size={15} color={colors.gray[100]} />
+								Ano Letivo
+							</Text>
 							<View style={[s.inputContainer, { marginTop: 5 }]}>
-								<Feather name='calendar' size={20} color={colors.gray[100]} />
 								<TextInput
 									style={s.input}
 									placeholder='Digite o ano letivo (ex: 2023/2024)'

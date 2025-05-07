@@ -1,5 +1,5 @@
 import { SQLiteDatabase } from 'expo-sqlite'
-import { IAlunoNotas, INota } from '@/types'
+import { IAlunoNotas, IMiniPauta, INota } from '@/types'
 
 export const createNota = async (db: SQLiteDatabase, data: Omit<INota, 'turma_id'>) => {
 	const { valor, periodo, tipo, aluno_id, disciplina_id } = data
@@ -114,21 +114,26 @@ export const getNotasByAluno = async (db: SQLiteDatabase, aluno_id: number) => {
 	}
 }
 
-export const getMiniPauta = async (db: SQLiteDatabase, periodo_id: string, disciplina_id: number, turma_id: number) => {
+export const getMiniPauta = async (db: SQLiteDatabase, disciplina_id: number, turma_id: number) => {
 	try {
-		const result = await db.getAllAsync<IAlunoNotas>(
+		const result = await db.getAllAsync<IMiniPauta>(
 			`SELECT  
 				a.id,
 				a.nome AS nome,
-				COALESCE(MAX(CASE WHEN n.tipo = '1' THEN n.valor END), 0) AS mac,
-				COALESCE(MAX(CASE WHEN n.tipo = '2' THEN n.valor END), 0) AS pp,
-				COALESCE(MAX(CASE WHEN n.tipo = '3' THEN n.valor END), 0) AS pt
+				COALESCE(MAX(CASE WHEN n.tipo = '1' AND n.periodo = '1' THEN n.valor END), 0) AS mac1,
+				COALESCE(MAX(CASE WHEN n.tipo = '2' AND n.periodo = '1' THEN n.valor END), 0) AS pp1,
+				COALESCE(MAX(CASE WHEN n.tipo = '3' AND n.periodo = '1' THEN n.valor END), 0) AS pt1,
+				COALESCE(MAX(CASE WHEN n.tipo = '1' AND n.periodo = '2' THEN n.valor END), 0) AS mac2,
+				COALESCE(MAX(CASE WHEN n.tipo = '2' AND n.periodo = '2' THEN n.valor END), 0) AS pp2,
+				COALESCE(MAX(CASE WHEN n.tipo = '3' AND n.periodo = '2' THEN n.valor END), 0) AS pt2,
+				COALESCE(MAX(CASE WHEN n.tipo = '1' AND n.periodo = '3' THEN n.valor END), 0) AS mac3,
+				COALESCE(MAX(CASE WHEN n.tipo = '2' AND n.periodo = '3' THEN n.valor END), 0) AS pp3,
+				COALESCE(MAX(CASE WHEN n.tipo = '3' AND n.periodo = '3' THEN n.valor END), 0) AS pt3
 			FROM aluno a
 			LEFT JOIN nota n ON n.aluno_id = a.id
 			JOIN disciplina d ON n.disciplina_id = d.id
 			WHERE d.id = ${disciplina_id}
 			AND a.turma_id = ${turma_id}
-			AND n.periodo = '${periodo_id}'
 			GROUP BY a.id, a.nome
 			ORDER BY a.nome;`,
 		)
@@ -136,6 +141,6 @@ export const getMiniPauta = async (db: SQLiteDatabase, periodo_id: string, disci
 		return result
 	} catch (error) {
 		console.error('Erro ao obter notas:', error)
-		throw error // Propaga o erro para ser tratado no chamador
+		throw error
 	}
 }
