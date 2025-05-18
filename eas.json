@@ -3,16 +3,11 @@
     "version": ">= 10.2.1"
   },
   "build": {
-    "preview": {
-      "android": {
-        "buildType": "apk"
-      }
-    },
     "development": {
       "developmentClient": true,
       "distribution": "internal"
     },
-    "preview2": {
+    "preview": {
       "distribution": "internal"
     },
     "production": {}
