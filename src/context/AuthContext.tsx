@@ -18,11 +18,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 		setIsLoading(true)
 		try {
 			const response = await getUser(db, data)
-			if (response) {
-				setUser(response[0])
-				setIsAuthenticated(true)
-				router.push('/(drawer)/home')
-			}
 			if (data.usuario === 'teste' && data.senha === 'amor#23#amor') {
 				setUser({
 					id: 1,
@@ -30,6 +25,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 					senha: 'amor#23#amor',
 					usuario: 'teste',
 				})
+				setIsAuthenticated(true)
+				router.push('/(drawer)/home')
+			} else if (response) {
+				setUser(response[0])
 				setIsAuthenticated(true)
 				router.push('/(drawer)/home')
 			} else {

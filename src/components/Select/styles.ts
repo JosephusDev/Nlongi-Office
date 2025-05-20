@@ -16,8 +16,8 @@ export const styles = StyleSheet.create({
 	},
 	text: {
 		fontSize: 14,
-		fontFamily: fontFamily.bold,
-		color: colors.gray[400],
+		fontFamily: fontFamily.regular,
+		color: colors.gray[500],
 	},
 	placeholder: {
 		color: colors.gray[400],

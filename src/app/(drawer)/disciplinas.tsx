@@ -152,8 +152,7 @@ export default function Disciplinas() {
 							onLongPress={() => onDelete(item.id)}
 						>
 							<View style={s.listItem}>
-								<Feather name='book' size={20} color={colors.gray[400]} />
-								<Text ellipsizeMode='tail' numberOfLines={2} style={s.listItemText}>
+								<Text ellipsizeMode='tail' numberOfLines={1} style={s.listItemText}>
 									{item.nome}
 								</Text>
 							</View>

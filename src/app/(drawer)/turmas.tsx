@@ -17,7 +17,6 @@ import { useSQLiteContext } from 'expo-sqlite'
 import { useToast } from '@/context/ToastContext'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { IconTrash } from '@tabler/icons-react-native'
-import Feather from '@expo/vector-icons/Feather'
 export default function Turmas() {
 	const db = useSQLiteContext()
 	const [turmas, setTurmas] = useState<ITurma[]>([])
@@ -141,6 +140,7 @@ export default function Turmas() {
 				/>
 				<FlatList
 					data={turmasFiltradas}
+					showsVerticalScrollIndicator={false}
 					keyExtractor={item => item.id.toString()}
 					renderItem={({ item }) => (
 						<TouchableOpacity
@@ -149,8 +149,7 @@ export default function Turmas() {
 							onLongPress={() => onDelete(item.id)}
 						>
 							<View style={s.listItem}>
-								<Feather name='book-open' size={20} color={colors.gray[400]} />
-								<Text ellipsizeMode='tail' numberOfLines={1} style={s.listItemText}>
+								<Text ellipsizeMode='tail' numberOfLines={2} style={s.listItemText}>
 									{item.nome}
 								</Text>
 							</View>

@@ -199,20 +199,23 @@ export const s = StyleSheet.create({
 		gap: 15, // Espaçamento entre ícones
 	},
 	listItem: {
+		width: '100%',
+		backgroundColor: colors.light,
 		paddingVertical: 15,
-		borderBottomWidth: 1,
-		borderColor: colors.gray[300],
-		borderRadius: 10,
+		paddingHorizontal: 5,
 		flex: 1,
 		flexDirection: 'row',
-		gap: 10,
 		justifyContent: 'flex-start',
 		alignItems: 'center',
 		paddingLeft: 10,
 		marginBottom: 5,
+		borderLeftWidth: 2,
+		borderLeftColor: colors.red.base,
+		borderTopRightRadius: 5,
+		borderBottomRightRadius: 5,
 	},
 	listItemText: {
-		fontSize: 15,
+		fontSize: 14,
 		fontFamily: fontFamily.semiBold,
 	},
 })
