@@ -1,7 +1,7 @@
 // context/ToastContext.tsx
 import React, { createContext, useContext, useState } from 'react'
 import { View } from 'react-native'
-import { CustomToast } from '../components/CustomToast'
+import { CustomToast } from '../components/CustomToast/index'
 
 interface ToastMessage {
 	id?: number
