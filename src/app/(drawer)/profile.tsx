@@ -50,6 +50,7 @@ export default function Profile() {
 	const [title, setTitle] = useState('')
 	const [description, setDescription] = useState('')
 	const [typeClick, setTypeClick] = useState<typeClick>('profile')
+	const [isLoading, setIsLoading] = useState(false)
 	const [schoolData, setSchoolData] = useState<SchoolData>({
 		nomeEscola: '',
 		anoLetivo: '',
@@ -167,6 +168,7 @@ export default function Profile() {
 
 	const sendBackup = async (data: { email?: string }) => {
 		if (data?.email) {
+			setIsLoading(true)
 			try {
 				await backupData(db, data.email)
 				showToast({
@@ -180,6 +182,8 @@ export default function Profile() {
 					message: error instanceof Error ? error.message : 'Erro ao realizar backup.',
 					type: 'error',
 				})
+			} finally {
+				setIsLoading(false)
 			}
 		}
 		setVisible(false)
@@ -409,9 +413,10 @@ export default function Profile() {
 					)}
 					<Button
 						onClick={onConfirmModal}
-						title='Confirmar'
+						title={isLoading ? 'Aguarde...' : 'Confirmar'}
 						icon={'check-circle'}
 						style={{ height: 40, borderRadius: 8 }}
+						disabled={isLoading}
 					/>
 				</MyModal>
 			</View>
