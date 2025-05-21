@@ -137,10 +137,10 @@ export default function Notas() {
 					<Select data={turmas ?? []} onChange={value => setSelectedTurma(Number(value) || null)} />
 					<Text style={s.label}>Disciplina</Text>
 					<Select data={disciplinas ?? []} onChange={value => setSelectedDisciplina(Number(value) || null)} />
-					<Text style={s.label}>Tipo de avaliação</Text>
-					<Select data={tipoProvas} onChange={value => setSelectedTipoProva(value)} />
 					<Text style={s.label}>Trimestre</Text>
 					<Select data={trimestres} onChange={value => setSelectedTrimestre(value)} />
+					<Text style={s.label}>Tipo de avaliação</Text>
+					<Select data={tipoProvas} onChange={value => setSelectedTipoProva(value)} />
 				</View>
 				{alunosFiltrados.length === 0 ? (
 					<EmptyList title='Nenhum aluno encontrado.' />

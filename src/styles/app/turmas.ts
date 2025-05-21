@@ -208,7 +208,7 @@ export const s = StyleSheet.create({
 		justifyContent: 'flex-start',
 		alignItems: 'center',
 		paddingLeft: 10,
-		marginBottom: 5,
+		marginBottom: 10,
 		borderLeftWidth: 2,
 		borderLeftColor: colors.red.base,
 		borderTopRightRadius: 5,

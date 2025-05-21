@@ -19,6 +19,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { EmailSchema, Userschema } from '@/schema'
 import { SchoolData, User } from '@/types'
 import { useToast } from '@/context/ToastContext'
+import { backupData } from '@/services/backup'
 
 type typeClick = 'profile' | 'bio' | 'logout' | 'backup' | 'school'
 
@@ -165,13 +166,21 @@ export default function Profile() {
 	}
 
 	const sendBackup = async (data: { email?: string }) => {
-		if (data) {
-			console.log(data)
-			showToast({
-				title: 'Longi',
-				message: 'Backup realizado com sucesso, verifique seu email',
-				type: 'success',
-			})
+		if (data?.email) {
+			try {
+				await backupData(db, data.email)
+				showToast({
+					title: 'Longi',
+					message: 'Backup realizado com sucesso.',
+					type: 'success',
+				})
+			} catch (error) {
+				showToast({
+					title: 'Longi',
+					message: error instanceof Error ? error.message : 'Erro ao realizar backup.',
+					type: 'error',
+				})
+			}
 		}
 		setVisible(false)
 	}

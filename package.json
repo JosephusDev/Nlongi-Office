@@ -15,6 +15,7 @@
     "@hookform/resolvers": "^3.10.0",
     "@react-native-async-storage/async-storage": "1.23.1",
     "@react-native-community/datetimepicker": "8.2.0",
+    "@react-native-community/netinfo": "^11.4.1",
     "@react-native-picker/picker": "2.9.0",
     "@react-navigation/drawer": "^7.1.1",
     "@tabler/icons-react-native": "^3.26.0",
@@ -33,6 +34,7 @@
     "expo-sqlite": "~15.1.4",
     "expo-status-bar": "~2.0.1",
     "expo-system-ui": "~4.0.9",
+    "lottie-react-native": "7.1.0",
     "react": "18.3.1",
     "react-content-loader": "^7.0.2",
     "react-hook-form": "^7.54.2",
@@ -46,8 +48,7 @@
     "react-native-toast-message": "^2.2.1",
     "react-native-web": "~0.19.13",
     "xlsx": "^0.18.5",
-    "yup": "^1.6.1",
-    "lottie-react-native": "7.1.0"
+    "yup": "^1.6.1"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
