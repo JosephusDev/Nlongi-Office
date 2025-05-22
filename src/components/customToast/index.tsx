@@ -26,6 +26,7 @@ type CustomToastProps = {
 export function CustomToast({ id, title, message, type = 'info', onHide, duration = 3000 }: CustomToastProps) {
 	const opacity = useRef(new Animated.Value(0)).current
 	const progress = useRef(new Animated.Value(0)).current
+	console.log(duration)
 
 	useEffect(() => {
 		Animated.sequence([
