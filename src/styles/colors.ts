@@ -15,4 +15,7 @@ export const colors = {
 	blue: {
 		base: '#177AD5',
 	},
+	green: {
+		base: '#00875F',
+	},
 }

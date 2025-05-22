@@ -7,6 +7,7 @@ export const s = StyleSheet.create({
 		flex: 1,
 		justifyContent: 'center',
 		backgroundColor: colors.light,
+		height: '100%',
 	},
 	containerIconHome: {
 		justifyContent: 'center',
@@ -64,7 +65,7 @@ export const s = StyleSheet.create({
 		flexDirection: 'row',
 		justifyContent: 'center',
 		alignItems: 'center',
-		marginTop: 30,
+		marginVertical: 30,
 		gap: 5,
 	},
 	titleLink: {

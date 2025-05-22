@@ -1,7 +1,7 @@
 import { DrawerSceneWrapper } from '@/components/DrawerSceneWrapper'
 import Header from '@/components/Header'
 import { s } from '@/styles/app/turmas'
-import { Image, Pressable, Text, TextInput, View } from 'react-native'
+import { ActivityIndicator, Image, Pressable, Text, TextInput, View } from 'react-native'
 import * as ImagePicker from 'expo-image-picker'
 import * as FileSystem from 'expo-file-system'
 import { update, updateImage } from '@/models/Usuario'
@@ -16,34 +16,44 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import { colors } from '@/styles/colors'
 import { Controller, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { EmailSchema, Userschema } from '@/schema'
 import { SchoolData, User } from '@/types'
 import { useToast } from '@/context/ToastContext'
-import { backupData } from '@/services/backup'
+import { backupData, restoreData } from '@/services/backup'
+import { Userschema, EmailSchema } from '@/schema'
+import { login, signUp } from '@/services/supabase'
+import { fontFamily } from '@/styles/font-family'
 
-type typeClick = 'profile' | 'bio' | 'logout' | 'backup' | 'school'
+type typeClick = 'profile' | 'bio' | 'logout' | 'backup' | 'school' | 'restore'
 
 export default function Profile() {
+	const { user, signOut } = useAuth()
+	const [isEmailVerified, setIsEmailVerified] = useState(false)
+	const [supabaseUser, setSupabaseUser] = useState<{ id: string; email: string } | null>(null)
+
 	const {
 		control,
 		handleSubmit,
 		formState: { errors },
-	} = useForm({
+	} = useForm<Omit<User, 'image'>>({
 		resolver: yupResolver(Userschema),
 		context: { isSignUp: !true },
+		defaultValues: {
+			usuario: user?.usuario,
+			senha: user?.senha,
+			email: user?.email,
+		},
 	})
 
 	const {
 		control: controlEmail,
 		handleSubmit: handleSubmitEmail,
 		formState: { errors: errorEmail },
-	} = useForm({
+	} = useForm<{ email: string }>({
 		resolver: yupResolver(EmailSchema),
-		context: { isSignUp: !true },
+		context: { userEmail: user?.email },
 	})
 
 	const db = useSQLiteContext()
-	const { user, signOut } = useAuth()
 	const [imageUri, setImageUri] = useState<string | null>(user?.image ?? null)
 	const [visible, setVisible] = useState(false)
 	const [hasBio, setHasBio] = useState(false)
@@ -51,6 +61,7 @@ export default function Profile() {
 	const [description, setDescription] = useState('')
 	const [typeClick, setTypeClick] = useState<typeClick>('profile')
 	const [isLoading, setIsLoading] = useState(false)
+	const [isLoadingEmail, setIsLoadingEmail] = useState(false)
 	const [schoolData, setSchoolData] = useState<SchoolData>({
 		nomeEscola: '',
 		anoLetivo: '',
@@ -66,6 +77,20 @@ export default function Profile() {
 			}
 		}
 		loadSchoolData()
+	}, [])
+
+	useEffect(() => {
+		const checkSupabaseUser = async () => {
+			const userData = await AsyncStorage.getItem('@user_supabase')
+			if (userData) {
+				const parsedUser = JSON.parse(userData)
+				setSupabaseUser(parsedUser)
+				console.log(parsedUser)
+				const isVerified = await login(parsedUser.email, parsedUser.password)
+				setIsEmailVerified(isVerified)
+			}
+		}
+		checkSupabaseUser()
 	}, [])
 
 	async function checkBiometric() {
@@ -153,7 +178,15 @@ export default function Profile() {
 			})
 			return
 		}
-		const new_user = { ...user, usuario: data.usuario, senha: data.senha }
+		if (data.email === user?.email && data.usuario === user?.usuario && data.senha === user?.senha) {
+			showToast({
+				title: 'Longi',
+				message: 'Nenhuma alteração foi feita.',
+				type: 'success',
+			})
+			return
+		}
+		const new_user = { ...user, usuario: data.usuario, senha: data.senha, email: data.email }
 		const jsonUser = JSON.stringify(new_user)
 		await AsyncStorage.setItem('@user', jsonUser)
 		await update(db, new_user).then(() => {
@@ -166,11 +199,65 @@ export default function Profile() {
 		})
 	}
 
-	const sendBackup = async (data: { email?: string }) => {
-		if (data?.email) {
+	const handleVerifyEmail = async () => {
+		if (!user?.email) {
+			showToast({
+				title: 'Longi',
+				message: 'Defina um email para sua conta primeiro.',
+				type: 'error',
+			})
+			return
+		}
+
+		try {
+			setIsLoadingEmail(true)
+			const data = await signUp(user.email, user.senha)
+			if (data?.user) {
+				console.log(data)
+				await AsyncStorage.setItem(
+					'@user_supabase',
+					JSON.stringify({
+						id: data.user.id,
+						email: data.user.email,
+						password: user.senha,
+					}),
+				)
+				setSupabaseUser({
+					id: data.user.id,
+					email: data.user.email!,
+				})
+				showToast({
+					title: 'Longi',
+					message: 'Verifique seu email para confirmar a conta.',
+					type: 'success',
+				})
+			}
+		} catch (error) {
+			console.log(error)
+			showToast({
+				title: 'Longi',
+				message: 'Erro ao criar conta. Tente novamente.',
+				type: 'error',
+			})
+		} finally {
+			setIsLoadingEmail(false)
+		}
+	}
+
+	const sendBackup = async () => {
+		if (!isEmailVerified) {
+			showToast({
+				title: 'Longi',
+				message: 'Seu email precisa estar verificado.',
+				type: 'error',
+			})
+			return
+		}
+
+		if (user?.email) {
 			setIsLoading(true)
 			try {
-				await backupData(db, data.email)
+				await backupData(db, user.email)
 				showToast({
 					title: 'Longi',
 					message: 'Backup realizado com sucesso.',
@@ -185,6 +272,36 @@ export default function Profile() {
 			} finally {
 				setIsLoading(false)
 			}
+		}
+		setVisible(false)
+	}
+
+	const handleRestore = async (data: { email: string }) => {
+		if (!isEmailVerified) {
+			showToast({
+				title: 'Longi',
+				message: 'Seu email precisa estar verificado.',
+				type: 'error',
+			})
+			return
+		}
+
+		setIsLoading(true)
+		try {
+			await restoreData(db, data.email)
+			showToast({
+				title: 'Longi',
+				message: 'Dados restaurados com sucesso.',
+				type: 'success',
+			})
+		} catch (error) {
+			showToast({
+				title: 'Longi',
+				message: error instanceof Error ? error.message : 'Erro ao restaurar dados.',
+				type: 'error',
+			})
+		} finally {
+			setIsLoading(false)
 		}
 		setVisible(false)
 	}
@@ -221,6 +338,9 @@ export default function Profile() {
 				break
 			case 'backup':
 				handleSubmitEmail(sendBackup)()
+				break
+			case 'restore':
+				handleSubmitEmail(handleRestore)()
 				break
 			case 'school':
 				saveSchoolData()
@@ -304,6 +424,20 @@ export default function Profile() {
 						</View>
 					</Pressable>
 
+					<Pressable
+						onPress={() => handleClickOption('Restauração', 'Deseja restaurar os dados do backup?', 'restore')}
+					>
+						<View style={s.containerOption}>
+							<View style={s.right}>
+								<View style={s.containerIcon}>
+									<Feather name='download' size={18} />
+								</View>
+								<Text style={s.description}>Restaurar Dados</Text>
+							</View>
+							<Feather name='chevron-right' size={18} />
+						</View>
+					</Pressable>
+
 					<Pressable onPress={() => handleClickOption('Terminar sessão', 'Tem certeza que deseja sair?', 'logout')}>
 						<View style={s.containerOption}>
 							<View style={s.right}>
@@ -333,6 +467,7 @@ export default function Profile() {
 											onChangeText={onChange}
 											onBlur={onBlur}
 											value={value ?? user?.usuario}
+											autoComplete='off'
 										/>
 									)}
 								/>
@@ -352,11 +487,47 @@ export default function Profile() {
 											onChangeText={onChange}
 											value={value ?? user?.senha}
 											secureTextEntry={true}
+											autoComplete='off'
 										/>
 									)}
 								/>
 							</View>
 							{errors.senha && <Text style={s.error}>{errors.senha.message?.toString()}</Text>}
+							<Text style={s.label}>E-mail</Text>
+							<View style={[s.inputContainer, errors.email && { borderColor: colors.red.base }, { marginTop: 5 }]}>
+								<Feather name='mail' size={20} color={colors.gray[100]} />
+								<Controller
+									control={control}
+									name='email'
+									render={({ field: { onChange, onBlur, value } }) => (
+										<TextInput
+											style={s.input}
+											placeholder='Digite o e-mail'
+											onBlur={onBlur}
+											onChangeText={onChange}
+											value={value ?? user?.email}
+											autoComplete='off'
+										/>
+									)}
+								/>
+							</View>
+							{errors.email && <Text style={s.error}>{errors.email.message?.toString()}</Text>}
+
+							{isEmailVerified ? (
+								<View style={{ flexDirection: 'row', alignItems: 'center', gap: 5, marginTop: 5 }}>
+									<Feather name='check-circle' size={16} color={colors.green.base} />
+									<Text style={{ color: colors.green.base, fontFamily: fontFamily.regular }}>Email verificado</Text>
+								</View>
+							) : (
+								<Pressable onPress={handleVerifyEmail}>
+									<View style={{ flexDirection: 'row', alignItems: 'center', gap: 5, marginTop: 10, marginBottom: 20 }}>
+										<Feather name='alert-circle' size={16} color={colors.red.base} />
+										<Text style={{ color: colors.red.base, fontFamily: fontFamily.regular }}>
+											{isLoadingEmail ? 'Aguarde...' : 'Email não verificado. Clique para verificar'}
+										</Text>
+									</View>
+								</Pressable>
+							)}
 						</View>
 					)}
 					{typeClick === 'backup' && (
@@ -373,6 +544,7 @@ export default function Profile() {
 											placeholder='Digite o e-mail para o backup'
 											onChangeText={onChange}
 											onBlur={onBlur}
+											autoComplete='off'
 										/>
 									)}
 								/>
@@ -411,10 +583,32 @@ export default function Profile() {
 							</View>
 						</View>
 					)}
+					{typeClick === 'restore' && (
+						<View style={{ width: '100%', marginTop: -5 }}>
+							<Text style={s.label}>E-mail</Text>
+							<View style={[s.inputContainer, errorEmail.email && { borderColor: colors.red.base }, { marginTop: 5 }]}>
+								<Feather name='mail' size={20} color={colors.gray[100]} />
+								<Controller
+									control={controlEmail}
+									name='email'
+									render={({ field: { onChange, onBlur, value } }) => (
+										<TextInput
+											style={s.input}
+											placeholder='Digite o e-mail para restaurar os dados'
+											onChangeText={onChange}
+											onBlur={onBlur}
+											autoComplete='off'
+										/>
+									)}
+								/>
+							</View>
+							{errorEmail.email && <Text style={s.error}>{errorEmail.email.message?.toString()}</Text>}
+						</View>
+					)}
 					<Button
 						onClick={onConfirmModal}
 						title={isLoading ? 'Aguarde...' : 'Confirmar'}
-						icon={'check-circle'}
+						icon={isLoading ? <ActivityIndicator color={colors.light} size={'small'} /> : 'check-circle'}
 						style={{ height: 40, borderRadius: 8 }}
 						disabled={isLoading}
 					/>

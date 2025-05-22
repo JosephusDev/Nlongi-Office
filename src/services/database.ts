@@ -6,11 +6,11 @@ export async function createUsuarioTable(db: SQLiteDatabase) {
       CREATE TABLE IF NOT EXISTS usuario (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       nome TEXT NOT NULL,
-      genero TEXT NOT NULL,
       image TEXT,
       biometria INTEGER,
       usuario TEXT NOT NULL UNIQUE,
-      senha TEXT NOT NULL
+      senha TEXT NOT NULL,
+      email TEXT
       );
     `)
 		.then(() => console.log('Criado com sucesso!'))

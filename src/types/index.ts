@@ -15,6 +15,7 @@ export type User = {
 	image?: string
 	usuario: string
 	senha: string
+	email?: string
 }
 
 export type ITurma = {

@@ -3,11 +3,11 @@ import { SQLiteDatabase } from 'expo-sqlite'
 
 export const create = async (db: SQLiteDatabase, data: Omit<User, 'id'>) => {
 	try {
-		const result = await db.runAsync(`INSERT INTO usuario (nome, genero, usuario, senha) VALUES (?, ?, ?, ?)`, [
-			data.nome?.trim() ?? '',
-			data.genero?.trim() ?? '',
+		const result = await db.runAsync(`INSERT INTO usuario (nome, usuario, senha, email) VALUES (?, ?, ?, ?)`, [
+			data.nome?.trim()!,
 			data.usuario.trim(),
 			data.senha.trim(),
+			data.email?.trim()!,
 		])
 
 		if (result.changes > 0) {
@@ -60,14 +60,14 @@ export const updateImage = async (db: SQLiteDatabase, id: number, image: string)
 
 export const update = async (db: SQLiteDatabase, data: User) => {
 	try {
-		const { id, nome, genero, usuario, senha } = data
+		const { id, nome, usuario, senha, email } = data
 
-		const result = await db.runAsync(`UPDATE usuario SET nome = ?, genero = ?, usuario = ?, senha = ? WHERE id = ?`, [
-			nome?.trim() ?? '',
-			genero?.trim() ?? '',
+		const result = await db.runAsync(`UPDATE usuario SET nome = ?, usuario = ?, senha = ?, email = ? WHERE id = ?`, [
+			nome?.trim()!,
 			usuario.trim(),
 			senha.trim(),
-			id ?? '',
+			email?.trim()!,
+			id!,
 		])
 
 		if (result.changes > 0) {

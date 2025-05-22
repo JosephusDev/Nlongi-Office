@@ -11,9 +11,10 @@ export const Userschema = yup
 				then: schema => schema.required('O nome é obrigatório'),
 				otherwise: schema => schema.notRequired(), // Se for login, não obrigatório
 			}),
+		email: yup.string().email('E-mail inválido').trim(),
 		image: yup.string().nullable(),
 		usuario: yup.string().min(3, 'Usuário deve ter no mínimo 3 caracteres').trim().required('Usuário é obrigatório'),
-		senha: yup.string().min(4, 'Senha deve ter no mínimo 4 caracteres').trim().required('Senha é obrigatória'),
+		senha: yup.string().min(4, 'Senha deve ter no mínimo 6 caracteres').trim().required('Senha é obrigatória'),
 	})
 	.required()
 
@@ -30,4 +31,16 @@ export const AlunoSchema = yup
 	})
 	.required()
 
-export const EmailSchema = yup.object({ email: yup.string().email('E-mail inválido').required('E-mail é obrigatório') })
+export const EmailSchema = yup
+	.object({
+		email: yup
+			.string()
+			.email('E-mail inválido')
+			.required('E-mail é obrigatório')
+			.trim()
+			.test('email-match', 'O e-mail deve ser igual ao e-mail cadastrado', function (value) {
+				const { userEmail } = this.options.context || {}
+				return value === userEmail
+			}),
+	})
+	.required()

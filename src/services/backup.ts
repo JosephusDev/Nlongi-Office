@@ -94,3 +94,78 @@ export async function backupData(db: SQLiteDatabase, email: string) {
 		throw error
 	}
 }
+
+export async function restoreData(db: SQLiteDatabase, email: string) {
+	try {
+		const isConnected = await checkInternetConnection()
+		if (!isConnected) {
+			throw new Error('Sem conexão com a internet')
+		}
+
+		// Restaurar Turmas
+		const { data: turmas, error: errorTurmas } = await supabase
+			.from('Turma')
+			.select('*')
+			.eq('email', email)
+
+		if (errorTurmas) throw errorTurmas
+
+		for (const turma of turmas) {
+			const id = turma.id.split('_')[0]
+			await db.runAsync('INSERT OR REPLACE INTO turma (id, nome) VALUES (?, ?)', [id, turma.nome])
+		}
+
+		// Restaurar Disciplinas
+		const { data: disciplinas, error: errorDisciplinas } = await supabase
+			.from('Disciplina')
+			.select('*')
+			.eq('email', email)
+
+		if (errorDisciplinas) throw errorDisciplinas
+
+		for (const disciplina of disciplinas) {
+			const id = disciplina.id.split('_')[0]
+			await db.runAsync('INSERT OR REPLACE INTO disciplina (id, nome) VALUES (?, ?)', [id, disciplina.nome])
+		}
+
+		// Restaurar Alunos
+		const { data: alunos, error: errorAlunos } = await supabase
+			.from('Aluno')
+			.select('*')
+			.eq('email', email)
+
+		if (errorAlunos) throw errorAlunos
+
+		for (const aluno of alunos) {
+			const id = aluno.id.split('_')[0]
+			const turmaId = aluno.turmaid.split('_')[0]
+			await db.runAsync('INSERT OR REPLACE INTO aluno (id, nome, turma_id) VALUES (?, ?, ?)', [
+				id,
+				aluno.nome,
+				turmaId,
+			])
+		}
+
+		// Restaurar Notas
+		const { data: notas, error: errorNotas } = await supabase
+			.from('Nota')
+			.select('*')
+			.eq('email', email)
+
+		if (errorNotas) throw errorNotas
+
+		for (const nota of notas) {
+			const alunoId = nota.alunoid.split('_')[0]
+			const disciplinaId = nota.disciplinaid.split('_')[0]
+			await db.runAsync(
+				'INSERT OR REPLACE INTO nota (valor, periodo, tipo, aluno_id, disciplina_id) VALUES (?, ?, ?, ?, ?)',
+				[nota.valor, nota.periodo, nota.tipo, alunoId, disciplinaId]
+			)
+		}
+
+		return true
+	} catch (error) {
+		console.error('Erro ao restaurar dados:', error)
+		throw error
+	}
+}
