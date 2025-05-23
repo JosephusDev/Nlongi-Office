@@ -29,9 +29,6 @@ export const SplashScreenComponent = () => {
 					loop={true}
 					style={styles.animation}
 				/>
-				<View style={styles.footer}>
-					<Text style={styles.footerText}>Powered by Fulltech</Text>
-				</View>
 			</View>
 		</Fragment>
 	)
