@@ -30,8 +30,7 @@ export const SplashScreenComponent = () => {
 					style={styles.animation}
 				/>
 				<View style={styles.footer}>
-					<Text style={styles.footerText}>by</Text>
-					<Text style={[styles.footerText, { fontSize: 20, fontFamily: fontFamily.bold }]}>Fulltech</Text>
+					<Text style={styles.footerText}>Powered by Fulltech</Text>
 				</View>
 			</View>
 		</Fragment>
@@ -41,6 +40,7 @@ export const SplashScreenComponent = () => {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
+		width: '100%',
 		justifyContent: 'center',
 		alignItems: 'center',
 		backgroundColor: colors.red.base,
@@ -63,10 +63,9 @@ const styles = StyleSheet.create({
 	footerText: {
 		color: colors.light,
 		textAlign: 'center',
-		fontFamily: fontFamily.medium,
+		fontFamily: fontFamily.semiBold,
 		fontSize: 18,
 		marginTop: 10,
 		marginBottom: 10,
-		marginHorizontal: 20,
 	},
 })

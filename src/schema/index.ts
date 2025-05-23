@@ -14,7 +14,7 @@ export const Userschema = yup
 		email: yup.string().email('E-mail inválido').trim(),
 		image: yup.string().nullable(),
 		usuario: yup.string().min(3, 'Usuário deve ter no mínimo 3 caracteres').trim().required('Usuário é obrigatório'),
-		senha: yup.string().min(4, 'Senha deve ter no mínimo 6 caracteres').trim().required('Senha é obrigatória'),
+		senha: yup.string().min(6, 'Senha deve ter no mínimo 6 caracteres').trim().required('Senha é obrigatória'),
 	})
 	.required()
 

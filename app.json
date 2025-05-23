@@ -2,7 +2,7 @@
 	"expo": {
 		"name": "Prof Office",
 		"slug": "prof-office",
-		"version": "1.0.0",
+		"version": "1.0.1",
 		"orientation": "portrait",
 		"icon": "./assets/images/icon.png",
 		"scheme": "prof-office",
@@ -23,7 +23,7 @@
 			},
 			"permissions": ["android.permission.USE_BIOMETRIC", "android.permission.USE_FINGERPRINT"],
 			"package": "com.josephusdev.profoffice",
-			"versionCode": 4
+			"versionCode": 5
 		},
 		"web": {
 			"bundler": "metro",

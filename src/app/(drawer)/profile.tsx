@@ -353,7 +353,7 @@ export default function Profile() {
 	return (
 		<DrawerSceneWrapper>
 			<View style={s.container}>
-				<Header title='Meu Perfil' />
+				<Header title='Configurações' />
 				<View style={s.containerProfile}>
 					<Pressable style={{ width: 80 }} onPress={imageUpload}>
 						<Image

@@ -28,7 +28,7 @@ export default function PrivateLayout() {
 					},
 					drawerHideStatusBarOnOpen: true,
 					drawerStyle: {
-						width: '55%',
+						width: '58%',
 						backgroundColor: colors.light,
 					},
 					sceneStyle: {
@@ -75,8 +75,8 @@ export default function PrivateLayout() {
 				<Drawer.Screen
 					name='profile'
 					options={{
-						drawerLabel: 'Meu Perfil',
-						drawerIcon: ({ color }) => <Feather name='user' size={20} color={color} />,
+						drawerLabel: 'Configurações',
+						drawerIcon: ({ color }) => <Feather name='settings' size={20} color={color} />,
 					}}
 				/>
 			</Drawer>
