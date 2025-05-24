@@ -17,8 +17,8 @@ import * as Print from 'expo-print'
 import { Asset } from 'expo-asset'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useAuth } from '@/context/AuthContext'
-import * as FileSystem from 'expo-file-system'
-const asset = Asset.fromModule(require('@/assets/images/insignia.png'))
+import { useImageManipulator } from 'expo-image-manipulator'
+const IMAGE = Asset.fromModule(require('@/assets/images/insignia.png'))
 
 export default function MiniPautas() {
 	const db = useSQLiteContext()
@@ -28,6 +28,7 @@ export default function MiniPautas() {
 	const [turmas, setTurmas] = useState<ITurma[]>([])
 	const [notas, setNotas] = useState<IMiniPauta[]>([])
 	const [visible, setVisible] = useState(false)
+	const context = useImageManipulator(IMAGE.uri)
 
 	// Estados para armazenar os filtros selecionados
 	const [selectedTurma, setSelectedTurma] = useState(0)
@@ -98,27 +99,27 @@ export default function MiniPautas() {
 	}
 
 	const handleExport = async () => {
-		await asset.downloadAsync()
-		const base64 = await FileSystem.readAsStringAsync(asset.localUri!, {
-			encoding: FileSystem.EncodingType.Base64,
-		})
-		const insigniaBase64 = `data:image/png;base64,${base64}`
-		// Obter os dados da escola
-		const savedData = await AsyncStorage.getItem('@schoolData')
-		const schoolData: SchoolData = savedData ? JSON.parse(savedData) : null
-		if (!schoolData) {
-			showToast({
-				title: 'Erro',
-				message: 'Preencha as informações da Escola nas configurações',
-				type: 'error',
-			})
-			return
-		}
-		const disciplina = disciplinas.find(d => d.id === selectedDisciplina)?.nome
-		const turma = turmas.find(t => t.id === selectedTurma)?.nome
+		try {
+			// Obter os dados da escola
+			const savedData = await AsyncStorage.getItem('@schoolData')
+			const schoolData: SchoolData = savedData ? JSON.parse(savedData) : null
+			if (!schoolData) {
+				showToast({
+					title: 'Erro',
+					message: 'Preencha as informações da Escola nas configurações',
+					type: 'error',
+				})
+				return
+			}
+			await IMAGE.downloadAsync()
+			const manipulatedImage = await context.renderAsync()
+			const result = await manipulatedImage.saveAsync({ base64: true })
+			const insigniaBase64 = `data:image/png;base64,${result.base64}`
+			const disciplina = disciplinas.find(d => d.id === selectedDisciplina)?.nome
+			const turma = turmas.find(t => t.id === selectedTurma)?.nome
 
-		// Gera o HTML dinamicamente com os dados filtrados
-		const html = `
+			// Gera o HTML dinamicamente com os dados filtrados
+			const html = `
 			<html>
 				<head>
 					<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
@@ -195,7 +196,7 @@ export default function MiniPautas() {
 						}
 					</style>
 				</head>
-				<body style="text-align: center;"> 
+				<body style="text-align: center;">
 					<img
 						src=${insigniaBase64}
 						alt="Insígnia"
@@ -275,8 +276,16 @@ export default function MiniPautas() {
 				</html>
 		`
 
-		// Imprime o HTML gerado
-		await Print.printAsync({ html, orientation: Print.Orientation.landscape })
+			// Imprime o HTML gerado
+			await Print.printAsync({ html, orientation: Print.Orientation.landscape })
+		} catch (error) {
+			console.log(error instanceof Error ? error.message : 'Erro ao exportar pauta')
+			showToast({
+				title: 'Erro',
+				message: 'Erro ao exportar pauta',
+				type: 'error',
+			})
+		}
 	}
 
 	useEffect(() => {
