@@ -17,6 +17,7 @@ import * as Print from 'expo-print'
 import { Asset } from 'expo-asset'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useAuth } from '@/context/AuthContext'
+import * as FileSystem from 'expo-file-system'
 const asset = Asset.fromModule(require('@/assets/images/insignia.png'))
 
 export default function MiniPautas() {
@@ -97,10 +98,22 @@ export default function MiniPautas() {
 	}
 
 	const handleExport = async () => {
+		await asset.downloadAsync()
+		const base64 = await FileSystem.readAsStringAsync(asset.localUri!, {
+			encoding: FileSystem.EncodingType.Base64,
+		})
+		const insigniaBase64 = `data:image/png;base64,${base64}`
 		// Obter os dados da escola
 		const savedData = await AsyncStorage.getItem('@schoolData')
 		const schoolData: SchoolData = savedData ? JSON.parse(savedData) : null
-
+		if (!schoolData) {
+			showToast({
+				title: 'Erro',
+				message: 'Preencha as informações da Escola nas configurações',
+				type: 'error',
+			})
+			return
+		}
 		const disciplina = disciplinas.find(d => d.id === selectedDisciplina)?.nome
 		const turma = turmas.find(t => t.id === selectedTurma)?.nome
 
@@ -184,7 +197,7 @@ export default function MiniPautas() {
 				</head>
 				<body style="text-align: center;"> 
 					<img
-						src=${asset.localUri ?? asset.uri}
+						src=${insigniaBase64}
 						alt="Insígnia"
 					/>    
 					<p>REPÚBLICA DE ANGOLA</p>
@@ -263,14 +276,6 @@ export default function MiniPautas() {
 		`
 
 		// Imprime o HTML gerado
-		if (!schoolData.nomeEscola || !schoolData.anoLetivo) {
-			showToast({
-				title: 'Erro',
-				message: 'Verifique as informações da Escola',
-				type: 'error',
-			})
-			return
-		}
 		await Print.printAsync({ html, orientation: Print.Orientation.landscape })
 	}
 

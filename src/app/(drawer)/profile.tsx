@@ -28,7 +28,6 @@ type typeClick = 'profile' | 'bio' | 'logout' | 'backup' | 'school' | 'restore'
 export default function Profile() {
 	const { user, signOut } = useAuth()
 	const [isEmailVerified, setIsEmailVerified] = useState(false)
-	const [supabaseUser, setSupabaseUser] = useState<{ id: string; email: string } | null>(null)
 
 	const {
 		control,
@@ -81,14 +80,8 @@ export default function Profile() {
 
 	useEffect(() => {
 		const checkSupabaseUser = async () => {
-			const userData = await AsyncStorage.getItem('@user_supabase')
-			if (userData) {
-				const parsedUser = JSON.parse(userData)
-				setSupabaseUser(parsedUser)
-				console.log(parsedUser)
-				const isVerified = await login(parsedUser.email, parsedUser.password)
-				setIsEmailVerified(isVerified)
-			}
+			const isVerified = await login(user?.email!, user?.senha!)
+			setIsEmailVerified(isVerified)
 		}
 		checkSupabaseUser()
 	}, [])
@@ -222,10 +215,7 @@ export default function Profile() {
 						password: user.senha,
 					}),
 				)
-				setSupabaseUser({
-					id: data.user.id,
-					email: data.user.email!,
-				})
+				setVisible(false)
 				showToast({
 					title: 'Longi',
 					message: 'Verifique seu email para confirmar a conta.',
