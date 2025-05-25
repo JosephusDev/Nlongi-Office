@@ -171,7 +171,12 @@ export default function Profile() {
 			})
 			return
 		}
-		if (data.email === user?.email && data.usuario === user?.usuario && data.senha === user?.senha) {
+		if (
+			data.email === user?.email &&
+			data.nome === user?.nome &&
+			data.usuario === user?.usuario &&
+			data.senha === user?.senha
+		) {
 			showToast({
 				title: 'Longi',
 				message: 'Nenhuma alteração foi feita.',
@@ -179,7 +184,7 @@ export default function Profile() {
 			})
 			return
 		}
-		const new_user = { ...user, usuario: data.usuario, senha: data.senha, email: data.email }
+		const new_user = { ...user, nome: data.nome, usuario: data.usuario, senha: data.senha, email: data.email }
 		const jsonUser = JSON.stringify(new_user)
 		await AsyncStorage.setItem('@user', jsonUser)
 		await update(db, new_user).then(() => {
@@ -444,6 +449,25 @@ export default function Profile() {
 					{description && <Text style={s.descriptionModal}>{description}</Text>}
 					{typeClick === 'profile' && (
 						<View style={{ width: '100%', marginTop: -10 }}>
+							<Text style={s.label}>Nome Completo</Text>
+							<View style={[s.inputContainer, errors.nome && { borderColor: colors.red.base }, { marginTop: 5 }]}>
+								<Feather name='user' size={20} color={colors.gray[100]} />
+								<Controller
+									control={control}
+									name='nome'
+									render={({ field: { onChange, onBlur, value } }) => (
+										<TextInput
+											style={s.input}
+											placeholder='Digite o nome completo'
+											onBlur={onBlur}
+											onChangeText={onChange}
+											value={value ?? user?.nome}
+											autoComplete='off'
+										/>
+									)}
+								/>
+							</View>
+							{errors.nome && <Text style={s.error}>{errors.nome.message?.toString()}</Text>}
 							<Text style={s.label}>Utilizador</Text>
 							<View style={[s.inputContainer, errors.usuario && { borderColor: colors.red.base }, { marginTop: 5 }]}>
 								<Feather name='user' size={20} color={colors.gray[100]} />

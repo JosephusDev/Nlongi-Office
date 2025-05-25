@@ -19,7 +19,7 @@
 		"android": {
 			"adaptiveIcon": {
 				"foregroundImage": "./assets/images/adaptive-icon.png",
-				"backgroundColor": "#FFFFFF"
+				"backgroundColor": "#BF2538"
 			},
 			"permissions": [
 				"android.permission.USE_BIOMETRIC",
@@ -28,7 +28,7 @@
 				"android.permission.WRITE_EXTERNAL_STORAGE"
 			],
 			"package": "com.josephusdev.profoffice",
-			"versionCode": 9
+			"versionCode": 10
 		},
 		"web": {
 			"bundler": "metro",

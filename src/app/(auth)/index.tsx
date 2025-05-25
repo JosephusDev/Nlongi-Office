@@ -19,6 +19,10 @@ export default function Auth() {
 	const [isPasswordVisible, setPasswordVisible] = useState(false)
 	const [isLoginScreenVisible, setLoginScreenVisible] = useState(true)
 	const animation = useRef<LottieView>(null)
+	const nomeInputRef = useRef<TextInput>(null)
+	const emailInputRef = useRef<TextInput>(null)
+	const usuarioInputRef = useRef<TextInput>(null)
+	const senhaInputRef = useRef<TextInput>(null)
 
 	const {
 		control,
@@ -96,7 +100,10 @@ export default function Auth() {
 										onBlur={onBlur}
 										onChangeText={onChange}
 										value={value}
+										ref={nomeInputRef}
 										autoComplete='off'
+										returnKeyType='next'
+										onSubmitEditing={() => emailInputRef.current?.focus()}
 									/>
 								)}
 							/>
@@ -117,6 +124,9 @@ export default function Auth() {
 										onChangeText={onChange}
 										value={value!}
 										autoComplete='off'
+										returnKeyType='next'
+										onSubmitEditing={() => usuarioInputRef.current?.focus()}
+										ref={emailInputRef}
 									/>
 								)}
 							/>
@@ -139,6 +149,9 @@ export default function Auth() {
 								onChangeText={onChange}
 								value={value}
 								autoComplete='off'
+								returnKeyType='next'
+								onSubmitEditing={() => senhaInputRef.current?.focus()}
+								ref={usuarioInputRef}
 							/>
 						)}
 					/>
@@ -160,6 +173,9 @@ export default function Auth() {
 								value={value}
 								autoComplete='off'
 								secureTextEntry={!isPasswordVisible}
+								returnKeyType='done'
+								onSubmitEditing={handleSubmit(onSubmit)}
+								ref={senhaInputRef}
 							/>
 						)}
 					/>
