@@ -21,15 +21,21 @@
 				"foregroundImage": "./assets/images/adaptive-icon.png",
 				"backgroundColor": "#FFFFFF"
 			},
-			"permissions": ["android.permission.USE_BIOMETRIC", "android.permission.USE_FINGERPRINT"],
+			"permissions": [
+				"android.permission.USE_BIOMETRIC",
+				"android.permission.USE_FINGERPRINT",
+				"android.permission.READ_EXTERNAL_STORAGE",
+				"android.permission.WRITE_EXTERNAL_STORAGE"
+			],
 			"package": "com.josephusdev.profoffice",
-			"versionCode": 8
+			"versionCode": 9
 		},
 		"web": {
 			"bundler": "metro",
 			"output": "static",
 			"favicon": "./assets/images/favicon.png"
 		},
+		"assetBundlePatterns": ["**/*"],
 		"plugins": [
 			"expo-router",
 			"expo-font",

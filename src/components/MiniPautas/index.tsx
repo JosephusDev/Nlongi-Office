@@ -14,11 +14,9 @@ import { getMiniPauta } from '@/models/Nota'
 import { useToast } from '@/context/ToastContext'
 import FilterButton from '../FilterButton'
 import * as Print from 'expo-print'
-import { Asset } from 'expo-asset'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useAuth } from '@/context/AuthContext'
-import { useImageManipulator } from 'expo-image-manipulator'
-const IMAGE = Asset.fromModule(require('@/assets/images/insignia.png'))
+import { base64 } from '@/utils/consts'
 
 export default function MiniPautas() {
 	const db = useSQLiteContext()
@@ -28,7 +26,6 @@ export default function MiniPautas() {
 	const [turmas, setTurmas] = useState<ITurma[]>([])
 	const [notas, setNotas] = useState<IMiniPauta[]>([])
 	const [visible, setVisible] = useState(false)
-	const context = useImageManipulator(IMAGE.uri)
 
 	// Estados para armazenar os filtros selecionados
 	const [selectedTurma, setSelectedTurma] = useState(0)
@@ -111,10 +108,7 @@ export default function MiniPautas() {
 				})
 				return
 			}
-			await IMAGE.downloadAsync()
-			const manipulatedImage = await context.renderAsync()
-			const result = await manipulatedImage.saveAsync({ base64: true })
-			const insigniaBase64 = `data:image/png;base64,${result.base64}`
+			const insigniaBase64 = `data:image/jpeg;base64,${base64}`
 			const disciplina = disciplinas.find(d => d.id === selectedDisciplina)?.nome
 			const turma = turmas.find(t => t.id === selectedTurma)?.nome
 
@@ -197,11 +191,17 @@ export default function MiniPautas() {
 					</style>
 				</head>
 				<body style="text-align: center;">
-					<img
-						src=${insigniaBase64}
-						alt="Insígnia"
-					/>    
-					<p>REPÚBLICA DE ANGOLA</p>
+          ${
+						insigniaBase64 &&
+						`
+            <img
+              src="${insigniaBase64}"
+              alt="Insígnia"
+              style="width: 50px; height: 50px;"
+            />
+          `
+					}
+          <p>REPÚBLICA DE ANGOLA</p>
 					<p>MINISTÉRIO DA EDUCAÇÃO</p>
 					<p>${schoolData.nomeEscola.toUpperCase()}</p>
 					<strong>PAUTA ANUAL DOS ALUNOS MATRICULADOS NO ANO LECTIVO ${schoolData.anoLetivo}</strong>
@@ -282,7 +282,7 @@ export default function MiniPautas() {
 			console.log(error instanceof Error ? error.message : 'Erro ao exportar pauta')
 			showToast({
 				title: 'Erro',
-				message: 'Erro ao exportar pauta',
+				message: `Erro ao exportar pauta: ${error instanceof Error && error.message}`,
 				type: 'error',
 			})
 		}
