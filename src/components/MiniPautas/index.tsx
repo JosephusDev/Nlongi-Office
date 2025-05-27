@@ -68,10 +68,7 @@ export default function MiniPautas() {
 
 			// Calcula a média geral apenas se houver pelo menos uma média trimestral
 			const mediasTrimestrais = [mt1, mt2, mt3].filter(mt => mt > 0)
-			const mediaGeral =
-				mediasTrimestrais.length > 0
-					? mediasTrimestrais.reduce((acc, curr) => acc + curr, 0) / mediasTrimestrais.length
-					: 0
+			const mediaGeral = mediasTrimestrais.length > 0 ? mediasTrimestrais.reduce((acc, curr) => acc + curr, 0) / 3 : 0
 
 			const resultado = mediaGeral >= 10 ? 'APROVADO' : 'REPROVADO'
 

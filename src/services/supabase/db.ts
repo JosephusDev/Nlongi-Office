@@ -12,6 +12,7 @@ export type Database = {
       Aluno: {
         Row: {
           createdat: string
+          deletedat: string | null
           email: string
           id: string
           nome: string
@@ -20,6 +21,7 @@ export type Database = {
         }
         Insert: {
           createdat?: string
+          deletedat?: string | null
           email: string
           id: string
           nome: string
@@ -28,6 +30,7 @@ export type Database = {
         }
         Update: {
           createdat?: string
+          deletedat?: string | null
           email?: string
           id?: string
           nome?: string
@@ -47,6 +50,7 @@ export type Database = {
       Disciplina: {
         Row: {
           createdat: string
+          deletedat: string | null
           email: string
           id: string
           nome: string
@@ -54,6 +58,7 @@ export type Database = {
         }
         Insert: {
           createdat?: string
+          deletedat?: string | null
           email: string
           id: string
           nome: string
@@ -61,6 +66,7 @@ export type Database = {
         }
         Update: {
           createdat?: string
+          deletedat?: string | null
           email?: string
           id?: string
           nome?: string
@@ -72,6 +78,7 @@ export type Database = {
         Row: {
           alunoid: string
           createdat: string
+          deletedat: string | null
           disciplinaid: string
           email: string
           id: number
@@ -83,6 +90,7 @@ export type Database = {
         Insert: {
           alunoid: string
           createdat?: string
+          deletedat?: string | null
           disciplinaid: string
           email: string
           id?: number
@@ -94,6 +102,7 @@ export type Database = {
         Update: {
           alunoid?: string
           createdat?: string
+          deletedat?: string | null
           disciplinaid?: string
           email?: string
           id?: number
@@ -122,6 +131,7 @@ export type Database = {
       Turma: {
         Row: {
           createdat: string
+          deletedat: string | null
           email: string
           id: string
           nome: string
@@ -129,6 +139,7 @@ export type Database = {
         }
         Insert: {
           createdat?: string
+          deletedat?: string | null
           email: string
           id: string
           nome: string
@@ -136,6 +147,7 @@ export type Database = {
         }
         Update: {
           createdat?: string
+          deletedat?: string | null
           email?: string
           id?: string
           nome?: string

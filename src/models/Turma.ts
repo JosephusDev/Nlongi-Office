@@ -24,7 +24,11 @@ export const update = async (db: SQLiteDatabase, id: number, data: Omit<ITurma, 
 	const { nome } = data
 
 	try {
-		const result = await db.runAsync(`UPDATE turma SET nome = ? WHERE id = ?`, [nome?.toUpperCase().trim(), id])
+		const result = await db.runAsync(`UPDATE turma SET nome = ?, updated_at = ? WHERE id = ?`, [
+			nome?.toUpperCase().trim(),
+			new Date().toISOString(),
+			id,
+		])
 
 		if (result.changes > 0) {
 			console.log('Turma atualizada com sucesso!')
@@ -41,7 +45,10 @@ export const update = async (db: SQLiteDatabase, id: number, data: Omit<ITurma, 
 
 export const deleteTurma = async (db: SQLiteDatabase, id: number) => {
 	try {
-		const result = await db.runAsync(`DELETE FROM turma WHERE id = ?`, [id])
+		const result = await db.runAsync(`UPDATE turma SET deleted_at = ? WHERE id = ?`, [
+			new Date().toISOString(),
+			id,
+		])
 
 		if (result.changes > 0) {
 			console.log('Turma removida com sucesso!')
@@ -58,7 +65,7 @@ export const deleteTurma = async (db: SQLiteDatabase, id: number) => {
 
 export const getTurmas = async (db: SQLiteDatabase) => {
 	try {
-		const result = await db.getAllAsync<ITurma>(`SELECT * FROM turma order by nome;`)
+		const result = await db.getAllAsync<ITurma>(`SELECT * FROM turma WHERE deleted_at IS NULL order by nome;`)
 		return result
 	} catch (error) {
 		console.error('Erro ao obter turmas:', error)

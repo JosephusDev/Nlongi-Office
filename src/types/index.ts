@@ -21,6 +21,8 @@ export type User = {
 export type ITurma = {
 	id: number
 	nome: string
+	updated_at: string
+	deleted_at: string | null
 }
 
 export type Notification = {
@@ -39,6 +41,8 @@ export type IAluno = {
 	nome: string
 	turma_id?: number
 	turma?: string
+	updated_at: string
+	deleted_at: string | null
 }
 
 export type INota = {
@@ -51,6 +55,8 @@ export type INota = {
 	turma_id: number
 	aluno_id: number
 	disciplina_id: number | null
+	updated_at: string
+	deleted_at: string | null
 }
 
 export type IAlunoNotas = {
@@ -93,4 +99,23 @@ export type IMiniPauta = {
 export type SchoolData = {
 	nomeEscola: string
 	anoLetivo: string
+}
+
+export interface IDisciplina {
+	id: number
+	nome: string
+	updated_at: string
+	deleted_at: string | null
+}
+
+export interface IUsuario {
+	id: number
+	nome: string
+	image?: string
+	biometria?: number
+	usuario: string
+	senha: string
+	email?: string
+	updated_at: string
+	deleted_at: string | null
 }

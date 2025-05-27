@@ -123,7 +123,7 @@ export default function Auth() {
 										onBlur={onBlur}
 										onChangeText={onChange}
 										value={value!}
-										autoComplete='off'
+										autoCorrect={false}
 										returnKeyType='next'
 										onSubmitEditing={() => usuarioInputRef.current?.focus()}
 										ref={emailInputRef}

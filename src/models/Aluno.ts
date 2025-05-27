@@ -28,9 +28,10 @@ export const update = async (db: SQLiteDatabase, id: number, data: Omit<IAluno, 
 	const { nome, turma_id } = data
 
 	try {
-		const result = await db.runAsync(`UPDATE aluno SET nome = ?, turma_id = ? WHERE id = ?`, [
+		const result = await db.runAsync(`UPDATE aluno SET nome = ?, turma_id = ?, updated_at = ? WHERE id = ?`, [
 			nome?.toUpperCase().trim(),
 			turma_id ?? '',
+			new Date().toISOString(),
 			id,
 		])
 
@@ -49,9 +50,15 @@ export const update = async (db: SQLiteDatabase, id: number, data: Omit<IAluno, 
 
 export const deleteAluno = async (db: SQLiteDatabase, id: number) => {
 	try {
-		const result = await db.runAsync(`DELETE FROM aluno WHERE id = ?`, [id])
+		const result = await db.runAsync(`UPDATE aluno SET deleted_at = ? WHERE id = ?`, [new Date().toISOString(), id])
 
 		if (result.changes > 0) {
+			const resultNota = await db.runAsync(`UPDATE nota SET deleted_at = ? WHERE aluno_id = ?`, [new Date().toISOString(), id])
+			if (resultNota.changes > 0) {
+				console.log('Notas removidas com sucesso!')
+			} else {
+				console.error('Erro ao remover notas: Nenhuma linha afetada')
+			}
 			console.log('Aluno removido com sucesso!')
 			return true
 		} else {
@@ -70,6 +77,7 @@ export const getAlunos = async (db: SQLiteDatabase) => {
 			`SELECT a.*, t.nome AS turma 
 			 FROM aluno a 
 			 JOIN turma t ON a.turma_id = t.id 
+			 WHERE a.deleted_at IS NULL
 			 ORDER BY a.nome;`,
 		)
 		return result

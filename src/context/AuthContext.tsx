@@ -54,12 +54,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 		setIsLoading(true)
 		const result = await create(db, data)
 		if (result) {
-			console.log('Usuário Criado com sucesso')
-			showToast({
-				title: 'Longi',
-				message: 'Conta criada com sucesso.',
-				type: 'success',
-			})
+			await signIn({ usuario: data.usuario, senha: data.senha })
 		} else {
 			showToast({
 				title: 'Longi',

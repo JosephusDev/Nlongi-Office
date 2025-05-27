@@ -10,7 +10,9 @@ export async function createUsuarioTable(db: SQLiteDatabase) {
       biometria INTEGER,
       usuario TEXT NOT NULL UNIQUE,
       senha TEXT NOT NULL,
-      email TEXT
+      email TEXT,
+      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      deleted_at TIMESTAMP
       );
     `)
 		.then(() => console.log('Criado com sucesso!'))
@@ -22,7 +24,9 @@ export async function createTurmaTable(db: SQLiteDatabase) {
 		.execAsync(`
   CREATE TABLE IF NOT EXISTS turma (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    nome TEXT NOT NULL UNIQUE
+    nome TEXT NOT NULL UNIQUE,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    deleted_at TIMESTAMP
   );
   `)
 		.then(() => console.log('Criado com sucesso!'))
@@ -36,6 +40,8 @@ export async function createAlunoTable(db: SQLiteDatabase) {
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     nome TEXT NOT NULL UNIQUE,
     turma_id INTEGER NOT NULL,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    deleted_at TIMESTAMP,
     FOREIGN KEY (turma_id) REFERENCES turma (id) ON DELETE CASCADE
   );
   `)
@@ -48,7 +54,9 @@ export async function createDisciplinaTable(db: SQLiteDatabase) {
 		.execAsync(`
   CREATE TABLE IF NOT EXISTS disciplina (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    nome TEXT NOT NULL UNIQUE
+    nome TEXT NOT NULL UNIQUE,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    deleted_at TIMESTAMP
   );
   `)
 		.then(() => console.log('Criado com sucesso!'))
@@ -65,6 +73,8 @@ export async function createNotaTable(db: SQLiteDatabase) {
     tipo TEXT NOT NULL,
     aluno_id INTEGER NOT NULL,
     disciplina_id INTEGER NOT NULL,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    deleted_at TIMESTAMP,
     FOREIGN KEY (aluno_id) REFERENCES aluno (id) ON DELETE CASCADE,
     FOREIGN KEY (disciplina_id) REFERENCES disciplina (id) ON DELETE CASCADE
   );

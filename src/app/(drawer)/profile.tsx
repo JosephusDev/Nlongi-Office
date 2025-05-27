@@ -37,6 +37,7 @@ export default function Profile() {
 		resolver: yupResolver(Userschema),
 		context: { isSignUp: !true },
 		defaultValues: {
+			nome: user?.nome,
 			usuario: user?.usuario,
 			senha: user?.senha,
 			email: user?.email,
@@ -78,11 +79,33 @@ export default function Profile() {
 		loadSchoolData()
 	}, [])
 
-	useEffect(() => {
-		const checkSupabaseUser = async () => {
-			const isVerified = await login(user?.email!, user?.senha!)
-			setIsEmailVerified(isVerified)
+	const checkSupabaseUser = async () => {
+		try {
+			const user_supabase = await AsyncStorage.getItem('@user_supabase')
+			if (user_supabase) {
+				const data = JSON.parse(user_supabase)
+				setIsEmailVerified(data.status)
+			} else {
+				const isVerified = await login(user?.email!, user?.senha!)
+				if (isVerified) {
+					await AsyncStorage.setItem(
+						'@user_supabase',
+						JSON.stringify({
+							id: user?.id,
+							email: user?.email,
+							password: user?.senha,
+							status: isVerified,
+						}),
+					)
+					setIsEmailVerified(isVerified)
+				}
+			}
+		} catch (error) {
+			console.error('Erro em checkSupabaseUser:', error)
 		}
+	}
+
+	useEffect(() => {
 		checkSupabaseUser()
 	}, [])
 
@@ -185,6 +208,7 @@ export default function Profile() {
 			return
 		}
 		const new_user = { ...user, nome: data.nome, usuario: data.usuario, senha: data.senha, email: data.email }
+		console.log(new_user)
 		const jsonUser = JSON.stringify(new_user)
 		await AsyncStorage.setItem('@user', jsonUser)
 		await update(db, new_user).then(() => {
@@ -211,27 +235,19 @@ export default function Profile() {
 			setIsLoadingEmail(true)
 			const data = await signUp(user.email, user.senha)
 			if (data?.user) {
-				console.log(data)
-				await AsyncStorage.setItem(
-					'@user_supabase',
-					JSON.stringify({
-						id: data.user.id,
-						email: data.user.email,
-						password: user.senha,
-					}),
-				)
 				setVisible(false)
 				showToast({
 					title: 'Longi',
 					message: 'Verifique seu email para confirmar a conta.',
 					type: 'success',
 				})
+				checkSupabaseUser()
 			}
 		} catch (error) {
 			console.log(error)
 			showToast({
 				title: 'Longi',
-				message: 'Erro ao criar conta. Tente novamente.',
+				message: 'Erro ao verificar conta. Tente novamente.',
 				type: 'error',
 			})
 		} finally {
@@ -520,7 +536,7 @@ export default function Profile() {
 											onBlur={onBlur}
 											onChangeText={onChange}
 											value={value ?? user?.email}
-											autoComplete='off'
+											autoCorrect={false}
 										/>
 									)}
 								/>
@@ -558,7 +574,7 @@ export default function Profile() {
 											placeholder='Digite o e-mail para o backup'
 											onChangeText={onChange}
 											onBlur={onBlur}
-											autoComplete='off'
+											autoCorrect={false}
 										/>
 									)}
 								/>
@@ -611,7 +627,7 @@ export default function Profile() {
 											placeholder='Digite o e-mail para restaurar os dados'
 											onChangeText={onChange}
 											onBlur={onBlur}
-											autoComplete='off'
+											autoCorrect={false}
 										/>
 									)}
 								/>

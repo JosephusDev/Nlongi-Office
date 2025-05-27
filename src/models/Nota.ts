@@ -24,7 +24,7 @@ export const createNota = async (db: SQLiteDatabase, data: Omit<INota, 'turma_id
 }
 export const updateNota = async (db: SQLiteDatabase, id: number, nota: number) => {
 	try {
-		const result = await db.runAsync(`UPDATE nota SET valor = ? WHERE id = ?`, [nota, id])
+		const result = await db.runAsync(`UPDATE nota SET valor = ?, updated_at = ? WHERE id = ?`, [nota, new Date().toISOString(), id])
 
 		if (result.changes > 0) {
 			console.log('Nota atualizada com sucesso!')
@@ -41,7 +41,7 @@ export const updateNota = async (db: SQLiteDatabase, id: number, nota: number) =
 
 export const deleteNota = async (db: SQLiteDatabase, id: number) => {
 	try {
-		const result = await db.runAsync(`DELETE FROM nota WHERE id = ?`, [id])
+		const result = await db.runAsync(`UPDATE nota SET deleted_at = ? WHERE id = ?`, [new Date().toISOString(), id])
 
 		if (result.changes > 0) {
 			console.log('Nota removida com sucesso!')
@@ -103,6 +103,7 @@ export const getNotasByAluno = async (db: SQLiteDatabase, aluno_id: number) => {
 			LEFT JOIN nota n ON n.aluno_id = a.id
 			JOIN disciplina d ON n.disciplina_id = d.id
 			WHERE a.id = ${aluno_id}
+			AND a.deleted_at IS NULL
 			GROUP BY d.nome, n.periodo
 			ORDER BY d.nome;`,
 		)

@@ -24,7 +24,11 @@ export const update = async (db: SQLiteDatabase, id: number, data: Omit<ITurma, 
 	const { nome } = data
 
 	try {
-		const result = await db.runAsync(`UPDATE disciplina SET nome = ? WHERE id = ?`, [nome?.toUpperCase().trim(), id])
+		const result = await db.runAsync(`UPDATE disciplina SET nome = ?, updated_at = ? WHERE id = ?`, [
+			nome?.toUpperCase().trim(),
+			new Date().toISOString(),
+			id,
+		])
 
 		if (result.changes > 0) {
 			console.log('Disciplina atualizada com sucesso!')
@@ -41,7 +45,20 @@ export const update = async (db: SQLiteDatabase, id: number, data: Omit<ITurma, 
 
 export const deleteDisciplina = async (db: SQLiteDatabase, id: number) => {
 	try {
-		const result = await db.runAsync(`DELETE FROM disciplina WHERE id = ?`, [id])
+		const result = await db.runAsync(`UPDATE disciplina SET deleted_at = ? WHERE id = ?`, [
+			new Date().toISOString(),
+			id,
+		])
+
+		const resultNota = await db.runAsync(`UPDATE nota SET deleted_at = ? WHERE disciplina_id = ?`, [
+			new Date().toISOString(),
+			id,
+		])
+		if (resultNota.changes > 0) {
+			console.log('Notas removidas com sucesso!')
+		} else {
+			console.error('Erro ao remover notas: Nenhuma linha afetada')
+		}
 
 		if (result.changes > 0) {
 			console.log('Disciplina removida com sucesso!')
@@ -58,7 +75,7 @@ export const deleteDisciplina = async (db: SQLiteDatabase, id: number) => {
 
 export const getDisciplinas = async (db: SQLiteDatabase) => {
 	try {
-		const result = await db.getAllAsync<ITurma>(`SELECT * FROM disciplina;`)
+		const result = await db.getAllAsync<ITurma>(`SELECT * FROM disciplina WHERE deleted_at IS NULL;`)
 		return result
 	} catch (error) {
 		console.error('Erro ao obter disciplinas:', error)
