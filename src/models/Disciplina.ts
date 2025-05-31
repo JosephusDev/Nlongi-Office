@@ -1,7 +1,7 @@
 import { ITurma } from '@/types'
 import { SQLiteDatabase } from 'expo-sqlite'
 
-export const create = async (db: SQLiteDatabase, data: Omit<ITurma, 'id'>) => {
+export const create = async (db: SQLiteDatabase, data: Pick<ITurma, 'nome'>) => {
 	const { nome } = data
 
 	try {
@@ -20,7 +20,7 @@ export const create = async (db: SQLiteDatabase, data: Omit<ITurma, 'id'>) => {
 	}
 }
 
-export const update = async (db: SQLiteDatabase, id: number, data: Omit<ITurma, 'id'>) => {
+export const update = async (db: SQLiteDatabase, id: number, data: Pick<ITurma, 'nome'>) => {
 	const { nome } = data
 
 	try {

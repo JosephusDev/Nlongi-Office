@@ -22,7 +22,7 @@ export default function Notas() {
 	const { showToast } = useToast()
 	const [alunos, setAlunos] = useState<IAluno[]>([])
 	const [notas, setNotas] = useState<INota[]>([])
-	const [turmas, setTurmas] = useState<ITurma[] | null>(null)
+	const [turmas, setTurmas] = useState<Pick<ITurma, 'id' | 'nome'>[] | null>(null)
 	const [disciplinas, setDisciplinas] = useState<ITurma[] | null>(null)
 
 	// Estados para armazenar os filtros selecionados
@@ -83,6 +83,8 @@ export default function Notas() {
 						tipo: selectedTipoProva,
 						disciplina_id: selectedDisciplina,
 						turma_id: selectedTurma || 0,
+						updated_at: new Date().toISOString(),
+						deleted_at: null,
 					},
 				]
 			}

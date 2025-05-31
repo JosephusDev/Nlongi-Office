@@ -7,8 +7,7 @@ export const s = StyleSheet.create({
 		marginTop: 20,
 		backgroundColor: colors.light,
 		width: '100%',
-		borderColor: colors.gray[200],
-		borderWidth: 0.5,
+		maxHeight: 300,
 		borderRadius: 8,
 	},
 	thead: {

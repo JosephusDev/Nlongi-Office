@@ -40,6 +40,11 @@ export async function backupData(db: SQLiteDatabase, email: string) {
 					}, { onConflict: 'id,email' })
 
 				if (error) {
+					// Ignora erro de chave duplicada (código 23505)
+					if (error.code === '23505') {
+						console.log(`Turma ${turma.id} já existe no servidor, continuando...`)
+						continue
+					}
 					console.error('Erro ao inserir Turma:', error)
 					throw error
 				}
@@ -71,6 +76,11 @@ export async function backupData(db: SQLiteDatabase, email: string) {
 					}, { onConflict: 'id,turmaid,email' })
 
 				if (error) {
+					// Ignora erro de chave duplicada (código 23505)
+					if (error.code === '23505') {
+						console.log(`Aluno ${aluno.id} já existe no servidor, continuando...`)
+						continue
+					}
 					console.error('Erro ao inserir Aluno:', error)
 					throw error
 				}
@@ -101,6 +111,11 @@ export async function backupData(db: SQLiteDatabase, email: string) {
 					}, { onConflict: 'id,email' })
 
 				if (error) {
+					// Ignora erro de chave duplicada (código 23505)
+					if (error.code === '23505') {
+						console.log(`Disciplina ${disciplina.id} já existe no servidor, continuando...`)
+						continue
+					}
 					console.error('Erro ao inserir Disciplina:', error)
 					throw error
 				}
@@ -137,6 +152,11 @@ export async function backupData(db: SQLiteDatabase, email: string) {
 					}, { onConflict: 'alunoid,disciplinaid,tipo,periodo,email' })
 
 				if (error) {
+					// Ignora erro de chave duplicada (código 23505)
+					if (error.code === '23505') {
+						console.log(`Nota do aluno ${nota.aluno_id} já existe no servidor, continuando...`)
+						continue
+					}
 					console.error('Erro ao inserir Nota:', error)
 					throw error
 				}

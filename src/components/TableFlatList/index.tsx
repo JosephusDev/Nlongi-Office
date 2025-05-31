@@ -1,7 +1,7 @@
 import { Text, View, Pressable, ScrollView, Dimensions } from 'react-native'
 import { s } from './styles'
 import { colors } from '@/styles/colors'
-import { IconEdit, IconTrash } from '@tabler/icons-react-native'
+import { IconEdit } from '@tabler/icons-react-native'
 
 type Data = {
 	id: number
@@ -19,6 +19,7 @@ type TableProps = {
 	data: Data[]
 	showActions?: boolean
 	showHeader?: boolean
+	horizontal?: boolean
 	onEdit?: (id: number) => void
 	onDelete?: (id: number) => void
 	onPress?: (id: number, item: Data) => void
@@ -103,10 +104,16 @@ const TableFlatList = ({
 	onEdit,
 	onPress,
 	onLongPress,
+	horizontal = false,
 }: TableProps) => {
 	return (
 		<View>
-			<ScrollView style={s.main} horizontal>
+			<ScrollView
+				style={s.main}
+				horizontal={horizontal}
+				showsHorizontalScrollIndicator={false}
+				showsVerticalScrollIndicator={false}
+			>
 				<View>
 					{showHeader && <TableHeader columns={columns} showActions={showActions} />}
 					<ScrollView>

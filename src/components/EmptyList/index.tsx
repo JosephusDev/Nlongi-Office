@@ -6,7 +6,7 @@ import { colors } from '@/styles/colors'
 export default function EmptyList({ title }: { title: string }) {
 	return (
 		<View style={s.container}>
-			<IconClipboardList size={40} color={colors.gray[400]} />
+			<IconClipboardList size={40} color={colors.red.base} />
 			<Text style={s.title}>{title}</Text>
 		</View>
 	)

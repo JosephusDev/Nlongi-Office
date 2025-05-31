@@ -28,7 +28,7 @@
 				"android.permission.WRITE_EXTERNAL_STORAGE"
 			],
 			"package": "com.josephusdev.profoffice",
-			"versionCode": 11
+			"versionCode": 12
 		},
 		"web": {
 			"bundler": "metro",

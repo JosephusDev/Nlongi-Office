@@ -4,6 +4,7 @@ import { StyleSheet } from 'react-native'
 
 export const s = StyleSheet.create({
 	alertContainer: {
+		backgroundColor: colors.red.transparent,
 		width: '100%',
 		flexDirection: 'row',
 		alignItems: 'center',
@@ -12,10 +13,11 @@ export const s = StyleSheet.create({
 		marginTop: 20,
 		marginBottom: 10,
 		gap: 5,
+		padding: 10,
 	},
 	alert: {
-		color: colors.gray[400],
+		color: colors.red.base,
 		fontSize: 13,
-		fontFamily: fontFamily.regular,
+		fontFamily: fontFamily.bold,
 	},
 })

@@ -2,7 +2,7 @@ import { IAluno } from '@/types'
 import { capitalizeName } from '@/utils/functions'
 import { SQLiteDatabase } from 'expo-sqlite'
 
-export const create = async (db: SQLiteDatabase, data: Omit<IAluno, 'id' | 'turma'>) => {
+export const create = async (db: SQLiteDatabase, data: Pick<IAluno, 'nome' | 'turma_id'>) => {
 	const { nome, turma_id } = data
 
 	try {
@@ -24,7 +24,7 @@ export const create = async (db: SQLiteDatabase, data: Omit<IAluno, 'id' | 'turm
 	}
 }
 
-export const update = async (db: SQLiteDatabase, id: number, data: Omit<IAluno, 'id'>) => {
+export const update = async (db: SQLiteDatabase, id: number, data: Pick<IAluno, 'nome' | 'turma_id'>) => {
 	const { nome, turma_id } = data
 
 	try {

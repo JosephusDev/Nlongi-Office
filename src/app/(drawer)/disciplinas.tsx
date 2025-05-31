@@ -21,10 +21,10 @@ import { useToast } from '@/context/ToastContext'
 export default function Disciplinas() {
 	const db = useSQLiteContext()
 	const { showToast } = useToast()
-	const [disciplinas, setDisciplinas] = useState<ITurma[]>([])
+	const [disciplinas, setDisciplinas] = useState<Pick<ITurma, 'id' | 'nome'>[]>([])
 	const [isOpen, setIsOpen] = useState(false)
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
-	const [selected, setSelected] = useState<ITurma | null>(null)
+	const [selected, setSelected] = useState<Pick<ITurma, 'id' | 'nome'> | null>(null)
 	const [search, setSearch] = useState('')
 	const [selectedItemId, setSelectedItemId] = useState<number | null>(null)
 	const {
@@ -69,7 +69,6 @@ export default function Disciplinas() {
 				})
 			}
 		}
-		setIsOpen(false)
 		carregarDisciplinas()
 		// limpa os campos do formulario
 		reset()
@@ -122,7 +121,7 @@ export default function Disciplinas() {
 		? disciplinas?.filter(disciplina => disciplina.nome.includes(search.toUpperCase()))
 		: disciplinas
 
-	const handleOpenModal = (disciplina?: ITurma) => {
+	const handleOpenModal = (disciplina?: Pick<ITurma, 'id' | 'nome'>) => {
 		if (disciplina) {
 			setSelected(disciplina)
 			setValue('nome', disciplina.nome)
@@ -179,6 +178,7 @@ export default function Disciplinas() {
 										onBlur={onBlur}
 										onChangeText={onChange}
 										value={value}
+										onSubmitEditing={() => handleSubmit(onSubmit)}
 									/>
 								)}
 							/>

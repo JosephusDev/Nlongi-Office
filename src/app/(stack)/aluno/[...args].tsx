@@ -56,7 +56,6 @@ export default function Aluno() {
 
 	const carregarDisciplinas = async () => {
 		const result = await getDisciplinas(db)
-		result.unshift({ id: 0, nome: 'Selecione a disciplina' })
 		setDisciplinas(result)
 	}
 
@@ -177,13 +176,14 @@ export default function Aluno() {
 						<TableFlatList
 							columns={columns}
 							data={notasFiltradas}
+							horizontal={true}
 							onPress={(id, item) => {
 								setVisibleSelectedRow(true)
 								setSelectedRow(notasFiltradas.find(nota => nota === item))
 							}}
 							showHeader
 						/>
-						<CustomWarning message='Clique para alterar as notas.' />
+						<CustomWarning message='Clique na nota para alterar.' />
 						{visibleFirstChart && <ChartGeral data={notasFiltradas} />}
 						{visibleSecondChart && <ChartTrimestreDisciplina data={notasFiltradas[0]} />}
 					</View>

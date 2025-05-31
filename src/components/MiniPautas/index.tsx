@@ -201,7 +201,7 @@ export default function MiniPautas() {
           <p>REPÚBLICA DE ANGOLA</p>
 					<p>MINISTÉRIO DA EDUCAÇÃO</p>
 					<p>${schoolData.nomeEscola.toUpperCase()}</p>
-					<strong>PAUTA ANUAL DOS ALUNOS MATRICULADOS NO ANO LECTIVO ${schoolData.anoLetivo}</strong>
+					<strong>PAUTA DOS ALUNOS MATRICULADOS NO ANO LECTIVO ${schoolData.anoLetivo}</strong>
 					
 					<div class="info-container">
 						<div class="info-box">
@@ -296,7 +296,7 @@ export default function MiniPautas() {
 				<EmptyList title='Nenhuma pauta disponível.' />
 			) : (
 				<View>
-					<TableFlatList showHeader columns={columns} data={notas} />
+					<TableFlatList horizontal showHeader columns={columns} data={notas} />
 					<Button title='Exportar' icon='share' onClick={handleExport} />
 				</View>
 			)}

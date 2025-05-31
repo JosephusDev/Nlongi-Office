@@ -1,7 +1,7 @@
 import { SQLiteDatabase } from 'expo-sqlite'
 import { IAlunoNotas, IMiniPauta, INota } from '@/types'
 
-export const createNota = async (db: SQLiteDatabase, data: Omit<INota, 'turma_id'>) => {
+export const createNota = async (db: SQLiteDatabase, data: Omit<INota, 'turma_id' | 'updated_at' | 'deleted_at'>) => {
 	const { valor, periodo, tipo, aluno_id, disciplina_id } = data
 
 	try {

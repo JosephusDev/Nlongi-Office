@@ -162,7 +162,7 @@ export const s = StyleSheet.create({
 		marginBottom: 10,
 	},
 	label: {
-		marginTop: 10,
+		marginVertical: 10,
 		fontFamily: fontFamily.semiBold,
 		color: colors.gray[500],
 		width: '100%',

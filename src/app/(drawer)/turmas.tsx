@@ -19,10 +19,10 @@ import { TouchableOpacity } from 'react-native-gesture-handler'
 import { IconTrash } from '@tabler/icons-react-native'
 export default function Turmas() {
 	const db = useSQLiteContext()
-	const [turmas, setTurmas] = useState<ITurma[]>([])
+	const [turmas, setTurmas] = useState<Pick<ITurma, 'id' | 'nome'>[]>([])
 	const [isOpen, setIsOpen] = useState(false)
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
-	const [selected, setSelected] = useState<ITurma | null>(null)
+	const [selected, setSelected] = useState<Pick<ITurma, 'id' | 'nome'> | null>(null)
 	const [search, setSearch] = useState('')
 	const [selectedItemId, setSelectedItemId] = useState<number | null>(null)
 	const { showToast } = useToast()
@@ -82,7 +82,6 @@ export default function Turmas() {
 				})
 			}
 		}
-		setIsOpen(false)
 		carregarTurmas()
 		reset()
 		setSelected(null)
@@ -118,7 +117,7 @@ export default function Turmas() {
 
 	const turmasFiltradas = search ? turmas.filter(turma => turma.nome.includes(search.toUpperCase())) : turmas
 
-	const handleOpenModal = (turma?: ITurma) => {
+	const handleOpenModal = (turma?: Pick<ITurma, 'id' | 'nome'>) => {
 		if (turma) {
 			setSelected(turma)
 			setValue('nome', turma.nome)
@@ -172,6 +171,7 @@ export default function Turmas() {
 										onBlur={onBlur}
 										onChangeText={onChange}
 										value={value}
+										onSubmitEditing={() => handleSubmit(onSubmit)}
 									/>
 								)}
 							/>

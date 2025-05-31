@@ -1,5 +1,5 @@
 import { s } from '@/styles/app/alunos'
-import { Alert, Text, TextInput, View, Vibration } from 'react-native'
+import { Text, TextInput, View, Vibration } from 'react-native'
 import { DrawerSceneWrapper } from '@/components/DrawerSceneWrapper'
 import ToolBar from '@/components/ToolBar'
 import Header from '@/components/Header'
@@ -27,7 +27,7 @@ export default function Alunos() {
 	const db = useSQLiteContext()
 	const { showToast } = useToast()
 	const [alunos, setAlunos] = useState<IAluno[]>([])
-	const [turmas, setTurmas] = useState<ITurma[] | null>(null)
+	const [turmas, setTurmas] = useState<Pick<ITurma, 'id' | 'nome'>[] | null>(null)
 	const [isOpen, setIsOpen] = useState(false)
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
 	const [selected, setSelected] = useState<IAluno | null>(null)
@@ -77,7 +77,6 @@ export default function Alunos() {
 				})
 			}
 		}
-		setIsOpen(false)
 		carregarAlunos()
 		reset()
 		setSelected(null)
@@ -204,7 +203,7 @@ export default function Alunos() {
 								router.navigate(`/(stack)/aluno/${id.toString()}/${alunos?.find(aluno => aluno.id === id)?.nome}`)
 							}
 						/>
-						<CustomWarning message='Clique para ver o desempenho do aluno.' />
+						<CustomWarning message='Clique no aluno para ver seu desempenho.' />
 					</View>
 				)}
 				<MyModal title='Adicionar Aluno' visible={isOpen} onClose={() => setIsOpen(false)}>
@@ -221,6 +220,9 @@ export default function Alunos() {
 										onBlur={onBlur}
 										onChangeText={onChange}
 										value={value}
+										onSubmitEditing={() => {
+											handleSubmit(onSubmit)
+										}}
 									/>
 								)}
 							/>

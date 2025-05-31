@@ -108,18 +108,10 @@ export const trimestres = [
 	{
 		id: 3,
 		nome: '3º Trimestre',
-	},
-	{
-		id: 4,
-		nome: 'Todos',
-	},
+	}
 ]
 
 export const tipoProvas = [
-	{
-		id: 0,
-		nome: 'Selecione o tipo',
-	},
 	{
 		id: 1,
 		nome: 'MAC',

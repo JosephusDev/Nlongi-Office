@@ -1,7 +1,7 @@
 import { ITurma } from '@/types'
 import { SQLiteDatabase } from 'expo-sqlite'
 
-export const create = async (db: SQLiteDatabase, data: Omit<ITurma, 'id'>) => {
+export const create = async (db: SQLiteDatabase, data: Pick<ITurma, 'nome'>) => {
 	const { nome } = data
 
 	try {
@@ -20,7 +20,7 @@ export const create = async (db: SQLiteDatabase, data: Omit<ITurma, 'id'>) => {
 	}
 }
 
-export const update = async (db: SQLiteDatabase, id: number, data: Omit<ITurma, 'id'>) => {
+export const update = async (db: SQLiteDatabase, id: number, data: Pick<ITurma, 'nome'>) => {
 	const { nome } = data
 
 	try {
@@ -65,7 +65,7 @@ export const deleteTurma = async (db: SQLiteDatabase, id: number) => {
 
 export const getTurmas = async (db: SQLiteDatabase) => {
 	try {
-		const result = await db.getAllAsync<ITurma>(`SELECT * FROM turma WHERE deleted_at IS NULL order by nome;`)
+		const result = await db.getAllAsync<Pick<ITurma, 'id' | 'nome'>>(`SELECT id, nome FROM turma WHERE deleted_at IS NULL order by nome;`)
 		return result
 	} catch (error) {
 		console.error('Erro ao obter turmas:', error)
